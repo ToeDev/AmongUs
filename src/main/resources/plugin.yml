@@ -1,0 +1,17 @@
+name: AmongUs
+main: org.cubeville.cvmenu.AmongUs
+author: ToeMan_
+version: 0.1
+api-version: 1.16
+
+depend: []
+
+commands:
+  amongus:
+    aliases: au
+    permission: amongus.admin
+
+permissions:
+  amongus.admin:
+    description: Gives player access to every AmongUs command
+    default: op
