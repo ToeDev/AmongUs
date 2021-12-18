@@ -1,10 +1,10 @@
-package org.toedev.amongus.crewmates;
+package org.toedev.amongus.players;
 
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.toedev.amongus.map.Map;
 
-public class Crewmate {
+public abstract class AbstractPlayer implements Comparable<AbstractPlayer> {
 
     private final Player player;
     private final Color color;
@@ -12,7 +12,7 @@ public class Crewmate {
     private boolean isDead;
     private int votes;
 
-    public Crewmate(Player player, Color color, Map map) {
+    public AbstractPlayer(Player player, Color color, Map map) {
         this.player = player;
         this.color = color;
         this.map = map;
@@ -54,5 +54,9 @@ public class Crewmate {
 
     public void resetVotes() {
         votes = 0;
+    }
+
+    public int compareTo(AbstractPlayer otherAbstractPlayer) {
+        return Integer.compare(this.votes, otherAbstractPlayer.votes);
     }
 }
