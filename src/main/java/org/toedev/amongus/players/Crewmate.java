@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class Crewmate extends AbstractPlayer {
 
-    private Set<AbstractTask> tasks;
+    private final Set<AbstractTask> tasks;
 
     public Crewmate(Player player, Color color, Map map) {
         super(player, color, map);
