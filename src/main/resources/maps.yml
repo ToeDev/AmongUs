@@ -1,0 +1,39 @@
+#maps:
+#  example_map:
+#    mapMinCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    mapMaxCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    startMinCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    startMaxCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    meetingMinCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    meetingMaxCorner:
+#      world: testing
+#      x: 3
+#      y: 3
+#      z: 3
+#    tasks:
+#      example_task:
+#        location:
+#          world: testing
+#          x: 3
+#          y: 3
+#          z: 3

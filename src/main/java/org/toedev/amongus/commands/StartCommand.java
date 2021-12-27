@@ -4,8 +4,8 @@ import org.bukkit.command.CommandSender;
 
 public class StartCommand {
 
-    public StartCommand() {
 
+    public StartCommand() {
     }
 
     public void start(final CommandSender sender, String[] args) {

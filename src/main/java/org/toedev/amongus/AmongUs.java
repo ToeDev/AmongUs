@@ -4,7 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.handlers.CommandHandler;
 import org.toedev.amongus.handlers.EventHandler;
-import org.toedev.amongus.players.KitHandler;
+import org.toedev.amongus.handlers.KitHandler;
+import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.sql.Database;
+import org.toedev.amongus.sql.Utility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,27 +21,35 @@ public class AmongUs extends JavaPlugin {
 
     private Logger logger;
 
+    private Utility utility;
+
+    private KitHandler kitHandler;
+
     public void onEnable() {
         this.logger = getLogger();
 
-        //Generate config, maps, and kits file
+        //Generate config file and core db
         final File dataDir = getDataFolder();
         if(!dataDir.exists()) {
             dataDir.mkdirs();
         }
         File configFile = new File(dataDir, "config.yml");
-        File mapsFile = new File(dataDir, "maps.yml");
         if(!configFile.exists()) {
             generateFile(configFile);
         }
-        if(!mapsFile.exists()) {
-            generateFile(mapsFile);
+        utility = new Utility(this);
+        try {
+            utility.createBackup(this);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        utility.load();
 
         //Start handlers
-        new CommandHandler(this);
+        kitHandler = new KitHandler();
+        new MapManager(this, utility);
         new EventHandler();
-        new KitHandler();
+        new CommandHandler(this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }
