@@ -15,5 +15,5 @@ public class GameHandler {
         allMaps.add(mapName);
     }
 
-    public void startMap()
+    //public void startMap()
 }

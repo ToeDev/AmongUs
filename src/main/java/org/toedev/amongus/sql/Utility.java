@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class Utility extends Database {
@@ -45,16 +46,21 @@ public class Utility extends Database {
             "`meetingMaxCornerWorld` varchar(64) NOT NULL," +
             "`meetingMaxCornerX` BIGINT NOT NULL," +
             "`meetingMaxCornerY` BIGINT NOT NULL," +
-            "`meetingMaxCornerZ` BIGINT NOT NULL," +
+            "`meetingMaxCornerZ` BIGINT NOT NULL" +
             ");";
 
     public void load() {
         connect();
-        update(SQLiteCreateMapsTable);
+        update(SQLiteCreateMapsTable); //TODO CREATE TASKS TABLE
     }
 
     public ResultSet getAllMaps() {
         return getResult("SELECT * FROM `maps`");
+    }
+
+    public boolean isMapInDB(Map map) throws SQLException {
+        int rows = getResult("SELECT COUNT(*) FROM `maps` WHERE mapName = \"" + map.getName() + "\";").getInt(1);
+        return rows > 0;
     }
 
     public void createBackup(JavaPlugin plugin) throws IOException {
@@ -80,12 +86,12 @@ public class Utility extends Database {
                 "meetingMinCornerWorld, meetingMinCornerX, meetingMinCornerY, meetingMinCornerZ, " +
                 "meetingMaxCornerWorld, meetingMaxCornerX, meetingMaxCornerY, meetingMaxCornerZ) " +
                 "VALUES(\"" + map.getName() + "\", " +
-                "\"" + mapMinCorner.getWorld() + "\", \"" + mapMinCorner.getX() + "\", \"" + mapMinCorner.getY() + "\", \"" + mapMinCorner.getZ() + "\", " +
-                "\"" + mapMaxCorner.getWorld() + "\", \"" + mapMaxCorner.getX() + "\", \"" + mapMaxCorner.getY() + "\", \"" + mapMaxCorner.getZ() + "\", " +
-                "\"" + startMinCorner.getWorld() + "\", \"" + startMinCorner.getX() + "\", \"" + startMinCorner.getY() + "\", \"" + startMinCorner.getZ() + "\", " +
-                "\"" + startMaxCorner.getWorld() + "\", \"" + startMaxCorner.getX() + "\", \"" + startMaxCorner.getY() + "\", \"" + startMaxCorner.getZ() + "\", " +
-                "\"" + meetingMinCorner.getWorld() + "\", \"" + meetingMinCorner.getX() + "\", \"" + meetingMinCorner.getY() + "\", \"" + meetingMinCorner.getZ() + "\", " +
-                "\"" + meetingMaxCorner.getWorld() + "\", \"" + meetingMaxCorner.getX() + "\", \"" + meetingMaxCorner.getY() + "\", \"" + meetingMaxCorner.getZ() + "\");"
+                "\"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\", \"" + mapMinCorner.getX() + "\", \"" + mapMinCorner.getY() + "\", \"" + mapMinCorner.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(mapMaxCorner.getWorld()).getName() + "\", \"" + mapMaxCorner.getX() + "\", \"" + mapMaxCorner.getY() + "\", \"" + mapMaxCorner.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(startMinCorner.getWorld()).getName() + "\", \"" + startMinCorner.getX() + "\", \"" + startMinCorner.getY() + "\", \"" + startMinCorner.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(startMaxCorner.getWorld()).getName() + "\", \"" + startMaxCorner.getX() + "\", \"" + startMaxCorner.getY() + "\", \"" + startMaxCorner.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(meetingMinCorner.getWorld()).getName() + "\", \"" + meetingMinCorner.getX() + "\", \"" + meetingMinCorner.getY() + "\", \"" + meetingMinCorner.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(meetingMaxCorner.getWorld()).getName() + "\", \"" + meetingMaxCorner.getX() + "\", \"" + meetingMaxCorner.getY() + "\", \"" + meetingMaxCorner.getZ() + "\");"
         );
     }
 
@@ -98,30 +104,30 @@ public class Utility extends Database {
         Location meetingMaxCorner = map.getMeetingMaxCorner();
         update("UPDATE `maps`" +
                 " SET" +
-                " mapMinCornerWorld = \"" + mapMinCorner.getWorld() + "\"," +
+                " mapMinCornerWorld = \"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\"," +
                 " mapMinCornerX = \"" + mapMinCorner.getX() + "\"," +
                 " mapMinCornerY = \"" + mapMinCorner.getY() + "\"," +
                 " mapMinCornerZ = \"" + mapMinCorner.getZ() + "\"," +
-                " mapMaxCornerWorld = \"" + mapMaxCorner.getWorld() + "\"," +
+                " mapMaxCornerWorld = \"" + Objects.requireNonNull(mapMaxCorner.getWorld()).getName() + "\"," +
                 " mapMaxCornerX = \"" + mapMaxCorner.getX() + "\"," +
                 " mapMaxCornerY = \"" + mapMaxCorner.getY() + "\"," +
                 " mapMaxCornerZ = \"" + mapMaxCorner.getZ() + "\"," +
-                " startMinCornerWorld = \"" + startMinCorner.getWorld() + "\"," +
+                " startMinCornerWorld = \"" + Objects.requireNonNull(startMinCorner.getWorld()).getName() + "\"," +
                 " startMinCornerX = \"" + startMinCorner.getX() + "\"," +
                 " startMinCornerY = \"" + startMinCorner.getY() + "\"," +
                 " startMinCornerZ = \"" + startMinCorner.getZ() + "\"," +
-                " startMaxCornerWorld = \"" + startMaxCorner.getWorld() + "\"," +
+                " startMaxCornerWorld = \"" + Objects.requireNonNull(startMaxCorner.getWorld()).getName() + "\"," +
                 " startMaxCornerX = \"" + startMaxCorner.getX() + "\"," +
                 " startMaxCornerY = \"" + startMaxCorner.getY() + "\"," +
                 " startMaxCornerZ = \"" + startMaxCorner.getZ() + "\"," +
-                " meetingMinCornerWorld = \"" + meetingMinCorner.getWorld() + "\"," +
+                " meetingMinCornerWorld = \"" + Objects.requireNonNull(meetingMinCorner.getWorld()).getName() + "\"," +
                 " meetingMinCornerX = \"" + meetingMinCorner.getX() + "\"," +
                 " meetingMinCornerY = \"" + meetingMinCorner.getY() + "\"," +
                 " meetingMinCornerZ = \"" + meetingMinCorner.getZ() + "\"," +
-                " meetingMaxCornerWorld = \"" + mapMaxCorner.getWorld() + "\"," +
-                " meetingMaxCornerX = \"" + mapMaxCorner.getX() + "\"," +
-                " meetingMaxCornerY = \"" + mapMaxCorner.getY() + "\"," +
-                " meetingMaxCornerZ = \"" + mapMaxCorner.getZ() + "\"" +
+                " meetingMaxCornerWorld = \"" + Objects.requireNonNull(meetingMaxCorner.getWorld()).getName() + "\"," +
+                " meetingMaxCornerX = \"" + meetingMaxCorner.getX() + "\"," +
+                " meetingMaxCornerY = \"" + meetingMaxCorner.getY() + "\"," +
+                " meetingMaxCornerZ = \"" + meetingMaxCorner.getZ() + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\";"
         );
     }

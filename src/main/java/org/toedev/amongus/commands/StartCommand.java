@@ -6,9 +6,10 @@ public class StartCommand {
 
 
     public StartCommand() {
+
     }
 
-    public void start(final CommandSender sender, String[] args) {
+    public void execute(final CommandSender sender, String[] args) {
         if(args.length < 2) {
             sender.sendMessage("syntax this");
             return;

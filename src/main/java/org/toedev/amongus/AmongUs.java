@@ -22,8 +22,8 @@ public class AmongUs extends JavaPlugin {
     private Logger logger;
 
     private Utility utility;
-
     private KitHandler kitHandler;
+    private MapManager mapManager;
 
     public void onEnable() {
         this.logger = getLogger();
@@ -47,9 +47,9 @@ public class AmongUs extends JavaPlugin {
 
         //Start handlers
         kitHandler = new KitHandler();
-        new MapManager(this, utility);
+        mapManager = new MapManager(this, utility);
         new EventHandler();
-        new CommandHandler(this);
+        new CommandHandler(this, mapManager);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }

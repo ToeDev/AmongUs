@@ -25,6 +25,18 @@ public class Map {
         this.tasks = new HashMap<>();
     }
 
+    //For DB Import
+    public Map(String name, Location mapMinCorner, Location mapMaxCorner, Location startMinCorner, Location startMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
+        this.name = name;
+        this.mapMinCorner = mapMinCorner;
+        this.mapMaxCorner = mapMaxCorner;
+        this.startMinCorner = startMinCorner;
+        this.startMaxCorner = startMaxCorner;
+        this.meetingMinCorner = meetingMinCorner;
+        this.meetingMaxCorner = meetingMaxCorner;
+        this.tasks = tasks;
+    }
+
     public String getName() {
         return name;
     }
@@ -91,5 +103,9 @@ public class Map {
 
     public void removeTask(AbstractTask task) {
         tasks.remove(task);
+    }
+
+    public boolean isMapSetup() { //TODO ADD TASKS HASHMAP
+        return mapMinCorner != null && mapMaxCorner != null && startMinCorner != null && startMaxCorner != null && meetingMinCorner != null && meetingMaxCorner != null;
     }
 }
