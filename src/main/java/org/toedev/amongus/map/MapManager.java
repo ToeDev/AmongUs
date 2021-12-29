@@ -11,8 +11,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MapManager {
+
+    private final Logger logger;
 
     private final AmongUs amongUs;
     private final Utility utility;
@@ -21,6 +25,7 @@ public class MapManager {
     private final Set<Map> maps;
 
     public MapManager(AmongUs amongUs, Utility utility) {
+        this.logger = amongUs.getLogger();
         this.amongUs = amongUs;
         this.utility = utility;
         this.maps = new HashSet<>();
@@ -42,6 +47,7 @@ public class MapManager {
                 HashMap<AbstractTask, Location> tasks = new HashMap<>(); //TODO IMPORT TASKS FROM SQL
                 Map map = new Map(mapSet.getString("mapName"), mapMinCorner, mapMaxCorner, startMinCorner, startMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
                 this.maps.add(map);
+                logger.log(Level.INFO, "Map \"" + map.getName() + "\" imported from the DB");
             }
         } catch (SQLException e) {
             e.printStackTrace();

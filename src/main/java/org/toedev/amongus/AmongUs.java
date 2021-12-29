@@ -73,6 +73,7 @@ public class AmongUs extends JavaPlugin {
     }
 
     public void onDisable() {
+        this.utility.disconnect();
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
     }
 }
