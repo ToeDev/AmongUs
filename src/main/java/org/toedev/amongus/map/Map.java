@@ -9,11 +9,14 @@ public class Map {
 
     private String name;
 
+    private boolean mapRunning;
+    private Location mapStartSign;
+
     private Location mapMinCorner;
     private Location mapMaxCorner;
 
-    private Location startMinCorner;
-    private Location startMaxCorner;
+    /*private Location startMinCorner;
+    private Location startMaxCorner;*/
 
     private Location meetingMinCorner;
     private Location meetingMaxCorner;
@@ -22,16 +25,19 @@ public class Map {
 
     public Map(String name) {
         this.name = name;
+        this.mapRunning = false;
         this.tasks = new HashMap<>();
     }
 
     //For DB Import
-    public Map(String name, Location mapMinCorner, Location mapMaxCorner, Location startMinCorner, Location startMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
+    public Map(String name, Location mapStartSign, Location mapMinCorner, Location mapMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
         this.name = name;
+        this.mapStartSign = mapStartSign;
+        this.mapRunning = false;
         this.mapMinCorner = mapMinCorner;
         this.mapMaxCorner = mapMaxCorner;
-        this.startMinCorner = startMinCorner;
-        this.startMaxCorner = startMaxCorner;
+        /*this.startMinCorner = startMinCorner;
+        this.startMaxCorner = startMaxCorner;*/
         this.meetingMinCorner = meetingMinCorner;
         this.meetingMaxCorner = meetingMaxCorner;
         this.tasks = tasks;
@@ -39,6 +45,22 @@ public class Map {
 
     public String getName() {
         return name;
+    }
+
+    public Location getMapStartSign() {
+        return mapStartSign;
+    }
+
+    public void setMapStartSign(Location mapStartSign) {
+        this.mapStartSign = mapStartSign;
+    }
+
+    public boolean isMapRunning() {
+        return mapRunning;
+    }
+
+    public void setMapRunning(boolean status) {
+        mapRunning = status;
     }
 
     public Location getMapMinCorner() {
@@ -49,13 +71,13 @@ public class Map {
         return mapMaxCorner;
     }
 
-    public Location getStartMinCorner() {
+    /*public Location getStartMinCorner() {
         return startMinCorner;
     }
 
     public Location getStartMaxCorner() {
         return startMaxCorner;
-    }
+    }*/
 
     public Location getMeetingMinCorner() {
         return meetingMinCorner;
@@ -81,13 +103,13 @@ public class Map {
         this.mapMaxCorner = mapMaxCorner;
     }
 
-    public void setStartMinCorner(Location startMinCorner) {
+    /*public void setStartMinCorner(Location startMinCorner) {
         this.startMinCorner = startMinCorner;
     }
 
     public void setStartMaxCorner(Location startMaxCorner) {
         this.startMaxCorner = startMaxCorner;
-    }
+    }*/
 
     public void setMeetingMinCorner(Location meetingMinCorner) {
         this.meetingMinCorner = meetingMinCorner;
@@ -106,6 +128,6 @@ public class Map {
     }
 
     public boolean isMapSetup() { //TODO ADD TASKS HASHMAP
-        return mapMinCorner != null && mapMaxCorner != null && startMinCorner != null && startMaxCorner != null && meetingMinCorner != null && meetingMaxCorner != null;
+        return mapStartSign != null && mapMinCorner != null && mapMaxCorner != null && meetingMinCorner != null && meetingMaxCorner != null;
     }
 }

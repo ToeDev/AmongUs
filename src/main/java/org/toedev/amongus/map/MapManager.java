@@ -41,14 +41,13 @@ public class MapManager {
             ResultSet mapSet = utility.getAllMaps();
             if(mapSet == null) return;
             while(mapSet.next()) {
+                Location mapStartSign = new Location(Bukkit.getWorld(mapSet.getString("mapStartSignWorld")), mapSet.getDouble("mapStartSignX"), mapSet.getDouble("mapStartSignY"), mapSet.getDouble("mapStartSignZ"));
                 Location mapMinCorner = new Location(Bukkit.getWorld(mapSet.getString("mapMinCornerWorld")), mapSet.getDouble("mapMinCornerX"), mapSet.getDouble("mapMinCornerY"), mapSet.getDouble("mapMinCornerZ"));
                 Location mapMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("mapMaxCornerWorld")), mapSet.getDouble("mapMaxCornerX"), mapSet.getDouble("mapMaxCornerY"), mapSet.getDouble("mapMaxCornerZ"));
-                Location startMinCorner = new Location(Bukkit.getWorld(mapSet.getString("startMinCornerWorld")), mapSet.getDouble("startMinCornerX"), mapSet.getDouble("startMinCornerY"), mapSet.getDouble("startMinCornerZ"));
-                Location startMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("startMaxCornerWorld")), mapSet.getDouble("startMaxCornerX"), mapSet.getDouble("startMaxCornerY"), mapSet.getDouble("startMaxCornerZ"));
                 Location meetingMinCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMinCornerWorld")), mapSet.getDouble("meetingMinCornerX"), mapSet.getDouble("meetingMinCornerY"), mapSet.getDouble("meetingMinCornerZ"));
                 Location meetingMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMaxCornerWorld")), mapSet.getDouble("meetingMaxCornerX"), mapSet.getDouble("meetingMaxCornerY"), mapSet.getDouble("meetingMaxCornerZ"));
                 HashMap<AbstractTask, Location> tasks = new HashMap<>(); //TODO IMPORT TASKS FROM SQL
-                Map map = new Map(mapSet.getString("mapName"), mapMinCorner, mapMaxCorner, startMinCorner, startMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
+                Map map = new Map(mapSet.getString("mapName"), mapStartSign, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
                 this.maps.add(map);
                 logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map \"" + map.getName() + "\" imported from the DB");
             }
@@ -56,6 +55,59 @@ public class MapManager {
             e.printStackTrace();
         }
     }
+
+    public void setStartSign(String name, Location location) throws SQLException {
+        for(Map map : maps) {
+            if(map.getName().equals(name)) {
+                map.setMapStartSign(location);
+                if(map.isMapSetup()) saveMap(map);
+                return;
+            }
+        }
+    }
+
+    public Set<Map> getAllRunningMaps() {
+        Set<Map> runningMaps = new HashSet<>();
+        for(Map map : maps) {
+            if(map.isMapRunning()) {
+                runningMaps.add(map);
+            }
+        }
+        if(runningMaps.isEmpty()) return null;
+        return runningMaps;
+    }
+
+    public Set<Location> getAllMapStartSigns() {
+        Set<Location> mapStartSigns = new HashSet<>();
+        for(Map map : getAllMaps()) {
+            mapStartSigns.add(map.getMapStartSign());
+        }
+        return mapStartSigns;
+    }
+
+    public Map getMapByStartSign(Location mapStartSign) {
+        for(Map map : maps) {
+            if(map.getMapStartSign().equals(mapStartSign)) {
+                return map;
+            }
+        }
+        return null;
+    }
+
+    public void startMap(Map map) {
+        getMap(map.getName()).setMapRunning(true);
+    }
+
+    /*public Set<Player> getAllPlayersInStart(Map map) {
+        Set<Player> playersInStart = new HashSet<>();
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(isPlayerInStart(player, map)) {
+                playersInStart.add(player);
+            }
+        }
+        if(playersInStart.isEmpty()) return null;
+        return playersInStart;
+    }*/
 
     public Map getMap(String name) {
         for(Map map : maps) {
@@ -93,7 +145,7 @@ public class MapManager {
         }
     }
 
-    public void setStartCorners(String name, Location startMinCorner, Location startMaxCorner) throws SQLException {
+    /*public void setStartCorners(String name, Location startMinCorner, Location startMaxCorner) throws SQLException {
         for(Map map : maps) {
             if(map.getName().equals(name)) {
                 map.setStartMinCorner(startMinCorner);
@@ -102,7 +154,7 @@ public class MapManager {
                 return;
             }
         }
-    }
+    }*/
 
     public void setMeetingCorners(String name, Location meetingMinCorner, Location meetingMaxCorner) throws SQLException {
         for(Map map : maps) {
@@ -150,6 +202,17 @@ public class MapManager {
         return false;
     }
 
+    public Set<Map> getMapsPlayerIsIn(Player player) {
+        if(!isPlayerInAnyMap(player)) return null;
+        Set<Map> mapsIn = new HashSet<>();
+        for(Map map : maps) {
+            if(isPlayerInMap(player, map)) {
+                mapsIn.add(map);
+            }
+        }
+        return mapsIn;
+    }
+
     public boolean isPlayerInMeeting(Player player, Map map) {
         if(!maps.contains(map)) return false;
         if(!player.getWorld().getName().equalsIgnoreCase(Objects.requireNonNull(map.getMeetingMinCorner().getWorld()).getName())) return false;
@@ -177,7 +240,18 @@ public class MapManager {
         return false;
     }
 
-    public boolean isPlayerInStart(Player player, Map map) {
+    public Set<Map> getMeetingsPlayerIsIn(Player player) {
+        if(!isPlayerInAnyMeeting(player)) return null;
+        Set<Map> meetingsIn = new HashSet<>();
+        for(Map map : maps) {
+            if(isPlayerInMeeting(player, map)) {
+                meetingsIn.add(map);
+            }
+        }
+        return meetingsIn;
+    }
+
+    /*public boolean isPlayerInStart(Player player, Map map) {
         if(!maps.contains(map)) return false;
         if(!player.getWorld().getName().equalsIgnoreCase(Objects.requireNonNull(map.getStartMinCorner().getWorld()).getName())) return false;
         Location startMin = map.getStartMinCorner();
@@ -193,14 +267,25 @@ public class MapManager {
         double pY = pLoc.getY();
         double pZ = pLoc.getZ();
         return pX >= minX && pX <= maxX && pY >= minY && pY <= maxY && pZ >= minZ && pZ <= maxZ;
-    }
+    }*/
 
-    public boolean isPlayerInAnyStart(Player player) {
+    /*public boolean isPlayerInAnyStart(Player player) {
         for(Map map : maps) {
             if(isPlayerInStart(player, map)) {
                 return true;
             }
         }
         return false;
-    }
+    }*/
+
+    /*public Set<Map> getStartsPlayerIsIn(Player player) {
+        if(!isPlayerInAnyStart(player)) return null;
+        Set<Map> startsIn = new HashSet<>();
+        for(Map map : maps) {
+            if(isPlayerInStart(player, map)) {
+                startsIn.add(map);
+            }
+        }
+        return startsIn;
+    }*/
 }

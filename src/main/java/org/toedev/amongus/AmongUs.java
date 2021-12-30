@@ -2,10 +2,7 @@ package org.toedev.amongus;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.toedev.amongus.handlers.CommandHandler;
-import org.toedev.amongus.handlers.AbstractEventHandler;
-import org.toedev.amongus.handlers.KitHandler;
-import org.toedev.amongus.handlers.NPCHandler;
+import org.toedev.amongus.handlers.*;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.sql.Utility;
 
@@ -24,6 +21,7 @@ public class AmongUs extends JavaPlugin {
     private Utility utility;
     private KitHandler kitHandler;
     private MapManager mapManager;
+    private GameHandler gameHandler;
     private NPCHandler npcHandler;
 
     public void onEnable() {
@@ -46,12 +44,13 @@ public class AmongUs extends JavaPlugin {
         }
         utility.load();
 
-        //Start handlers
+        //Start handlers and managers
         kitHandler = new KitHandler();
         mapManager = new MapManager(this, utility);
         npcHandler = new NPCHandler(this);
-        new AbstractEventHandler(mapManager);
+        gameHandler = new GameHandler(this, mapManager);
         new CommandHandler(this, mapManager, npcHandler);
+        getServer().getPluginManager().registerEvents(new AbstractEventHandler(this, mapManager, gameHandler), this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }

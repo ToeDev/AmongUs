@@ -23,6 +23,10 @@ public class Utility extends Database {
     public String SQLiteCreateMapsTable = "CREATE TABLE IF NOT EXISTS maps (" +
             "`mapID` INTEGER PRIMARY KEY AUTOINCREMENT," +
             "`mapName` varchar(32) NOT NULL," +
+            "`mapStartSignWorld` varchar(64) NOT NULL," +
+            "`mapStartSignX` BIGINT NOT NULL," +
+            "`mapStartSignY` BIGINT NOT NULL," +
+            "`mapStartSignZ` BIGINT NOT NULL," +
             "`mapMinCornerWorld` varchar(64) NOT NULL," +
             "`mapMinCornerX` BIGINT NOT NULL," +
             "`mapMinCornerY` BIGINT NOT NULL," +
@@ -31,14 +35,6 @@ public class Utility extends Database {
             "`mapMaxCornerX` BIGINT NOT NULL," +
             "`mapMaxCornerY` BIGINT NOT NULL," +
             "`mapMaxCornerZ` BIGINT NOT NULL," +
-            "`startMinCornerWorld` varchar(64) NOT NULL," +
-            "`startMinCornerX` BIGINT NOT NULL," +
-            "`startMinCornerY` BIGINT NOT NULL," +
-            "`startMinCornerZ` BIGINT NOT NULL," +
-            "`startMaxCornerWorld` varchar(64) NOT NULL," +
-            "`startMaxCornerX` BIGINT NOT NULL," +
-            "`startMaxCornerY` BIGINT NOT NULL," +
-            "`startMaxCornerZ` BIGINT NOT NULL," +
             "`meetingMinCornerWorld` varchar(64) NOT NULL," +
             "`meetingMinCornerX` BIGINT NOT NULL," +
             "`meetingMinCornerY` BIGINT NOT NULL," +
@@ -73,37 +69,37 @@ public class Utility extends Database {
     }
 
     public void addMap(Map map) {
+        Location mapStartSign = map.getMapStartSign();
         Location mapMinCorner = map.getMapMinCorner();
         Location mapMaxCorner = map.getMapMaxCorner();
-        Location startMinCorner = map.getStartMinCorner();
-        Location startMaxCorner = map.getStartMaxCorner();
         Location meetingMinCorner = map.getMeetingMinCorner();
         Location meetingMaxCorner = map.getMeetingMaxCorner();
-        update("INSERT INTO `maps` (mapName, mapMinCornerWorld, mapMinCornerX, mapMinCornerY, mapMinCornerZ, " +
+        update("INSERT INTO `maps` (mapName, mapStartSignWorld, mapStartSignX, mapStartSignY, mapStartSignZ, " +
+                "mapMinCornerWorld, mapMinCornerX, mapMinCornerY, mapMinCornerZ, " +
                 "mapMaxCornerWorld, mapMaxCornerX, mapMaxCornerY, mapMaxCornerZ, " +
-                "startMinCornerWorld, startMinCornerX, startMinCornerY, startMinCornerZ, " +
-                "startMaxCornerWorld, startMaxCornerX, startMaxCornerY, startMaxCornerZ, " +
                 "meetingMinCornerWorld, meetingMinCornerX, meetingMinCornerY, meetingMinCornerZ, " +
                 "meetingMaxCornerWorld, meetingMaxCornerX, meetingMaxCornerY, meetingMaxCornerZ) " +
                 "VALUES(\"" + map.getName() + "\", " +
+                "\"" + Objects.requireNonNull(mapStartSign.getWorld()).getName() + "\", \"" + mapStartSign.getX() + "\", \"" + mapStartSign.getY() + "\", \"" + mapStartSign.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\", \"" + mapMinCorner.getX() + "\", \"" + mapMinCorner.getY() + "\", \"" + mapMinCorner.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapMaxCorner.getWorld()).getName() + "\", \"" + mapMaxCorner.getX() + "\", \"" + mapMaxCorner.getY() + "\", \"" + mapMaxCorner.getZ() + "\", " +
-                "\"" + Objects.requireNonNull(startMinCorner.getWorld()).getName() + "\", \"" + startMinCorner.getX() + "\", \"" + startMinCorner.getY() + "\", \"" + startMinCorner.getZ() + "\", " +
-                "\"" + Objects.requireNonNull(startMaxCorner.getWorld()).getName() + "\", \"" + startMaxCorner.getX() + "\", \"" + startMaxCorner.getY() + "\", \"" + startMaxCorner.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(meetingMinCorner.getWorld()).getName() + "\", \"" + meetingMinCorner.getX() + "\", \"" + meetingMinCorner.getY() + "\", \"" + meetingMinCorner.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(meetingMaxCorner.getWorld()).getName() + "\", \"" + meetingMaxCorner.getX() + "\", \"" + meetingMaxCorner.getY() + "\", \"" + meetingMaxCorner.getZ() + "\");"
         );
     }
 
     public void updateMap(Map map) {
+        Location mapStartSign = map.getMapStartSign();
         Location mapMinCorner = map.getMapMinCorner();
         Location mapMaxCorner = map.getMapMaxCorner();
-        Location startMinCorner = map.getStartMinCorner();
-        Location startMaxCorner = map.getStartMaxCorner();
         Location meetingMinCorner = map.getMeetingMinCorner();
         Location meetingMaxCorner = map.getMeetingMaxCorner();
         update("UPDATE `maps`" +
                 " SET" +
+                " mapStartSignWorld = \"" + Objects.requireNonNull(mapStartSign.getWorld()).getName() + "\"," +
+                " mapStartSignX = \"" + mapStartSign.getX() + "\"," +
+                " mapStartSignY = \"" + mapStartSign.getY() + "\"," +
+                " mapStartSignZ = \"" + mapStartSign.getZ() + "\"," +
                 " mapMinCornerWorld = \"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\"," +
                 " mapMinCornerX = \"" + mapMinCorner.getX() + "\"," +
                 " mapMinCornerY = \"" + mapMinCorner.getY() + "\"," +
@@ -112,14 +108,6 @@ public class Utility extends Database {
                 " mapMaxCornerX = \"" + mapMaxCorner.getX() + "\"," +
                 " mapMaxCornerY = \"" + mapMaxCorner.getY() + "\"," +
                 " mapMaxCornerZ = \"" + mapMaxCorner.getZ() + "\"," +
-                " startMinCornerWorld = \"" + Objects.requireNonNull(startMinCorner.getWorld()).getName() + "\"," +
-                " startMinCornerX = \"" + startMinCorner.getX() + "\"," +
-                " startMinCornerY = \"" + startMinCorner.getY() + "\"," +
-                " startMinCornerZ = \"" + startMinCorner.getZ() + "\"," +
-                " startMaxCornerWorld = \"" + Objects.requireNonNull(startMaxCorner.getWorld()).getName() + "\"," +
-                " startMaxCornerX = \"" + startMaxCorner.getX() + "\"," +
-                " startMaxCornerY = \"" + startMaxCorner.getY() + "\"," +
-                " startMaxCornerZ = \"" + startMaxCorner.getZ() + "\"," +
                 " meetingMinCornerWorld = \"" + Objects.requireNonNull(meetingMinCorner.getWorld()).getName() + "\"," +
                 " meetingMinCornerX = \"" + meetingMinCorner.getX() + "\"," +
                 " meetingMinCornerY = \"" + meetingMinCorner.getY() + "\"," +

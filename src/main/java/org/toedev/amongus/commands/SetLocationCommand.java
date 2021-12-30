@@ -8,7 +8,9 @@ import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.regions.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.toedev.amongus.Materials;
 import org.toedev.amongus.map.MapManager;
 
 import java.sql.SQLException;
@@ -44,13 +46,21 @@ public class SetLocationCommand {
             }
             return;
         }
-        if(args[1].equalsIgnoreCase("start")) {
+        if(args[1].equalsIgnoreCase("startsign")) {
             List<Location> regionPoints = getPoints(sender);
             if(regionPoints == null) {
                 sender.sendMessage("You haven't made a selection yet!");
+            } else if(!isSignSelectionValid(regionPoints)) {
+                sender.sendMessage("Invalid selection or not a sign!");
             } else {
-                mapManager.setStartCorners(args[2].toLowerCase(), regionPoints.get(0), regionPoints.get(1));
-                sender.sendMessage("start region set");
+                mapManager.setStartSign(args[2].toLowerCase(), regionPoints.get(0));
+                Sign sign = (Sign) regionPoints.get(0).getBlock().getState();
+                sign.setLine(0, "Among Us");
+                sign.setLine(1, args[2].toLowerCase());
+                sign.setLine(2, "Players in queue:");
+                sign.setLine(3, "0");
+                sign.update();
+                sender.sendMessage("start sign set");
             }
             return;
         }
@@ -83,5 +93,9 @@ public class SetLocationCommand {
         regionPoints.add(minPoint);
         regionPoints.add(maxPoint);
         return regionPoints;
+    }
+
+    private boolean isSignSelectionValid(List<Location> selection) {
+        return selection.get(0).equals(selection.get(1)) && Materials.signMaterials.contains(selection.get(0).getBlock().getType());
     }
 }
