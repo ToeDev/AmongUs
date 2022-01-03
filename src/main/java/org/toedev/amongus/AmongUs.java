@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 public class AmongUs extends JavaPlugin {
 
+    //TODO CLEANUP NPC'S ONENABLE INSTEAD OF DISABLE
+
     private Logger logger;
 
     private Utility utility;
@@ -74,8 +76,8 @@ public class AmongUs extends JavaPlugin {
     }
 
     public void onDisable() {
-        this.utility.disconnect();
         this.npcHandler.despawnAllNPCs();
+        this.utility.disconnect();
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
     }
 }

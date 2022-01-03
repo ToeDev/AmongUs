@@ -60,7 +60,7 @@ public class SetLocationCommand {
                 sign.setLine(2, "Players in queue:");
                 sign.setLine(3, "0");
                 sign.update();
-                sender.sendMessage("start sign set");
+                sender.sendMessage("start sign and player queue holo set");
             }
             return;
         }

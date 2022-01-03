@@ -1,9 +1,11 @@
 package org.toedev.amongus.map;
 
 import org.bukkit.Location;
+import org.toedev.amongus.hologram.Hologram;
 import org.toedev.amongus.tasks.AbstractTask;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Map {
 
@@ -11,6 +13,7 @@ public class Map {
 
     private boolean mapRunning;
     private Location mapStartSign;
+    private Hologram mapQueueHologram;
 
     private Location mapMinCorner;
     private Location mapMaxCorner;
@@ -53,6 +56,29 @@ public class Map {
 
     public void setMapStartSign(Location mapStartSign) {
         this.mapStartSign = mapStartSign;
+        setMapQueueHologram(mapStartSign);
+    }
+
+    public Hologram getMapQueueHologram() {
+        return mapQueueHologram;
+    }
+
+    public void setMapQueueHologram(Location mapStartSign) {
+        Location holoLoc = mapStartSign.clone();
+        holoLoc.setX(mapStartSign.getX() + .5);
+        holoLoc.setZ(mapStartSign.getZ() + .5);
+        holoLoc.setY(mapStartSign.getY() + 2);
+        if(getMapQueueHologram() == null) {
+            mapQueueHologram = new Hologram(holoLoc);
+        } else {
+            mapQueueHologram.setLocation(holoLoc);
+        }
+    }
+
+    public void updateMapQueueHologram(List<String> lines) {
+        if(mapQueueHologram != null) {
+            mapQueueHologram.setDisplay(lines);
+        }
     }
 
     public boolean isMapRunning() {

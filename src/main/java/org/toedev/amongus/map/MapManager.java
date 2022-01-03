@@ -3,6 +3,7 @@ package org.toedev.amongus.map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.sql.Utility;
@@ -48,12 +49,23 @@ public class MapManager {
                 Location meetingMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMaxCornerWorld")), mapSet.getDouble("meetingMaxCornerX"), mapSet.getDouble("meetingMaxCornerY"), mapSet.getDouble("meetingMaxCornerZ"));
                 HashMap<AbstractTask, Location> tasks = new HashMap<>(); //TODO IMPORT TASKS FROM SQL
                 Map map = new Map(mapSet.getString("mapName"), mapStartSign, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
+                map.setMapQueueHologram(mapStartSign); //TODO THIS PROBABLY NEEDS CHANGED
+                resetStartSign(map); //TODO THIS PROBABLY NEEDS CHANGED
                 this.maps.add(map);
                 logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map \"" + map.getName() + "\" imported from the DB");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void resetStartSign(Map map) {
+        Sign sign = (Sign) map.getMapStartSign().getBlock().getState();
+        sign.setLine(0, "Among Us");
+        sign.setLine(1, map.getName());
+        sign.setLine(2, "Players in queue:");
+        sign.setLine(3, "0");
+        sign.update();
     }
 
     public void setStartSign(String name, Location location) throws SQLException {
@@ -170,8 +182,10 @@ public class MapManager {
     private void saveMap(Map map) throws SQLException {
         if(utility.isMapInDB(map)) {
             utility.updateMap(map);
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map: \"" + map.getName() + "\" updated in DB");
         } else {
             utility.addMap(map);
+            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map: \"" + map.getName() + "\" added to DB");
         }
     }
 
@@ -251,41 +265,12 @@ public class MapManager {
         return meetingsIn;
     }
 
-    /*public boolean isPlayerInStart(Player player, Map map) {
-        if(!maps.contains(map)) return false;
-        if(!player.getWorld().getName().equalsIgnoreCase(Objects.requireNonNull(map.getStartMinCorner().getWorld()).getName())) return false;
-        Location startMin = map.getStartMinCorner();
-        Location startMax = map.getStartMaxCorner();
-        Location pLoc = player.getLocation();
-        double minX = startMin.getX();
-        double minY = startMin.getY();
-        double minZ = startMin.getZ();
-        double maxX = startMax.getX();
-        double maxY = startMax.getY();
-        double maxZ = startMax.getZ();
-        double pX = pLoc.getX();
-        double pY = pLoc.getY();
-        double pZ = pLoc.getZ();
-        return pX >= minX && pX <= maxX && pY >= minY && pY <= maxY && pZ >= minZ && pZ <= maxZ;
-    }*/
-
-    /*public boolean isPlayerInAnyStart(Player player) {
+    public void despawnAllHolograms() {
         for(Map map : maps) {
-            if(isPlayerInStart(player, map)) {
-                return true;
+            if(map.getMapQueueHologram() != null) {
+                logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Queue hologram from map: \"" + map.getName() + "\" is currently spawned. Destroying hologram.");
+                map.getMapQueueHologram().clear();
             }
         }
-        return false;
-    }*/
-
-    /*public Set<Map> getStartsPlayerIsIn(Player player) {
-        if(!isPlayerInAnyStart(player)) return null;
-        Set<Map> startsIn = new HashSet<>();
-        for(Map map : maps) {
-            if(isPlayerInStart(player, map)) {
-                startsIn.add(map);
-            }
-        }
-        return startsIn;
-    }*/
+    }
 }
