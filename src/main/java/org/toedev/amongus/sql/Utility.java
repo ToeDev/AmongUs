@@ -27,6 +27,10 @@ public class Utility extends Database {
             "`mapStartSignX` BIGINT NOT NULL," +
             "`mapStartSignY` BIGINT NOT NULL," +
             "`mapStartSignZ` BIGINT NOT NULL," +
+            "`mapSpawnWorld` varchar(64) NOT NULL," +
+            "`mapSpawnX` BIGINT NOT NULL," +
+            "`mapSpawnY` BIGINT NOT NULL," +
+            "`mapSpawnZ` BIGINT NOT NULL," +
             "`mapMinCornerWorld` varchar(64) NOT NULL," +
             "`mapMinCornerX` BIGINT NOT NULL," +
             "`mapMinCornerY` BIGINT NOT NULL," +
@@ -70,17 +74,20 @@ public class Utility extends Database {
 
     public void addMap(Map map) {
         Location mapStartSign = map.getMapStartSign();
+        Location mapSpawn = map.getMapSpawn();
         Location mapMinCorner = map.getMapMinCorner();
         Location mapMaxCorner = map.getMapMaxCorner();
         Location meetingMinCorner = map.getMeetingMinCorner();
         Location meetingMaxCorner = map.getMeetingMaxCorner();
         update("INSERT INTO `maps` (mapName, mapStartSignWorld, mapStartSignX, mapStartSignY, mapStartSignZ, " +
+                "mapSpawnWorld, mapSpawnX, mapSpawnY, mapSpawnZ, " +
                 "mapMinCornerWorld, mapMinCornerX, mapMinCornerY, mapMinCornerZ, " +
                 "mapMaxCornerWorld, mapMaxCornerX, mapMaxCornerY, mapMaxCornerZ, " +
                 "meetingMinCornerWorld, meetingMinCornerX, meetingMinCornerY, meetingMinCornerZ, " +
                 "meetingMaxCornerWorld, meetingMaxCornerX, meetingMaxCornerY, meetingMaxCornerZ) " +
                 "VALUES(\"" + map.getName() + "\", " +
                 "\"" + Objects.requireNonNull(mapStartSign.getWorld()).getName() + "\", \"" + mapStartSign.getX() + "\", \"" + mapStartSign.getY() + "\", \"" + mapStartSign.getZ() + "\", " +
+                "\"" + Objects.requireNonNull(mapSpawn.getWorld()).getName() + "\", \"" + mapSpawn.getX() + "\", \"" + mapSpawn.getY() + "\", \"" + mapSpawn.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\", \"" + mapMinCorner.getX() + "\", \"" + mapMinCorner.getY() + "\", \"" + mapMinCorner.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapMaxCorner.getWorld()).getName() + "\", \"" + mapMaxCorner.getX() + "\", \"" + mapMaxCorner.getY() + "\", \"" + mapMaxCorner.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(meetingMinCorner.getWorld()).getName() + "\", \"" + meetingMinCorner.getX() + "\", \"" + meetingMinCorner.getY() + "\", \"" + meetingMinCorner.getZ() + "\", " +
@@ -90,6 +97,7 @@ public class Utility extends Database {
 
     public void updateMap(Map map) {
         Location mapStartSign = map.getMapStartSign();
+        Location mapSpawn = map.getMapSpawn();
         Location mapMinCorner = map.getMapMinCorner();
         Location mapMaxCorner = map.getMapMaxCorner();
         Location meetingMinCorner = map.getMeetingMinCorner();
@@ -100,6 +108,10 @@ public class Utility extends Database {
                 " mapStartSignX = \"" + mapStartSign.getX() + "\"," +
                 " mapStartSignY = \"" + mapStartSign.getY() + "\"," +
                 " mapStartSignZ = \"" + mapStartSign.getZ() + "\"," +
+                " mapSpawnWorld = \"" + Objects.requireNonNull(mapSpawn.getWorld()).getName() + "\"," +
+                " mapSpawnX = \"" + mapSpawn.getX() + "\"," +
+                " mapSpawnY = \"" + mapSpawn.getY() + "\"," +
+                " mapSpawnZ = \"" + mapSpawn.getZ() + "\"," +
                 " mapMinCornerWorld = \"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\"," +
                 " mapMinCornerX = \"" + mapMinCorner.getX() + "\"," +
                 " mapMinCornerY = \"" + mapMinCorner.getY() + "\"," +

@@ -1,9 +1,14 @@
 package org.toedev.amongus.hologram;
 
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.decoration.EntityArmorStand;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.toedev.amongus.map.Map;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,24 +21,29 @@ public class Hologram {
     private Location location;
     private List<ArmorStand> armorStands;
 
-    public Hologram(Location location) {
+    public Hologram(Location location, Map map) {
         this.location = location;
-        this.LINE_SPACE = .3;
+        this.LINE_SPACE = .28;
         this.armorStands = new ArrayList<>();
-        setDisplay(Collections.singletonList("Test maybe take this line out?"));
+        String[] mapName = map.getName().split(" ");
+        StringBuilder mapNameFinal = new StringBuilder("");
+        for(String split : mapName) {
+            mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
+        }
+        setDisplay(Collections.singletonList(ChatColor.BLUE + mapNameFinal.toString() + " Queue:"));
     }
 
     private ArmorStand spawnArmorStand(Location loc, String text) {
-        ArmorStand armorStand = (ArmorStand) Objects.requireNonNull(loc.getWorld()).spawnEntity(loc, EntityType.ARMOR_STAND);
-        armorStand.setGravity(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setInvisible(true);
-        armorStand.setCanPickupItems(false);
-        armorStand.setMarker(true);
-        armorStand.setCustomName(text);
-        armorStand.setCustomNameVisible(true);
-        armorStand.addScoreboardTag("AmongUs-Hologram");
-        return armorStand;
+        return Objects.requireNonNull(loc.getWorld()).spawn(loc, ArmorStand.class, armorStand -> {
+            armorStand.setInvisible(true);
+            armorStand.setGravity(false);
+            armorStand.setInvulnerable(true);
+            armorStand.setCanPickupItems(false);
+            armorStand.setMarker(true);
+            armorStand.setCustomName(text);
+            armorStand.setCustomNameVisible(true);
+            armorStand.addScoreboardTag("AmongUs-Hologram");
+        });
     }
 
     public void setDisplay(List<String> lines) {

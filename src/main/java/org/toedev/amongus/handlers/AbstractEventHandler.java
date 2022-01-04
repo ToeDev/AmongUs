@@ -1,23 +1,16 @@
 package org.toedev.amongus.handlers;
 
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Materials;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AbstractEventHandler implements Listener {

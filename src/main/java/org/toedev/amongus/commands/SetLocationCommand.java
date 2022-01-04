@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.toedev.amongus.Materials;
 import org.toedev.amongus.map.MapManager;
 
@@ -54,9 +55,14 @@ public class SetLocationCommand {
                 sender.sendMessage("Invalid selection or not a sign!");
             } else {
                 mapManager.setStartSign(args[2].toLowerCase(), regionPoints.get(0));
+                String[] mapName = args[2].toLowerCase().split(" ");
+                StringBuilder mapNameFinal = new StringBuilder();
+                for(String split : mapName) {
+                    mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
+                }
                 Sign sign = (Sign) regionPoints.get(0).getBlock().getState();
                 sign.setLine(0, "Among Us");
-                sign.setLine(1, args[2].toLowerCase());
+                sign.setLine(1, mapNameFinal.toString());
                 sign.setLine(2, "Players in queue:");
                 sign.setLine(3, "0");
                 sign.update();
@@ -72,6 +78,12 @@ public class SetLocationCommand {
                 mapManager.setMeetingCorners(args[2].toLowerCase(), regionPoints.get(0), regionPoints.get(1));
                 sender.sendMessage("meeting region set");
             }
+            return;
+        }
+        if(args[1].equalsIgnoreCase("mapspawn")) {
+            Player player = (Player) sender;
+            mapManager.setMapSpawn(args[2].toLowerCase(), player.getLocation());
+            sender.sendMessage("map spawn set");
             return;
         }
 

@@ -12,14 +12,14 @@ public class Map {
     private String name;
 
     private boolean mapRunning;
+
     private Location mapStartSign;
     private Hologram mapQueueHologram;
 
+    private Location mapSpawn;
+
     private Location mapMinCorner;
     private Location mapMaxCorner;
-
-    /*private Location startMinCorner;
-    private Location startMaxCorner;*/
 
     private Location meetingMinCorner;
     private Location meetingMaxCorner;
@@ -33,14 +33,13 @@ public class Map {
     }
 
     //For DB Import
-    public Map(String name, Location mapStartSign, Location mapMinCorner, Location mapMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
+    public Map(String name, Location mapStartSign, Location mapSpawn, Location mapMinCorner, Location mapMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
         this.name = name;
-        this.mapStartSign = mapStartSign;
         this.mapRunning = false;
+        this.mapStartSign = mapStartSign;
+        this.mapSpawn = mapSpawn;
         this.mapMinCorner = mapMinCorner;
         this.mapMaxCorner = mapMaxCorner;
-        /*this.startMinCorner = startMinCorner;
-        this.startMaxCorner = startMaxCorner;*/
         this.meetingMinCorner = meetingMinCorner;
         this.meetingMaxCorner = meetingMaxCorner;
         this.tasks = tasks;
@@ -67,9 +66,9 @@ public class Map {
         Location holoLoc = mapStartSign.clone();
         holoLoc.setX(mapStartSign.getX() + .5);
         holoLoc.setZ(mapStartSign.getZ() + .5);
-        holoLoc.setY(mapStartSign.getY() + 2);
+        holoLoc.setY(mapStartSign.getY() + 3);
         if(getMapQueueHologram() == null) {
-            mapQueueHologram = new Hologram(holoLoc);
+            mapQueueHologram = new Hologram(holoLoc, this);
         } else {
             mapQueueHologram.setLocation(holoLoc);
         }
@@ -89,6 +88,14 @@ public class Map {
         mapRunning = status;
     }
 
+    public Location getMapSpawn() {
+        return mapSpawn;
+    }
+
+    public void setMapSpawn(Location location) {
+        mapSpawn = location;
+    }
+
     public Location getMapMinCorner() {
         return mapMinCorner;
     }
@@ -97,13 +104,6 @@ public class Map {
         return mapMaxCorner;
     }
 
-    /*public Location getStartMinCorner() {
-        return startMinCorner;
-    }
-
-    public Location getStartMaxCorner() {
-        return startMaxCorner;
-    }*/
 
     public Location getMeetingMinCorner() {
         return meetingMinCorner;
@@ -154,6 +154,6 @@ public class Map {
     }
 
     public boolean isMapSetup() { //TODO ADD TASKS HASHMAP
-        return mapStartSign != null && mapMinCorner != null && mapMaxCorner != null && meetingMinCorner != null && meetingMaxCorner != null;
+        return mapStartSign != null && mapSpawn != null && mapMinCorner != null && mapMaxCorner != null && meetingMinCorner != null && meetingMaxCorner != null;
     }
 }

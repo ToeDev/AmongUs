@@ -53,6 +53,7 @@ public class CommandHandler implements TabExecutor {
         this.setLocCommands.add("map");
         this.setLocCommands.add("meeting");
         this.setLocCommands.add("startsign");
+        this.setLocCommands.add("mapspawn");
     }
 
     @Override

@@ -43,12 +43,13 @@ public class MapManager {
             if(mapSet == null) return;
             while(mapSet.next()) {
                 Location mapStartSign = new Location(Bukkit.getWorld(mapSet.getString("mapStartSignWorld")), mapSet.getDouble("mapStartSignX"), mapSet.getDouble("mapStartSignY"), mapSet.getDouble("mapStartSignZ"));
+                Location mapSpawn = new Location(Bukkit.getWorld(mapSet.getString("mapSpawnWorld")), mapSet.getDouble("mapSpawnX"), mapSet.getDouble("mapSpawnY"), mapSet.getDouble("mapSpawnZ"));
                 Location mapMinCorner = new Location(Bukkit.getWorld(mapSet.getString("mapMinCornerWorld")), mapSet.getDouble("mapMinCornerX"), mapSet.getDouble("mapMinCornerY"), mapSet.getDouble("mapMinCornerZ"));
                 Location mapMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("mapMaxCornerWorld")), mapSet.getDouble("mapMaxCornerX"), mapSet.getDouble("mapMaxCornerY"), mapSet.getDouble("mapMaxCornerZ"));
                 Location meetingMinCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMinCornerWorld")), mapSet.getDouble("meetingMinCornerX"), mapSet.getDouble("meetingMinCornerY"), mapSet.getDouble("meetingMinCornerZ"));
                 Location meetingMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMaxCornerWorld")), mapSet.getDouble("meetingMaxCornerX"), mapSet.getDouble("meetingMaxCornerY"), mapSet.getDouble("meetingMaxCornerZ"));
                 HashMap<AbstractTask, Location> tasks = new HashMap<>(); //TODO IMPORT TASKS FROM SQL
-                Map map = new Map(mapSet.getString("mapName"), mapStartSign, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
+                Map map = new Map(mapSet.getString("mapName"), mapStartSign, mapSpawn, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
                 map.setMapQueueHologram(mapStartSign); //TODO THIS PROBABLY NEEDS CHANGED
                 resetStartSign(map); //TODO THIS PROBABLY NEEDS CHANGED
                 this.maps.add(map);
@@ -106,21 +107,6 @@ public class MapManager {
         return null;
     }
 
-    public void startMap(Map map) {
-        getMap(map.getName()).setMapRunning(true);
-    }
-
-    /*public Set<Player> getAllPlayersInStart(Map map) {
-        Set<Player> playersInStart = new HashSet<>();
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            if(isPlayerInStart(player, map)) {
-                playersInStart.add(player);
-            }
-        }
-        if(playersInStart.isEmpty()) return null;
-        return playersInStart;
-    }*/
-
     public Map getMap(String name) {
         for(Map map : maps) {
             if(map.getName().equals(name)) {
@@ -146,6 +132,16 @@ public class MapManager {
         return maps.size();
     }
 
+    public void setMapSpawn(String name, Location mapSpawn) throws SQLException {
+        for(Map map : maps) {
+            if(map.getName().equals(name)) {
+                map.setMapSpawn(mapSpawn);
+                if(map.isMapSetup()) saveMap(map);
+                return;
+            }
+        }
+    }
+
     public void setMapCorners(String name, Location mapMinCorner, Location mapMaxCorner) throws SQLException {
         for(Map map : maps) {
             if(map.getName().equals(name)) {
@@ -156,17 +152,6 @@ public class MapManager {
             }
         }
     }
-
-    /*public void setStartCorners(String name, Location startMinCorner, Location startMaxCorner) throws SQLException {
-        for(Map map : maps) {
-            if(map.getName().equals(name)) {
-                map.setStartMinCorner(startMinCorner);
-                map.setStartMaxCorner(startMaxCorner);
-                if(map.isMapSetup()) saveMap(map);
-                return;
-            }
-        }
-    }*/
 
     public void setMeetingCorners(String name, Location meetingMinCorner, Location meetingMaxCorner) throws SQLException {
         for(Map map : maps) {
