@@ -42,6 +42,8 @@ public class MapManager {
             ResultSet mapSet = utility.getAllMaps();
             if(mapSet == null) return;
             while(mapSet.next()) {
+                Integer minPlayers = mapSet.getInt("minPlayers");
+                Integer maxPlayers = mapSet.getInt("maxPlayers");
                 Location mapStartSign = new Location(Bukkit.getWorld(mapSet.getString("mapStartSignWorld")), mapSet.getDouble("mapStartSignX"), mapSet.getDouble("mapStartSignY"), mapSet.getDouble("mapStartSignZ"));
                 Location mapSpawn = new Location(Bukkit.getWorld(mapSet.getString("mapSpawnWorld")), mapSet.getDouble("mapSpawnX"), mapSet.getDouble("mapSpawnY"), mapSet.getDouble("mapSpawnZ"));
                 Location mapMinCorner = new Location(Bukkit.getWorld(mapSet.getString("mapMinCornerWorld")), mapSet.getDouble("mapMinCornerX"), mapSet.getDouble("mapMinCornerY"), mapSet.getDouble("mapMinCornerZ"));
@@ -49,7 +51,7 @@ public class MapManager {
                 Location meetingMinCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMinCornerWorld")), mapSet.getDouble("meetingMinCornerX"), mapSet.getDouble("meetingMinCornerY"), mapSet.getDouble("meetingMinCornerZ"));
                 Location meetingMaxCorner = new Location(Bukkit.getWorld(mapSet.getString("meetingMaxCornerWorld")), mapSet.getDouble("meetingMaxCornerX"), mapSet.getDouble("meetingMaxCornerY"), mapSet.getDouble("meetingMaxCornerZ"));
                 HashMap<AbstractTask, Location> tasks = new HashMap<>(); //TODO IMPORT TASKS FROM SQL
-                Map map = new Map(mapSet.getString("mapName"), mapStartSign, mapSpawn, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
+                Map map = new Map(mapSet.getString("mapName"), minPlayers, maxPlayers, mapStartSign, mapSpawn, mapMinCorner, mapMaxCorner, meetingMinCorner, meetingMaxCorner, tasks);
                 map.setMapQueueHologram(mapStartSign); //TODO THIS PROBABLY NEEDS CHANGED
                 resetStartSign(map); //TODO THIS PROBABLY NEEDS CHANGED
                 this.maps.add(map);
@@ -57,6 +59,26 @@ public class MapManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setMinPlayers(String name, Integer minPlayers) throws SQLException {
+        for(Map map : maps) {
+            if(map.getName().equals(name)) {
+                map.setMinPlayers(minPlayers);
+                if(map.isMapSetup()) saveMap(map);
+                return;
+            }
+        }
+    }
+
+    public void setMaxPlayers(String name, Integer maxPlayers) throws SQLException {
+        for(Map map : maps) {
+            if(map.getName().equals(name)) {
+                map.setMaxPlayers(maxPlayers);
+                if(map.isMapSetup()) saveMap(map);
+                return;
+            }
         }
     }
 

@@ -179,7 +179,7 @@ public class GameHandler {
         if((seconds % 10 == 0) || seconds <= 5) {
             for(Player player : playersInMapQueue.get(map)) {
                 if(player.isOnline() && isPlayerInMapQueue(map, player)) {
-                    player.sendMessage("Among Us on " + mapNameFinal + " starts in " + seconds + " seconds!");
+                    player.sendMessage("Among Us on " + mapNameFinal + " starts in " + seconds + " second" + (seconds != 1 ? "s" : "") + "!");
                     if(seconds == 1) {
                         scheduler.runTaskLater(amongUs, () -> {
                             if(player.isOnline() && isPlayerInMapQueue(map, player)) {

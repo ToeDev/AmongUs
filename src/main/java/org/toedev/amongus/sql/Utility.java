@@ -23,6 +23,8 @@ public class Utility extends Database {
     public String SQLiteCreateMapsTable = "CREATE TABLE IF NOT EXISTS maps (" +
             "`mapID` INTEGER PRIMARY KEY AUTOINCREMENT," +
             "`mapName` varchar(32) NOT NULL," +
+            "`minPlayers` TINYINT NOT NULL," +
+            "`maxPlayers` TINYINT NOT NULL," +
             "`mapStartSignWorld` varchar(64) NOT NULL," +
             "`mapStartSignX` BIGINT NOT NULL," +
             "`mapStartSignY` BIGINT NOT NULL," +
@@ -73,19 +75,22 @@ public class Utility extends Database {
     }
 
     public void addMap(Map map) {
+        Integer minPlayers = map.getMinPlayers();
+        Integer maxPlayers = map.getMaxPlayers();
         Location mapStartSign = map.getMapStartSign();
         Location mapSpawn = map.getMapSpawn();
         Location mapMinCorner = map.getMapMinCorner();
         Location mapMaxCorner = map.getMapMaxCorner();
         Location meetingMinCorner = map.getMeetingMinCorner();
         Location meetingMaxCorner = map.getMeetingMaxCorner();
-        update("INSERT INTO `maps` (mapName, mapStartSignWorld, mapStartSignX, mapStartSignY, mapStartSignZ, " +
+        update("INSERT INTO `maps` (mapName, minPlayers, maxPlayers, " +
+                "mapStartSignWorld, mapStartSignX, mapStartSignY, mapStartSignZ, " +
                 "mapSpawnWorld, mapSpawnX, mapSpawnY, mapSpawnZ, " +
                 "mapMinCornerWorld, mapMinCornerX, mapMinCornerY, mapMinCornerZ, " +
                 "mapMaxCornerWorld, mapMaxCornerX, mapMaxCornerY, mapMaxCornerZ, " +
                 "meetingMinCornerWorld, meetingMinCornerX, meetingMinCornerY, meetingMinCornerZ, " +
                 "meetingMaxCornerWorld, meetingMaxCornerX, meetingMaxCornerY, meetingMaxCornerZ) " +
-                "VALUES(\"" + map.getName() + "\", " +
+                "VALUES(\"" + map.getName() + "\", \"" + minPlayers + "\", \"" + maxPlayers + "\", " +
                 "\"" + Objects.requireNonNull(mapStartSign.getWorld()).getName() + "\", \"" + mapStartSign.getX() + "\", \"" + mapStartSign.getY() + "\", \"" + mapStartSign.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapSpawn.getWorld()).getName() + "\", \"" + mapSpawn.getX() + "\", \"" + mapSpawn.getY() + "\", \"" + mapSpawn.getZ() + "\", " +
                 "\"" + Objects.requireNonNull(mapMinCorner.getWorld()).getName() + "\", \"" + mapMinCorner.getX() + "\", \"" + mapMinCorner.getY() + "\", \"" + mapMinCorner.getZ() + "\", " +
@@ -96,6 +101,8 @@ public class Utility extends Database {
     }
 
     public void updateMap(Map map) {
+        Integer minPlayers = map.getMinPlayers();
+        Integer maxPlayers = map.getMaxPlayers();
         Location mapStartSign = map.getMapStartSign();
         Location mapSpawn = map.getMapSpawn();
         Location mapMinCorner = map.getMapMinCorner();
@@ -104,6 +111,8 @@ public class Utility extends Database {
         Location meetingMaxCorner = map.getMeetingMaxCorner();
         update("UPDATE `maps`" +
                 " SET" +
+                " minPlayers = \"" + minPlayers + "\"," +
+                " maxPlayers = \"" + maxPlayers + "\"," +
                 " mapStartSignWorld = \"" + Objects.requireNonNull(mapStartSign.getWorld()).getName() + "\"," +
                 " mapStartSignX = \"" + mapStartSign.getX() + "\"," +
                 " mapStartSignY = \"" + mapStartSign.getY() + "\"," +

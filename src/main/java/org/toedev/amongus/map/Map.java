@@ -11,6 +11,9 @@ public class Map {
 
     private String name;
 
+    private Integer minPlayers;
+    private Integer maxPlayers;
+
     private boolean mapRunning;
 
     private Location mapStartSign;
@@ -28,13 +31,17 @@ public class Map {
 
     public Map(String name) {
         this.name = name;
+        this.minPlayers = 4;
+        this.maxPlayers = 10;
         this.mapRunning = false;
         this.tasks = new HashMap<>();
     }
 
     //For DB Import
-    public Map(String name, Location mapStartSign, Location mapSpawn, Location mapMinCorner, Location mapMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
+    public Map(String name, Integer minPlayers, Integer maxPlayers, Location mapStartSign, Location mapSpawn, Location mapMinCorner, Location mapMaxCorner, Location meetingMinCorner, Location meetingMaxCorner, HashMap<AbstractTask, Location> tasks) {
         this.name = name;
+        this.minPlayers = minPlayers;
+        this.maxPlayers = maxPlayers;
         this.mapRunning = false;
         this.mapStartSign = mapStartSign;
         this.mapSpawn = mapSpawn;
@@ -47,6 +54,22 @@ public class Map {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getMinPlayers() {
+        return minPlayers;
+    }
+
+    public void setMinPlayers(Integer minPlayers) {
+        this.minPlayers = minPlayers;
+    }
+
+    public Integer getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(Integer maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
     public Location getMapStartSign() {

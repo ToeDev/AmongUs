@@ -27,6 +27,8 @@ public class CommandHandler implements TabExecutor {
     private final ListMapsCommand listMapsCommand;
     private final CreateMapCommand createMapCommand;
     private final SetLocationCommand setLocationCommand;
+    private final SetMinimumCommand setMinimumCommand;
+    private final SetMaximumCommand setMaximumCommand;
 
     public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler) {
         this.logger = amongUs.getLogger();
@@ -43,12 +45,16 @@ public class CommandHandler implements TabExecutor {
         this.listMapsCommand = new ListMapsCommand(mapManager);
         this.createMapCommand = new CreateMapCommand(mapManager);
         this.setLocationCommand = new SetLocationCommand(mapManager);
+        this.setMinimumCommand = new SetMinimumCommand(mapManager);
+        this.setMaximumCommand = new SetMaximumCommand(mapManager);
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");
         this.baseCommands.add("listmaps");
         this.baseCommands.add("createmap");
         this.baseCommands.add("setlocation");
+        this.baseCommands.add("setminimum");
+        this.baseCommands.add("setmaximum");
 
         this.setLocCommands.add("map");
         this.setLocCommands.add("meeting");
@@ -86,6 +92,22 @@ public class CommandHandler implements TabExecutor {
             }
             return true;
         }
+        if(args[0].equalsIgnoreCase("setminimum")) {
+            try {
+                setMinimumCommand.execute(sender, args);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("setmaximum")) {
+            try {
+                setMaximumCommand.execute(sender, args);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
         sender.sendMessage("here are argument options");
         return true;
     }
@@ -98,6 +120,10 @@ public class CommandHandler implements TabExecutor {
         ArrayList<String> mapCompletions = new ArrayList<>();
         for(Map map : mapManager.getAllMaps()) {
             mapCompletions.add(map.getName());
+        }
+        final ArrayList<String> numberCompletions = new ArrayList<>();
+        for(int i = 1; i <= 20; i++) {
+            numberCompletions.add(String.valueOf(i));
         }
 
         if(sender.hasPermission("amongus.admin")) {
@@ -126,6 +152,12 @@ public class CommandHandler implements TabExecutor {
                 } else if(arg0.equals("setlocation")) {
                     setLocCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                     return setLocCompletions;
+                } else if(arg0.equals("setminimum") || arg0.equals("setmaximum")) {
+                    if(arg1.isEmpty()) {
+                        numberCompletions.removeIf(number -> Integer.parseInt(number) > 9);
+                    }
+                    numberCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                    return numberCompletions;
                 } else {
                     return null;
                 }
@@ -134,7 +166,7 @@ public class CommandHandler implements TabExecutor {
             //ARG INDEX 2
             final String arg2 = argList.remove(0);
             if(argList.isEmpty()) {
-                if(arg0.equals("setlocation") && setLocCompletions.contains(arg1)) {
+                if((arg0.equals("setlocation") && setLocCompletions.contains(arg1)) || ((arg0.equals("setminimum") || arg0.equals("setmaximum")) && numberCompletions.contains(arg1))) {
                     mapCompletions.removeIf(completion -> !completion.startsWith(arg2.toLowerCase()));
                     if(mapCompletions.isEmpty()) {
                         return null;
