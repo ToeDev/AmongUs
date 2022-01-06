@@ -1,6 +1,8 @@
 package org.toedev.amongus.handlers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -14,6 +16,7 @@ import java.util.logging.Logger;
 
 public class GameHandler {
 
+    private final Location lobbySpawn;
     private final Integer mapQueueCountdown;
     private final HashMap<Map, List<Integer>> mapQueueCountdownTaskIds;
 
@@ -26,7 +29,8 @@ public class GameHandler {
     private final java.util.Map<Map, Set<Player>> playersInMapQueue;
 
     public GameHandler(AmongUs amongUs, MapManager mapManager) {
-        this.mapQueueCountdown = 30;
+        this.lobbySpawn = new Location(Bukkit.getWorld("amongus_skeld"), 2, 65, 36); //TODO THIS SHOULD BE A CONFIG ITEM
+        this.mapQueueCountdown = 30; //TODO THIS SHOULD BE A CONFIG ITEM
         this.mapQueueCountdownTaskIds = new HashMap<>();
 
         this.scheduler = amongUs.getServer().getScheduler();
@@ -102,16 +106,17 @@ public class GameHandler {
         } else {
             playersInMapQueue.get(map).add(player);
         }
-        addToSign((Sign) map.getMapStartSign().getBlock().getState());
+        updateSignCount(map, (Sign) map.getMapStartSign().getBlock().getState());
         updateMapQueueHologram(map);
     }
 
     public void removePlayerFromMapQueue(Map map, Player player) {
         if(playersInMapQueue.get(map) != null) {
             playersInMapQueue.get(map).remove(player);
-            subtractFromSign((Sign) map.getMapStartSign().getBlock().getState());
+            updateSignCount(map, (Sign) map.getMapStartSign().getBlock().getState());
             updateMapQueueHologram(map);
             if(isMapQueueEmpty(map)) stopMapQueueTimer(map);
+            if(map.isMapRunning()) mapQueueGameRunning(map);
         }
     }
 
@@ -123,15 +128,8 @@ public class GameHandler {
         }
     }
 
-    public void addToSign(Sign sign) {
-        int number = Integer.parseInt(sign.getLine(3));
-        sign.setLine(3, String.valueOf(number + 1));
-        sign.update();
-    }
-
-    public void subtractFromSign(Sign sign) {
-        int number = Integer.parseInt(sign.getLine(3));
-        sign.setLine(3, String.valueOf(number - 1));
+    public void updateSignCount(Map map, Sign sign) {
+        sign.setLine(3, playersInMapQueue.get(map).size() + " / " + map.getMaxPlayers());
         sign.update();
     }
 
@@ -169,6 +167,17 @@ public class GameHandler {
         }
     }
 
+    public void mapQueueGameRunning(Map map) {
+        List<String> lines = new ArrayList<>();
+        String[] mapName = map.getName().split(" ");
+        StringBuilder mapNameFinal = new StringBuilder("");
+        for(String split : mapName) {
+            mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
+        }
+        lines.add(ChatColor.BLUE + mapNameFinal.toString() + " Queue: " + ChatColor.GOLD + "Game In-Progress");
+        map.updateMapQueueHologram(lines);
+    }
+
     private void mapQueueTimerMessage(Map map, String mapNameFinal, int seconds) {
         List<String> lines = new ArrayList<>();
         lines.add(ChatColor.BLUE + mapNameFinal + " Queue: " + seconds);
@@ -180,17 +189,45 @@ public class GameHandler {
             for(Player player : playersInMapQueue.get(map)) {
                 if(player.isOnline() && isPlayerInMapQueue(map, player)) {
                     player.sendMessage("Among Us on " + mapNameFinal + " starts in " + seconds + " second" + (seconds != 1 ? "s" : "") + "!");
-                    if(seconds == 1) {
-                        scheduler.runTaskLater(amongUs, () -> {
-                            if(player.isOnline() && isPlayerInMapQueue(map, player)) {
+                }
+            }
+            if(seconds == 1) {
+                scheduler.runTaskLater(amongUs, () -> {
+                    //if(playersInMapQueue.get(map).size() >= map.getMinPlayers() && playersInMapQueue.get(map).size() <= map.getMaxPlayers()) { //TODO RE-ADD CHECK
+                        startGame(map);
+                    //}
+                            /*if(player.isOnline() && isPlayerInMapQueue(map, player)) {
                                 player.teleport(map.getMapSpawn());
                                 player.sendMessage("Among Us game started on " + mapNameFinal + "!");
                                 removePlayerFromMapQueue(map, player);
-                            }
-                        }, 20);
-                    }
-                }
+                            }*/
+                }, 20);
             }
         }
+    }
+
+    private void startGame(Map map) {
+        map.setMapRunning(true);
+        String[] mapName = map.getName().split(" ");
+        StringBuilder mapNameFinal = new StringBuilder();
+        for(String split : mapName) {
+            mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
+        }
+        Set<Player> players = new HashSet<>();
+        for(Player player : playersInMapQueue.get(map)) {
+            players.add(player);
+            player.teleport(map.getMapSpawn());
+            player.sendMessage("Among Us game started on " + mapNameFinal + "!");
+            removePlayerFromMapQueue(map, player);
+        }
+        playersInMap.put(map, players);
+    }
+
+    private void stopGame(Map map) {
+        for(Player player : playersInMap.get(map)) {
+            player.teleport(lobbySpawn);
+        }
+        map.setMapRunning(false);
+        updateMapQueueHologram(map);
     }
 }

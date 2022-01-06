@@ -76,18 +76,31 @@ public class MapManager {
         for(Map map : maps) {
             if(map.getName().equals(name)) {
                 map.setMaxPlayers(maxPlayers);
+                updateMaxQueueSign(map);
                 if(map.isMapSetup()) saveMap(map);
                 return;
             }
         }
     }
 
+    private void updateMaxQueueSign(Map map) {
+        Sign sign = (Sign) map.getMapStartSign().getBlock().getState();
+        String[] queueLine = sign.getLine(3).split(" ");
+        sign.setLine(3, queueLine[0] + " " + queueLine[1] + " " + map.getMaxPlayers());
+        sign.update();
+    }
+
     private void resetStartSign(Map map) {
+        String[] mapName = map.getName().split(" ");
+        StringBuilder mapNameFinal = new StringBuilder();
+        for(String split : mapName) {
+            mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
+        }
         Sign sign = (Sign) map.getMapStartSign().getBlock().getState();
         sign.setLine(0, "Among Us");
-        sign.setLine(1, map.getName());
+        sign.setLine(1, mapNameFinal.toString());
         sign.setLine(2, "Players in queue:");
-        sign.setLine(3, "0");
+        sign.setLine(3, "0 / " + map.getMaxPlayers());
         sign.update();
     }
 

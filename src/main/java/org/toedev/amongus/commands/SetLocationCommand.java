@@ -64,7 +64,7 @@ public class SetLocationCommand {
                 sign.setLine(0, "Among Us");
                 sign.setLine(1, mapNameFinal.toString());
                 sign.setLine(2, "Players in queue:");
-                sign.setLine(3, "0");
+                sign.setLine(3, "0 / " + mapManager.getMap(args[2].toLowerCase()).getMaxPlayers());
                 sign.update();
                 sender.sendMessage("start sign and player queue holo set");
             }

@@ -38,6 +38,10 @@ public class AbstractEventHandler implements Listener {
                 gameHandler.removePlayerFromMapQueue(map, player);
             }
         } else {
+            if(gameHandler.getPlayersInMapQueue(map) != null && gameHandler.getPlayersInMapQueue(map).size() + 1 > map.getMaxPlayers()) {
+                event.getPlayer().sendMessage(map.getName() + " queue is full!");
+                return;
+            }
             if(!gameHandler.isPlayerInMapQueue(map, player)) {
                 gameHandler.removePlayerFromAllMapQueues(player);
                 gameHandler.addPlayerToMapQueue(map, player);

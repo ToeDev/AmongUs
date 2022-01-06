@@ -18,6 +18,7 @@ public class CommandHandler implements TabExecutor {
 
     private final MapManager mapManager;
     private final NPCHandler npcHandler;
+    private final GameHandler gameHandler;
 
     private final List<String> baseCommands;
     private final List<String> setLocCommands;
@@ -30,11 +31,12 @@ public class CommandHandler implements TabExecutor {
     private final SetMinimumCommand setMinimumCommand;
     private final SetMaximumCommand setMaximumCommand;
 
-    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler) {
+    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler) {
         this.logger = amongUs.getLogger();
 
         this.mapManager = mapManager;
         this.npcHandler = npcHandler;
+        this.gameHandler = gameHandler;
 
         this.baseCommands = new ArrayList<>();
         setLocCommands = new ArrayList<>();
@@ -45,8 +47,8 @@ public class CommandHandler implements TabExecutor {
         this.listMapsCommand = new ListMapsCommand(mapManager);
         this.createMapCommand = new CreateMapCommand(mapManager);
         this.setLocationCommand = new SetLocationCommand(mapManager);
-        this.setMinimumCommand = new SetMinimumCommand(mapManager);
-        this.setMaximumCommand = new SetMaximumCommand(mapManager);
+        this.setMinimumCommand = new SetMinimumCommand(mapManager, gameHandler);
+        this.setMaximumCommand = new SetMaximumCommand(mapManager, gameHandler);
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");

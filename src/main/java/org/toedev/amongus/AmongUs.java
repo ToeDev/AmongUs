@@ -51,7 +51,7 @@ public class AmongUs extends JavaPlugin {
         mapManager = new MapManager(this, utility);
         npcHandler = new NPCHandler(this);
         gameHandler = new GameHandler(this, mapManager);
-        new CommandHandler(this, mapManager, npcHandler);
+        new CommandHandler(this, mapManager, npcHandler, gameHandler);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(this, mapManager, gameHandler), this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");

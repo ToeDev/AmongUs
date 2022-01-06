@@ -1,6 +1,7 @@
 package org.toedev.amongus.commands;
 
 import org.bukkit.command.CommandSender;
+import org.toedev.amongus.handlers.GameHandler;
 import org.toedev.amongus.map.MapManager;
 
 import java.sql.SQLException;
@@ -8,9 +9,11 @@ import java.sql.SQLException;
 public class SetMaximumCommand {
 
     private final MapManager mapManager;
+    private final GameHandler gameHandler;
 
-    public SetMaximumCommand(MapManager mapManager) {
+    public SetMaximumCommand(MapManager mapManager, GameHandler gameHandler) {
         this.mapManager = mapManager;
+        this.gameHandler = gameHandler;
     }
 
     public void execute(final CommandSender sender, String[] args) throws SQLException {
@@ -20,6 +23,10 @@ public class SetMaximumCommand {
         }
         if(mapManager.getMap(args[2]) == null) {
             sender.sendMessage("map doesn't exist");
+            return;
+        }
+        if(gameHandler.getPlayersInMapQueue(mapManager.getMap(args[2])).size() > Integer.parseInt(args[1])) {
+            sender.sendMessage("You cannot lower the maximum players beneath the amount of players already in the queue!!");
             return;
         }
 
