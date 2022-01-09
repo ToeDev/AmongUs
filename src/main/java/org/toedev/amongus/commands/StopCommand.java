@@ -5,12 +5,12 @@ import org.toedev.amongus.handlers.GameHandler;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 
-public class StartCommand {
+public class StopCommand {
 
     private final MapManager mapManager;
     private final GameHandler gameHandler;
 
-    public StartCommand(MapManager mapManager, GameHandler gameHandler) {
+    public StopCommand(MapManager mapManager, GameHandler gameHandler) {
         this.mapManager = mapManager;
         this.gameHandler = gameHandler;
     }
@@ -25,16 +25,12 @@ public class StartCommand {
             return;
         }
         Map map = mapManager.getMap(args[1]);
-        if(map.isMapRunning()) {
-            sender.sendMessage("map is already running!");
-            return;
-        }
-        if(gameHandler.getPlayersInMapQueue(map) == null || gameHandler.getPlayersInMapQueue(map).size() < map.getMinPlayers()) {
-            sender.sendMessage("not enough players in map queue!");
+        if(!map.isMapRunning()) {
+            sender.sendMessage("map is not running!");
             return;
         }
 
-        gameHandler.startGame(mapManager.getMap(args[1]));
+        gameHandler.stopGame(mapManager.getMap(args[1]));
         sender.sendMessage("map started");
     }
 }

@@ -25,6 +25,7 @@ public class CommandHandler implements TabExecutor {
 
     private final TestCommand testCommand;
     private final StartCommand startCommand;
+    private final StopCommand stopCommand;
     private final ListMapsCommand listMapsCommand;
     private final CreateMapCommand createMapCommand;
     private final SetLocationCommand setLocationCommand;
@@ -43,7 +44,8 @@ public class CommandHandler implements TabExecutor {
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
         this.testCommand = new TestCommand(npcHandler);
-        this.startCommand = new StartCommand();
+        this.startCommand = new StartCommand(mapManager, gameHandler);
+        this.stopCommand = new StopCommand(mapManager, gameHandler);
         this.listMapsCommand = new ListMapsCommand(mapManager);
         this.createMapCommand = new CreateMapCommand(mapManager);
         this.setLocationCommand = new SetLocationCommand(mapManager);
@@ -52,6 +54,7 @@ public class CommandHandler implements TabExecutor {
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");
+        this.baseCommands.add("stop");
         this.baseCommands.add("listmaps");
         this.baseCommands.add("createmap");
         this.baseCommands.add("setlocation");
@@ -76,6 +79,10 @@ public class CommandHandler implements TabExecutor {
         }
         if(args[0].equalsIgnoreCase("start")) {
             startCommand.execute(sender, args);
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("stop")) {
+            stopCommand.execute(sender, args);
             return true;
         }
         if(args[0].equalsIgnoreCase("listmaps")) {
@@ -145,23 +152,26 @@ public class CommandHandler implements TabExecutor {
             //ARG INDEX 1
             final String arg1 = argList.remove(0);
             if(argList.isEmpty()) {
-                if(arg0.equals("start")) {
-                    mapCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
-                    if(mapCompletions.isEmpty()) {
+                switch (arg0) {
+                    case "start":
+                    case "stop":
+                        mapCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        if (mapCompletions.isEmpty()) {
+                            return null;
+                        }
+                        return mapCompletions;
+                    case "setlocation":
+                        setLocCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        return setLocCompletions;
+                    case "setminimum":
+                    case "setmaximum":
+                        if (arg1.isEmpty()) {
+                            numberCompletions.removeIf(number -> Integer.parseInt(number) > 9);
+                        }
+                        numberCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        return numberCompletions;
+                    default:
                         return null;
-                    }
-                    return mapCompletions;
-                } else if(arg0.equals("setlocation")) {
-                    setLocCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
-                    return setLocCompletions;
-                } else if(arg0.equals("setminimum") || arg0.equals("setmaximum")) {
-                    if(arg1.isEmpty()) {
-                        numberCompletions.removeIf(number -> Integer.parseInt(number) > 9);
-                    }
-                    numberCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
-                    return numberCompletions;
-                } else {
-                    return null;
                 }
             }
 

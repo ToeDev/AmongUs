@@ -12,6 +12,9 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
 public class KitHandler {
@@ -26,13 +29,15 @@ public class KitHandler {
     //private final Inventory olive;
     private final Inventory lime;
     private final Inventory green;
-    private final Inventory cyan;
+    private final Inventory aqua;
     //private final Inventory teal;
     private final Inventory blue;
     //private final Inventory navy;
     //private final Inventory fuchsia;
     private final Inventory purple;
     private final Inventory orange;
+
+    private final Map<Color, Inventory> kits;
 
     public KitHandler() {
         this.white = Bukkit.createInventory(null, 9, "White Kit");
@@ -45,7 +50,7 @@ public class KitHandler {
         //this.olive = Bukkit.createInventory(null, 9, "Olive Kit");
         this.lime = Bukkit.createInventory(null, 9, "Lime Kit");
         this.green = Bukkit.createInventory(null, 9, "Green Kit");
-        this.cyan = Bukkit.createInventory(null, 9, "Cyan Kit");
+        this.aqua = Bukkit.createInventory(null, 9, "Aqua Kit");
         //this.teal = Bukkit.createInventory(null, 9, "Teal Kit");
         this.blue = Bukkit.createInventory(null, 9, "Blue Kit");
         //this.navy = Bukkit.createInventory(null, 9, "Navy Kit");
@@ -60,7 +65,7 @@ public class KitHandler {
         this.yellow.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWI2YjEyYzFiODYyYjY4OTM2ZThhZWU3YTI0OGMzZTI1MmU4OGIxZmNmZjA1NzAwZmNlMWM5NTkxMjBhMjI5ZCJ9fX0="));
         this.lime.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTU4ZTU2Yzc2NWUzNDQyM2FkMjg3Nzg0MGFiN2M1Njg4YjQ0OTM5YzUzN2MyMDIzNjNhNGYxYjViNzU4MGRjOCJ9fX0="));
         this.green.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGU2MzM0ODBkNGJmYmVhYTA0OWQwMTNlZDU3NDZkOWY1ZGY5NDk1ZDBiYWUxZDlhNzBkNWUyNjQ5YmMyNjRmIn19fQ=="));
-        this.cyan.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2QzZWYxNTY0NjM2ODg5ZmUzYWNkM2JiMjY0ZWZkNzUyYzkwZDRjNmIyM2IwMGEzZWQ2YzJkN2Y1ZTgyMjc3NSJ9fX0="));
+        this.aqua.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2QzZWYxNTY0NjM2ODg5ZmUzYWNkM2JiMjY0ZWZkNzUyYzkwZDRjNmIyM2IwMGEzZWQ2YzJkN2Y1ZTgyMjc3NSJ9fX0="));
         this.blue.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjY3MGJjNWYwNDU4MzAwOTQwNTRhZWJjNzViMmVkMzdmYzU1ZjUyNGQ5NzlkODFlZjYxZjNkZTVjMjE3ZDBjYSJ9fX0="));
         this.purple.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjhiODE4Njc3YmUzYzIwNzk5MzcxMzdmNTBkNTU1YzE2MTcwM2QwN2U5OWNjNzA4YjhiNWY0MTEyOTM4MjgxIn19fQ=="));
         this.orange.setItem(0, createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDkxMGUzMDQ0MWNiODI5YjRlZThjYTFjMDQ0NGMxZmFjNmQ5NGFjZTVhNWMxN2NlNDZkNGVmNmNkOTNiMjNhOSJ9fX0="));
@@ -72,7 +77,7 @@ public class KitHandler {
         this.yellow.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.YELLOW));
         this.lime.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.LIME));
         this.green.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.GREEN));
-        this.cyan.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.AQUA));
+        this.aqua.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.AQUA));
         this.blue.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.BLUE));
         this.purple.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.PURPLE));
         this.orange.setItem(1, createDyedArmor(Material.LEATHER_CHESTPLATE, Color.ORANGE));
@@ -84,7 +89,7 @@ public class KitHandler {
         this.yellow.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.YELLOW));
         this.lime.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.LIME));
         this.green.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.GREEN));
-        this.cyan.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.AQUA));
+        this.aqua.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.AQUA));
         this.blue.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.BLUE));
         this.purple.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.PURPLE));
         this.orange.setItem(2, createDyedArmor(Material.LEATHER_LEGGINGS, Color.ORANGE));
@@ -96,10 +101,23 @@ public class KitHandler {
         this.yellow.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.YELLOW));
         this.lime.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.LIME));
         this.green.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.GREEN));
-        this.cyan.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.AQUA));
+        this.aqua.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.AQUA));
         this.blue.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.BLUE));
         this.purple.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.PURPLE));
         this.orange.setItem(3, createDyedArmor(Material.LEATHER_BOOTS, Color.ORANGE));
+
+        //Set of kits
+        this.kits = new HashMap<>();
+        this.kits.put(Color.WHITE, white);
+        this.kits.put(Color.BLACK, black);
+        this.kits.put(Color.RED, red);
+        this.kits.put(Color.YELLOW, yellow);
+        this.kits.put(Color.LIME, lime);
+        this.kits.put(Color.GREEN, green);
+        this.kits.put(Color.AQUA, aqua);
+        this.kits.put(Color.BLUE, blue);
+        this.kits.put(Color.PURPLE, purple);
+        this.kits.put(Color.ORANGE, orange);
     }
 
     private ItemStack createPlayerHead(String base64) {
@@ -159,7 +177,7 @@ public class KitHandler {
     }
 
     public void applyCyanKit(Player player) {
-        ItemStack[] kit = cyan.getContents();
+        ItemStack[] kit = aqua.getContents();
         player.getInventory().setArmorContents(kit);
     }
 
@@ -203,7 +221,7 @@ public class KitHandler {
     }
 
     public Inventory getCyanKit() {
-        return cyan;
+        return aqua;
     }
 
     public Inventory getBlueKit() {
@@ -216,5 +234,16 @@ public class KitHandler {
 
     public Inventory getOrangeKit() {
         return orange;
+    }
+
+    public void applyKit(Player player, Color color) {
+        if(kits.get(color) != null) {
+            ItemStack[] kit = kits.get(color).getContents();
+            player.getInventory().setArmorContents(kit);
+        }
+    }
+
+    public Inventory getKit(Color color) {
+        return kits.get(color); //TODO VERIFY THIS DOESN'T THROW NULL POINTER
     }
 }

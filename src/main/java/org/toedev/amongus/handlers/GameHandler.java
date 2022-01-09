@@ -193,20 +193,15 @@ public class GameHandler {
             }
             if(seconds == 1) {
                 scheduler.runTaskLater(amongUs, () -> {
-                    //if(playersInMapQueue.get(map).size() >= map.getMinPlayers() && playersInMapQueue.get(map).size() <= map.getMaxPlayers()) { //TODO RE-ADD CHECK
+                    if(playersInMapQueue.get(map).size() >= map.getMinPlayers() && playersInMapQueue.get(map).size() <= map.getMaxPlayers()) {
                         startGame(map);
-                    //}
-                            /*if(player.isOnline() && isPlayerInMapQueue(map, player)) {
-                                player.teleport(map.getMapSpawn());
-                                player.sendMessage("Among Us game started on " + mapNameFinal + "!");
-                                removePlayerFromMapQueue(map, player);
-                            }*/
+                    }
                 }, 20);
             }
         }
     }
 
-    private void startGame(Map map) {
+    public void startGame(Map map) {
         map.setMapRunning(true);
         String[] mapName = map.getName().split(" ");
         StringBuilder mapNameFinal = new StringBuilder();
@@ -223,7 +218,7 @@ public class GameHandler {
         playersInMap.put(map, players);
     }
 
-    private void stopGame(Map map) {
+    public void stopGame(Map map) {
         for(Player player : playersInMap.get(map)) {
             player.teleport(lobbySpawn);
         }
