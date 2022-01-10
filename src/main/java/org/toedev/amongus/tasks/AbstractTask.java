@@ -4,16 +4,16 @@ import org.bukkit.Location;
 
 public abstract class AbstractTask {
 
-    private final String taskName;
+    private final String name;
     private final Location location;
 
-    public AbstractTask(String taskName, Location location) {
-        this.taskName = taskName;
+    public AbstractTask(String name, Location location) {
+        this.name = name;
         this.location = location;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getName() {
+        return name;
     }
 
     public Location getLocation() {

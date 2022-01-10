@@ -1,9 +1,11 @@
 package org.toedev.amongus.sql;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.map.Map;
+import org.toedev.amongus.tasks.AbstractTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,9 +53,20 @@ public class Utility extends Database {
             "`meetingMaxCornerZ` BIGINT NOT NULL" +
             ");";
 
+    public String SQLiteCreateTasksTable = "CREATE TABLE IF NOT EXISTS tasks (" +
+            "`taskID` INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "`mapName` varchar(32) NOT NULL," +
+            "`taskName` varchar(32) NOT NULL," +
+            "`taskWorld` varchar(64) NOT NULL," +
+            "`taskX` BIGINT NOT NULL," +
+            "`taskY` BIGINT NOT NULL," +
+            "`taskZ` BIGINT NOT NULL" +
+            ");";
+
     public void load() {
         connect();
-        update(SQLiteCreateMapsTable); //TODO CREATE TASKS TABLE
+        update(SQLiteCreateMapsTable);
+        update(SQLiteCreateTasksTable);
     }
 
     public ResultSet getAllMaps() {
@@ -138,6 +151,18 @@ public class Utility extends Database {
                 " meetingMaxCornerY = \"" + meetingMaxCorner.getY() + "\"," +
                 " meetingMaxCornerZ = \"" + meetingMaxCorner.getZ() + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\";"
+        );
+    }
+
+    public void addTask(Map map, AbstractTask task) {
+        World taskWorld = task.getLocation().getWorld();
+        double taskX = task.getLocation().getX();
+        double taskY = task.getLocation().getY();
+        double taskZ = task.getLocation().getZ();
+        update("INSERT INTO `tasks` (mapName, taskName, " +
+                "taskWorld, taskX, taskY, taskZ) " +
+                "VALUES(\"" + map.getName() + "\", \"" + task.getName() + "\", " +
+                "\"" + taskWorld + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\");"
         );
     }
 }

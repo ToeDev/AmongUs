@@ -11,10 +11,10 @@ public class WiresTask extends AbstractTask {
 
     private final Inventory wiresPanel;
 
-    public WiresTask(Location location) {
-        super(location);
+    public WiresTask(String name, Location location) {
+        super(name, location);
         this.wiresPanel = Bukkit.createInventory(null, 54, "");
-        for(int i = 0; i <= wiresPanel.getSize(); i++) {
+        for(int i = 0; i < wiresPanel.getSize(); i++) {
             wiresPanel.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         }
     }

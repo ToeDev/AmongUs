@@ -3,6 +3,7 @@ package org.toedev.amongus.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.toedev.amongus.handlers.NPCHandler;
+import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.TaskManager;
 
 import java.util.Objects;
@@ -11,10 +12,12 @@ public class TestCommand {
 
     private final NPCHandler npcHandler;
     private final TaskManager taskManager;
+    private final MapManager mapManager;
 
-    public TestCommand(NPCHandler npcHandler, TaskManager taskManager) {
+    public TestCommand(NPCHandler npcHandler, TaskManager taskManager, MapManager mapManager) {
         this.npcHandler = npcHandler;
         this.taskManager = taskManager;
+        this.mapManager = mapManager;
     }
 
     public void execute(final CommandSender sender, String[] args) {
@@ -22,8 +25,6 @@ public class TestCommand {
             npcHandler.spawnNPC(Objects.requireNonNull(Bukkit.getPlayer(sender.getName())));
         } else if(args[1].equals("despawn")) {
             npcHandler.despawnAllNPCs();
-        } else if(args[1].equals("wires")) {
-
         }
     }
 }

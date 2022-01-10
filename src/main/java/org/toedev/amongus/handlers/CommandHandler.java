@@ -46,7 +46,7 @@ public class CommandHandler implements TabExecutor {
         setLocCommands = new ArrayList<>();
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
-        this.testCommand = new TestCommand(npcHandler, taskManager);
+        this.testCommand = new TestCommand(npcHandler, taskManager, mapManager);
         this.startCommand = new StartCommand(mapManager, gameHandler);
         this.stopCommand = new StopCommand(mapManager, gameHandler);
         this.listMapsCommand = new ListMapsCommand(mapManager);
