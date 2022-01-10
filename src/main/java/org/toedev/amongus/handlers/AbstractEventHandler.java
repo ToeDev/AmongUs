@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Materials;
@@ -48,6 +49,11 @@ public class AbstractEventHandler implements Listener {
             }
         }
     }
+
+    /*@EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) { //TODO ADD CHECK TO TP PLAYERS OUT OF MAP
+
+    }*/
 
     @EventHandler
     public void onPlayerLogout(PlayerQuitEvent event) {

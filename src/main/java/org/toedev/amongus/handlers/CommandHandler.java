@@ -7,6 +7,7 @@ import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.commands.*;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.tasks.TaskManager;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -19,6 +20,7 @@ public class CommandHandler implements TabExecutor {
     private final MapManager mapManager;
     private final NPCHandler npcHandler;
     private final GameHandler gameHandler;
+    private final TaskManager taskManager;
 
     private final List<String> baseCommands;
     private final List<String> setLocCommands;
@@ -32,18 +34,19 @@ public class CommandHandler implements TabExecutor {
     private final SetMinimumCommand setMinimumCommand;
     private final SetMaximumCommand setMaximumCommand;
 
-    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler) {
+    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager) {
         this.logger = amongUs.getLogger();
 
         this.mapManager = mapManager;
         this.npcHandler = npcHandler;
         this.gameHandler = gameHandler;
+        this.taskManager = taskManager;
 
         this.baseCommands = new ArrayList<>();
         setLocCommands = new ArrayList<>();
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
-        this.testCommand = new TestCommand(npcHandler);
+        this.testCommand = new TestCommand(npcHandler, taskManager);
         this.startCommand = new StartCommand(mapManager, gameHandler);
         this.stopCommand = new StopCommand(mapManager, gameHandler);
         this.listMapsCommand = new ListMapsCommand(mapManager);

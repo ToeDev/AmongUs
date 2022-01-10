@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.handlers.*;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.sql.Utility;
+import org.toedev.amongus.tasks.TaskManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +26,7 @@ public class AmongUs extends JavaPlugin {
     private MapManager mapManager;
     private GameHandler gameHandler;
     private NPCHandler npcHandler;
+    private TaskManager taskManager;
 
     public void onEnable() {
         this.logger = getLogger();
@@ -51,7 +53,8 @@ public class AmongUs extends JavaPlugin {
         mapManager = new MapManager(this, utility);
         npcHandler = new NPCHandler(this);
         gameHandler = new GameHandler(this, mapManager);
-        new CommandHandler(this, mapManager, npcHandler, gameHandler);
+        taskManager = new TaskManager();
+        new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(this, mapManager, gameHandler), this);
 
         logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
