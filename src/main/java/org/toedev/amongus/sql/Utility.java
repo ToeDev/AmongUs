@@ -165,4 +165,20 @@ public class Utility extends Database {
                 "\"" + taskWorld + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\");"
         );
     }
+
+    public void updateTask(Map map, AbstractTask task) {
+        World taskWorld = task.getLocation().getWorld();
+        double taskX = task.getLocation().getX();
+        double taskY = task.getLocation().getY();
+        double taskZ = task.getLocation().getZ();
+        update("UPDATE `tasks`" +
+                " SET" +
+                " taskWorld = \"" + Objects.requireNonNull(taskWorld).getName() + "\"," +
+                " taskX = \"" + taskX + "\"," +
+                " taskY = \"" + taskY + "\"," +
+                " taskZ = \"" + taskZ + "\"" +
+                " WHERE mapName = \"" + map.getName() + "\"" +
+                " AND taskName = \"" + task.getName() + "\";"
+        );
+    }
 }
