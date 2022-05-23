@@ -1,5 +1,6 @@
 package org.toedev.amongus;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.handlers.*;
@@ -19,8 +20,6 @@ public class AmongUs extends JavaPlugin {
 
     //TODO CLEANUP NPC'S ONENABLE INSTEAD OF DISABLE
 
-    private Logger logger;
-
     private Utility utility;
     private KitHandler kitHandler;
     private MapManager mapManager;
@@ -28,8 +27,9 @@ public class AmongUs extends JavaPlugin {
     private NPCHandler npcHandler;
     private TaskManager taskManager;
 
+    private final String prefix = "[" + ChatColor.BLUE + "AmongUs" + ChatColor.RESET + "] ";
+
     public void onEnable() {
-        this.logger = getLogger();
 
         //Generate config file and core db
         final File dataDir = getDataFolder();
@@ -57,7 +57,7 @@ public class AmongUs extends JavaPlugin {
         new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(this, mapManager, gameHandler), this);
 
-        logger.info(ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
+        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
     }
 
     private void generateFile(File file) {
@@ -73,7 +73,7 @@ public class AmongUs extends JavaPlugin {
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch(IOException e) {
-            logger.log(Level.WARNING, ChatColor.LIGHT_PURPLE + "Unable to generate file: " + file.getName(), e);
+            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Unable to generate file: " + file.getName());
             throw new RuntimeException(ChatColor.LIGHT_PURPLE + "Unable to generate file: " + file.getName(), e);
         }
     }
@@ -81,6 +81,6 @@ public class AmongUs extends JavaPlugin {
     public void onDisable() {
         this.npcHandler.despawnAllNPCs();
         this.utility.disconnect();
-        logger.info(ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
+        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
     }
 }
