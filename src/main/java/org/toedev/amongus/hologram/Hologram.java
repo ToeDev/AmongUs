@@ -1,13 +1,9 @@
 package org.toedev.amongus.hologram;
 
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.decoration.EntityArmorStand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.toedev.amongus.map.Map;
 
 import java.util.ArrayList;
