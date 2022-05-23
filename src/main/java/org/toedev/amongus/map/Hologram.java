@@ -1,10 +1,9 @@
-package org.toedev.amongus.hologram;
+package org.toedev.amongus.map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.toedev.amongus.map.Map;
 
 import java.util.ArrayList;
 import java.util.Collections;

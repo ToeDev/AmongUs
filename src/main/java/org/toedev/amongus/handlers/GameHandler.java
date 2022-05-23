@@ -7,11 +7,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.toedev.amongus.AmongUs;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 
 public class GameHandler {
@@ -22,11 +22,14 @@ public class GameHandler {
 
     private final BukkitScheduler scheduler;
     private final AmongUs amongUs;
-    private final Logger logger;
     private final MapManager mapManager;
 
     private final java.util.Map<Map, Set<Player>> playersInMap;
     private final java.util.Map<Map, Set<Player>> playersInMapQueue;
+
+    private final ChatColor purple = ChatColor.LIGHT_PURPLE;
+    private final ChatColor gold = ChatColor.GOLD;
+    private final ChatColor red = ChatColor.RED;
 
     public GameHandler(AmongUs amongUs, MapManager mapManager) {
         this.lobbySpawn = new Location(Bukkit.getWorld("amongus_skeld"), 2, 65, 36); //TODO THIS SHOULD BE A CONFIG ITEM
@@ -35,7 +38,6 @@ public class GameHandler {
 
         this.scheduler = amongUs.getServer().getScheduler();
         this.amongUs = amongUs;
-        this.logger = amongUs.getLogger();
         this.mapManager = mapManager;
         this.playersInMap = new HashMap<>();
         this.playersInMapQueue = new HashMap<>();
@@ -188,13 +190,28 @@ public class GameHandler {
         if((seconds % 10 == 0) || seconds <= 5) {
             for(Player player : playersInMapQueue.get(map)) {
                 if(player.isOnline() && isPlayerInMapQueue(map, player)) {
-                    player.sendMessage("Among Us on " + mapNameFinal + " starts in " + seconds + " second" + (seconds != 1 ? "s" : "") + "!");
+                    player.sendMessage(Prefix.prefix + purple + "Among Us on " + gold + mapNameFinal + purple + " starts in " + seconds + " second" + (seconds != 1 ? "s" : "") + "!");
                 }
             }
             if(seconds == 1) {
                 scheduler.runTaskLater(amongUs, () -> {
                     if(playersInMapQueue.get(map).size() >= map.getMinPlayers() && playersInMapQueue.get(map).size() <= map.getMaxPlayers()) {
                         startGame(map);
+                    } else if(playersInMapQueue.get(map).size() < map.getMinPlayers()) {
+                        for(Player player : playersInMapQueue.get(map)) {
+                            if(player.isOnline() && isPlayerInMapQueue(map, player)) {
+                                player.sendMessage(Prefix.prefix + red + "Not enough players! " + gold + map.getName() + " has a minimum of " + gold + map.getMinPlayers() + red + " players needed to start a game!");
+                            }
+                            removePlayerFromMapQueue(map, player);
+                        }
+
+                    } else if(playersInMapQueue.get(map).size() > map.getMaxPlayers()) {
+                        for(Player player : playersInMapQueue.get(map)) {
+                            if(player.isOnline() && isPlayerInMapQueue(map, player)) {
+                                player.sendMessage(Prefix.prefix + red + "Too many players! " + gold + map.getName() + " has a maximum of " + gold + map.getMaxPlayers() + red + " players in a game!");
+                            }
+                            removePlayerFromMapQueue(map, player);
+                        }
                     }
                 }, 20);
             }
@@ -212,7 +229,7 @@ public class GameHandler {
         for(Player player : playersInMapQueue.get(map)) {
             players.add(player);
             player.teleport(map.getMapSpawn());
-            player.sendMessage("Among Us game started on " + mapNameFinal + "!");
+            player.sendMessage(Prefix.prefix + purple + "Among Us game started on " + gold + mapNameFinal + purple + "!");
             removePlayerFromMapQueue(map, player);
         }
         playersInMap.put(map, players);

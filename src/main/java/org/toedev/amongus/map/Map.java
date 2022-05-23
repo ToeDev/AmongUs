@@ -1,7 +1,6 @@
 package org.toedev.amongus.map;
 
 import org.bukkit.Location;
-import org.toedev.amongus.hologram.Hologram;
 import org.toedev.amongus.tasks.AbstractTask;
 
 import java.util.HashMap;

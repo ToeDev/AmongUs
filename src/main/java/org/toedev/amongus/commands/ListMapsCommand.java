@@ -2,6 +2,7 @@ package org.toedev.amongus.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 
@@ -22,11 +23,11 @@ public class ListMapsCommand {
     public void execute(final CommandSender sender, String[] args) {
         Set<Map> maps = mapManager.getAllMaps();
         if(maps == null || maps.size() <= 0) {
-            sender.sendMessage(red + "No maps found!");
+            sender.sendMessage(Prefix.prefix + red + "No maps found!");
         } else {
-            sender.sendMessage(purple + "----------" + gold + "Maps" + purple + "----------");
+            sender.sendMessage(Prefix.prefix + purple + "---------------" + gold + "Maps" + purple + "---------------");
             for(Map map : maps) {
-                sender.sendMessage(purple + " - " + gold + map.getName());
+                sender.sendMessage(Prefix.prefix + purple + " - " + gold + map.getName());
             }
         }
     }

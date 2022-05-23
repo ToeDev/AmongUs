@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 public class CommandHandler implements TabExecutor {
 
-    private final Logger logger;
-
     private final MapManager mapManager;
     private final NPCHandler npcHandler;
     private final GameHandler gameHandler;
@@ -35,8 +33,6 @@ public class CommandHandler implements TabExecutor {
     private final SetMaximumCommand setMaximumCommand;
 
     public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager) {
-        this.logger = amongUs.getLogger();
-
         this.mapManager = mapManager;
         this.npcHandler = npcHandler;
         this.gameHandler = gameHandler;

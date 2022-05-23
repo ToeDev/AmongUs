@@ -2,6 +2,7 @@ package org.toedev.amongus.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.handlers.GameHandler;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
@@ -22,20 +23,20 @@ public class StopCommand {
 
     public void execute(final CommandSender sender, String[] args) {
         if(args.length < 2) {
-            sender.sendMessage(red + "Invalid usage!" + gold + "Try /au stop <mapname>");
+            sender.sendMessage(Prefix.prefix + red + "Invalid usage!" + gold + "Try /au stop <mapname>");
             return;
         }
         if(mapManager.getMap(args[1]) == null) {
-            sender.sendMessage(red + "The map " + gold + args[1] + red + " doesn't exist!");
+            sender.sendMessage(Prefix.prefix + red + "The map " + gold + args[1] + red + " doesn't exist!");
             return;
         }
         Map map = mapManager.getMap(args[1]);
         if(!map.isMapRunning()) {
-            sender.sendMessage(red + "The map " + gold + map.getName() + red + " has no game in-progress!");
+            sender.sendMessage(Prefix.prefix + red + "The map " + gold + map.getName() + red + " has no game in-progress!");
             return;
         }
 
         gameHandler.stopGame(mapManager.getMap(args[1]));
-        sender.sendMessage(purple + "Game stopped on map " + gold + map.getName());
+        sender.sendMessage(Prefix.prefix + purple + "Game stopped on map " + gold + map.getName());
     }
 }

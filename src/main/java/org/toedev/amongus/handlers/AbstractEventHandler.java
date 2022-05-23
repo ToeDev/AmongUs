@@ -1,28 +1,31 @@
 package org.toedev.amongus.handlers;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Materials;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 
-import java.util.logging.Logger;
-
 public class AbstractEventHandler implements Listener {
-
-    private final Logger logger;
 
     private final MapManager mapManager;
     private final GameHandler gameHandler;
 
+    private final ChatColor purple = ChatColor.LIGHT_PURPLE;
+    private final ChatColor gold = ChatColor.GOLD;
+    private final ChatColor red = ChatColor.RED;
+
     public AbstractEventHandler(AmongUs amongUs, MapManager mapManager, GameHandler gameHandler) {
-        this.logger = amongUs.getLogger();
         this.mapManager = mapManager;
         this.gameHandler = gameHandler;
     }
@@ -40,7 +43,7 @@ public class AbstractEventHandler implements Listener {
             }
         } else {
             if(gameHandler.getPlayersInMapQueue(map) != null && gameHandler.getPlayersInMapQueue(map).size() + 1 > map.getMaxPlayers()) {
-                event.getPlayer().sendMessage(map.getName() + " queue is full!");
+                event.getPlayer().sendMessage(Prefix.prefix + gold + map.getName() + purple + " queue is full!");
                 return;
             }
             if(!gameHandler.isPlayerInMapQueue(map, player)) {
@@ -50,10 +53,18 @@ public class AbstractEventHandler implements Listener {
         }
     }
 
-    /*@EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) { //TODO ADD CHECK TO TP PLAYERS OUT OF MAP
-
-    }*/
+    @EventHandler
+    public void onPlayerLogin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if(mapManager.isPlayerInAnyMap(player)) {
+            for(Map map : mapManager.getMapsPlayerIsIn(player)) {
+                if(!gameHandler.isPlayerInMap(map, player)) {
+                    mapManager.removePlayerFromMap(player, map);
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " logged in at map " + gold + map.getName() + red + ", but they aren't playing. Proceeding to remove from map.");
+                }
+            }
+        }
+    }
 
     @EventHandler
     public void onPlayerLogout(PlayerQuitEvent event) {

@@ -13,6 +13,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.toedev.amongus.Materials;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.MapManager;
 
 import java.sql.SQLException;
@@ -34,30 +35,30 @@ public class SetLocationCommand {
 
     public void execute(final CommandSender sender, String[] args) throws SQLException {
         if(args.length != 3) {
-            sender.sendMessage(red + "Invalid usage!" + gold + "Try /au setlocation <startsign/mapspawn/map/meeting> <mapname>");
+            sender.sendMessage(Prefix.prefix + red + "Invalid usage!" + gold + " Try /au setlocation <startsign/mapspawn/map/meeting> <mapname>");
             return;
         }
         if(mapManager.getMap(args[2]) == null) {
-            sender.sendMessage(red + "The map " + gold + args[2] + red + " doesn't exist!");
+            sender.sendMessage(Prefix.prefix + red + "The map " + gold + args[2] + red + " doesn't exist!");
             return;
         }
 
         if(args[1].equalsIgnoreCase("map")) {
             List<Location> regionPoints = getPoints(sender);
             if(regionPoints == null) {
-                sender.sendMessage(red + "You haven't made a selection yet!");
+                sender.sendMessage(Prefix.prefix + red + "You haven't made a selection yet!");
             } else {
                 mapManager.setMapCorners(args[2].toLowerCase(), regionPoints.get(0), regionPoints.get(1));
-                sender.sendMessage(purple + "Map area defined");
+                sender.sendMessage(Prefix.prefix + purple + "Map area defined for map " + gold + args[2]);
             }
             return;
         }
         if(args[1].equalsIgnoreCase("startsign")) {
             List<Location> regionPoints = getPoints(sender);
             if(regionPoints == null) {
-                sender.sendMessage(red + "You haven't made a selection yet!");
+                sender.sendMessage(Prefix.prefix + red + "You haven't made a selection yet!");
             } else if(!isSignSelectionValid(regionPoints)) {
-                sender.sendMessage(red + "Invalid selection or not a sign!");
+                sender.sendMessage(Prefix.prefix + red + "Invalid selection or not a sign!");
             } else {
                 mapManager.setStartSign(args[2].toLowerCase(), regionPoints.get(0));
                 String[] mapName = args[2].toLowerCase().split(" ");
@@ -71,28 +72,28 @@ public class SetLocationCommand {
                 sign.setLine(2, "Players in queue:");
                 sign.setLine(3, "0 / " + mapManager.getMap(args[2].toLowerCase()).getMaxPlayers());
                 sign.update();
-                sender.sendMessage(purple + "Start sign and player queue hologram defined");
+                sender.sendMessage(Prefix.prefix + purple + "Start sign and player queue hologram defined for map " + gold + args[2]);
             }
             return;
         }
         if(args[1].equalsIgnoreCase("meeting")) {
             List<Location> regionPoints = getPoints(sender);
             if(regionPoints == null) {
-                sender.sendMessage(red + "You haven't made a selection yet!");
+                sender.sendMessage(Prefix.prefix + red + "You haven't made a selection yet!");
             } else {
                 mapManager.setMeetingCorners(args[2].toLowerCase(), regionPoints.get(0), regionPoints.get(1));
-                sender.sendMessage(purple + "Meeting area defined");
+                sender.sendMessage(Prefix.prefix + purple + "Meeting area defined for map " + gold + args[2]);
             }
             return;
         }
         if(args[1].equalsIgnoreCase("mapspawn")) {
             Player player = (Player) sender;
             mapManager.setMapSpawn(args[2].toLowerCase(), player.getLocation());
-            sender.sendMessage(purple + "Map spawn area defined at current location");
+            sender.sendMessage(Prefix.prefix + purple + "Map spawn area defined at current location for map " + gold + args[2]);
             return;
         }
 
-        sender.sendMessage(red + "Invalid usage!" + gold + "Try /au setlocation <startsign/mapspawn/map/meeting> <mapname>");
+        sender.sendMessage(Prefix.prefix + red + "Invalid usage!" + gold + " Try /au setlocation <startsign/mapspawn/map/meeting> <mapname>");
     }
 
     private List<Location> getPoints(CommandSender sender) {

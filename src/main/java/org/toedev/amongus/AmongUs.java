@@ -27,7 +27,9 @@ public class AmongUs extends JavaPlugin {
     private NPCHandler npcHandler;
     private TaskManager taskManager;
 
-    private final String prefix = "[" + ChatColor.BLUE + "AmongUs" + ChatColor.RESET + "] ";
+    private final ChatColor purple = ChatColor.LIGHT_PURPLE;
+    private final ChatColor gold = ChatColor.GOLD;
+    private final ChatColor red = ChatColor.RED;
 
     public void onEnable() {
 
@@ -57,7 +59,7 @@ public class AmongUs extends JavaPlugin {
         new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(this, mapManager, gameHandler), this);
 
-        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plugin Enabled Successfully");
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Plugin Enabled Successfully");
     }
 
     private void generateFile(File file) {
@@ -73,14 +75,14 @@ public class AmongUs extends JavaPlugin {
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch(IOException e) {
-            Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Unable to generate file: " + file.getName());
-            throw new RuntimeException(ChatColor.LIGHT_PURPLE + "Unable to generate file: " + file.getName(), e);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Unable to generate file: " + file.getName());
+            throw new RuntimeException(purple + "Unable to generate file: " + file.getName(), e);
         }
     }
 
     public void onDisable() {
         this.npcHandler.despawnAllNPCs();
         this.utility.disconnect();
-        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + ChatColor.LIGHT_PURPLE + "Plugin Disabled Successfully");
     }
 }

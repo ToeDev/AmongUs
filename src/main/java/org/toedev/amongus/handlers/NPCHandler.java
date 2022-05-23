@@ -4,11 +4,13 @@ import com.denizenscript.denizen.npc.traits.SleepingTrait;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SkinTrait;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.toedev.amongus.AmongUs;
+import org.toedev.amongus.Prefix;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,13 +23,13 @@ public class NPCHandler {
 
     //TODO ADD CUSTOM REGISTRY
 
-    private final Logger logger;
-
     private final Set<Integer> spawnedNPCs;
 
-    public NPCHandler(AmongUs amongUs) {
-        this.logger = amongUs.getLogger();
+    private final ChatColor purple = ChatColor.LIGHT_PURPLE;
+    private final ChatColor gold = ChatColor.GOLD;
+    private final ChatColor red = ChatColor.RED;
 
+    public NPCHandler(AmongUs amongUs) {
         this.spawnedNPCs = new HashSet<>();
     }
 
@@ -44,18 +46,18 @@ public class NPCHandler {
         npc.data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, false);
         npc.spawn(playerLocation);
         if(npc.isSpawned()) {
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "NPC " + npc.getId() + " has been spawned at " + playerLocationFormatted + " with the skin of player: " + playerName);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "NPC " + npc.getId() + " has been spawned at " + playerLocationFormatted + " with the skin of player: " + playerName);
             SleepingTrait sleep = npc.getOrAddTrait(SleepingTrait.class);
             sleep.toSleep();
             npc.addTrait(sleep);
             spawnedNPCs.add(npc.getId());
             if(npc.getOrAddTrait(SleepingTrait.class).isSleeping()) {
-                logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "NPC " + npc.getId() + " is now sleeping.");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "NPC " + npc.getId() + " is now sleeping.");
             } else {
-                logger.log(Level.WARNING, ChatColor.RED + "NPC " + npc.getId() + " failed to be put to sleep!");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "NPC " + npc.getId() + " failed to be put to sleep!");
             }
         } else {
-            logger.log(Level.WARNING, ChatColor.RED + "NPC failed to spawn at " + playerLocationFormatted + " with the skin of player: " + playerName);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "NPC failed to spawn at " + playerLocationFormatted + " with the skin of player: " + playerName);
         }
     }
 
@@ -67,16 +69,16 @@ public class NPCHandler {
             iter.remove();
             NPC npc = CitizensAPI.getNPCRegistry().getById(id);
             if(npc.isSpawned()) {
-                logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "NPC " + id + " is currently spawned. Attempting to destroy.");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "NPC " + id + " is currently spawned. Attempting to destroy.");
                 npc.destroy();
                 if(!npc.isSpawned()) {
-                    logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "NPC " + id + " has been destroyed.");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "NPC " + id + " has been destroyed.");
                     spawnedNPCs.remove(id);
                 } else {
-                    logger.log(Level.WARNING, ChatColor.RED + "NPC " + id + " was unable to be destroyed!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "NPC " + id + " was unable to be destroyed!");
                 }
             } else {
-                logger.log(Level.WARNING, ChatColor.RED + "NPC " + id + " was in the NPCHandler Instance, but it wasn't currently spawned!");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "NPC " + id + " was in the NPCHandler Instance, but it wasn't currently spawned!");
             }
         }
     }

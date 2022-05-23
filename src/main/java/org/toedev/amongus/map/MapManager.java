@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.toedev.amongus.AmongUs;
+import org.toedev.amongus.Prefix;
 import org.toedev.amongus.sql.Utility;
 import org.toedev.amongus.tasks.AbstractTask;
 
@@ -20,16 +21,17 @@ import java.util.logging.Logger;
 
 public class MapManager {
 
-    private final Logger logger;
-
     private final AmongUs amongUs;
     private final Utility utility;
     private final MapManager mapManager;
 
     private final Set<Map> maps;
 
+    private final ChatColor purple = ChatColor.LIGHT_PURPLE;
+    private final ChatColor gold = ChatColor.GOLD;
+    private final ChatColor red = ChatColor.RED;
+
     public MapManager(AmongUs amongUs, Utility utility) {
-        this.logger = amongUs.getLogger();
         this.amongUs = amongUs;
         this.utility = utility;
         this.maps = new HashSet<>();
@@ -55,7 +57,7 @@ public class MapManager {
                 map.setMapQueueHologram(mapStartSign); //TODO THIS PROBABLY NEEDS CHANGED
                 resetStartSign(map); //TODO THIS PROBABLY NEEDS CHANGED
                 this.maps.add(map);
-                logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map \"" + map.getName() + "\" imported from the DB");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Map \"" + map.getName() + "\" imported from the DB");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +66,7 @@ public class MapManager {
 
     public void setMinPlayers(String name, Integer minPlayers) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMinPlayers(minPlayers);
                 if(map.isMapSetup()) saveMap(map);
                 return;
@@ -74,7 +76,7 @@ public class MapManager {
 
     public void setMaxPlayers(String name, Integer maxPlayers) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMaxPlayers(maxPlayers);
                 updateMaxQueueSign(map);
                 if(map.isMapSetup()) saveMap(map);
@@ -106,7 +108,7 @@ public class MapManager {
 
     public void setStartSign(String name, Location location) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMapStartSign(location);
                 if(map.isMapSetup()) saveMap(map);
                 return;
@@ -144,7 +146,7 @@ public class MapManager {
 
     public Map getMap(String name) {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 return map;
             }
         }
@@ -169,7 +171,7 @@ public class MapManager {
 
     public void setMapSpawn(String name, Location mapSpawn) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMapSpawn(mapSpawn);
                 if(map.isMapSetup()) saveMap(map);
                 return;
@@ -179,7 +181,7 @@ public class MapManager {
 
     public void setMapCorners(String name, Location mapMinCorner, Location mapMaxCorner) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMapMinCorner(mapMinCorner);
                 map.setMapMaxCorner(mapMaxCorner);
                 if(map.isMapSetup()) saveMap(map);
@@ -190,7 +192,7 @@ public class MapManager {
 
     public void setMeetingCorners(String name, Location meetingMinCorner, Location meetingMaxCorner) throws SQLException {
         for(Map map : maps) {
-            if(map.getName().equals(name)) {
+            if(map.getName().equalsIgnoreCase(name)) {
                 map.setMeetingMinCorner(meetingMinCorner);
                 map.setMeetingMaxCorner(meetingMaxCorner);
                 if(map.isMapSetup()) saveMap(map);
@@ -202,10 +204,10 @@ public class MapManager {
     private void saveMap(Map map) throws SQLException {
         if(utility.isMapInDB(map)) {
             utility.updateMap(map);
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map: \"" + map.getName() + "\" updated in DB");
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Map: \"" + map.getName() + "\" updated in DB");
         } else {
             utility.addMap(map);
-            logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Map: \"" + map.getName() + "\" added to DB");
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Map: \"" + map.getName() + "\" added to DB");
         }
     }
 
@@ -234,6 +236,10 @@ public class MapManager {
             }
         }
         return false;
+    }
+
+    public void removePlayerFromMap(Player player, Map map) {
+        player.teleport(map.getMapStartSign());
     }
 
     public Set<Map> getMapsPlayerIsIn(Player player) {
@@ -288,7 +294,7 @@ public class MapManager {
     public void despawnAllHolograms() {
         for(Map map : maps) {
             if(map.getMapQueueHologram() != null) {
-                logger.log(Level.INFO, ChatColor.LIGHT_PURPLE + "Queue hologram from map: \"" + map.getName() + "\" is currently spawned. Destroying hologram.");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Queue hologram from map: \"" + map.getName() + "\" is currently spawned. Destroying hologram.");
                 map.getMapQueueHologram().clear();
             }
         }
