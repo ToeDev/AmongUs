@@ -2,7 +2,7 @@ name: AmongUs
 main: org.toedev.amongus.AmongUs
 author: ToeMan_
 version: 0.1
-api-version: 1.16
+api-version: 1.18
 
 depend: [WorldEdit,Citizens,Denizen]
 softdepend: [Multiverse-Core]
