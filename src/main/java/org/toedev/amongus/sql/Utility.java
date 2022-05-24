@@ -73,6 +73,10 @@ public class Utility extends Database {
         return getResult("SELECT * FROM `maps`");
     }
 
+    public ResultSet getAllTasks() {
+        return getResult("SELECT * FROM `tasks`");
+    }
+
     public boolean isMapInDB(Map map) throws SQLException {
         int rows = getResult("SELECT COUNT(*) FROM `maps` WHERE mapName = \"" + map.getName() + "\";").getInt(1);
         return rows > 0;
@@ -162,11 +166,11 @@ public class Utility extends Database {
         update("INSERT INTO `tasks` (mapName, taskName, " +
                 "taskWorld, taskX, taskY, taskZ) " +
                 "VALUES(\"" + map.getName() + "\", \"" + task.getName() + "\", " +
-                "\"" + taskWorld + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\");"
+                "\"" + Objects.requireNonNull(taskWorld).getName() + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\");"
         );
     }
 
-    public void updateTask(Map map, AbstractTask task) {
+    /*public void updateTask(Map map, AbstractTask task) {
         World taskWorld = task.getLocation().getWorld();
         double taskX = task.getLocation().getX();
         double taskY = task.getLocation().getY();
@@ -180,5 +184,5 @@ public class Utility extends Database {
                 " WHERE mapName = \"" + map.getName() + "\"" +
                 " AND taskName = \"" + task.getName() + "\";"
         );
-    }
+    }*/
 }

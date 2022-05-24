@@ -8,26 +8,30 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.toedev.amongus.AmongUs;
+import org.bukkit.inventory.EquipmentSlot;
 import org.toedev.amongus.Materials;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.tasks.TaskManager;
+
+import java.util.Objects;
 
 public class AbstractEventHandler implements Listener {
 
     private final MapManager mapManager;
     private final GameHandler gameHandler;
+    private final TaskManager taskManager;
 
     private final ChatColor purple = ChatColor.LIGHT_PURPLE;
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
 
-    public AbstractEventHandler(AmongUs amongUs, MapManager mapManager, GameHandler gameHandler) {
+    public AbstractEventHandler(MapManager mapManager, GameHandler gameHandler, TaskManager taskManager) {
         this.mapManager = mapManager;
         this.gameHandler = gameHandler;
+        this.taskManager = taskManager;
     }
 
     @EventHandler
@@ -51,6 +55,14 @@ public class AbstractEventHandler implements Listener {
                 gameHandler.addPlayerToMapQueue(map, player);
             }
         }
+    }
+
+    @EventHandler
+    public void onTaskBlockInteract(PlayerInteractEvent event) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
+        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
+        if(!taskManager.isLocationTaskLocation(event.getClickedBlock().getLocation())) return;
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + event.getPlayer().getName() + purple + " clicked a task block");
     }
 
     @EventHandler

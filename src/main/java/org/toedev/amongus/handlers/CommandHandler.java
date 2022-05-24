@@ -8,6 +8,7 @@ import org.toedev.amongus.commands.*;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.TaskManager;
+import org.toedev.amongus.tasks.Tasks;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -22,6 +23,7 @@ public class CommandHandler implements TabExecutor {
 
     private final List<String> baseCommands;
     private final List<String> setLocCommands;
+    private final List<String> taskListCommands;
 
     private final TestCommand testCommand;
     private final StartCommand startCommand;
@@ -31,6 +33,7 @@ public class CommandHandler implements TabExecutor {
     private final SetLocationCommand setLocationCommand;
     private final SetMinimumCommand setMinimumCommand;
     private final SetMaximumCommand setMaximumCommand;
+    private final CreateTaskCommand createTaskCommand;
 
     public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager) {
         this.mapManager = mapManager;
@@ -39,7 +42,8 @@ public class CommandHandler implements TabExecutor {
         this.taskManager = taskManager;
 
         this.baseCommands = new ArrayList<>();
-        setLocCommands = new ArrayList<>();
+        this.setLocCommands = new ArrayList<>();
+        this.taskListCommands = new ArrayList<>();
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
         this.testCommand = new TestCommand(npcHandler, taskManager, mapManager);
@@ -50,6 +54,7 @@ public class CommandHandler implements TabExecutor {
         this.setLocationCommand = new SetLocationCommand(mapManager);
         this.setMinimumCommand = new SetMinimumCommand(mapManager, gameHandler);
         this.setMaximumCommand = new SetMaximumCommand(mapManager, gameHandler);
+        this.createTaskCommand = new CreateTaskCommand(mapManager, taskManager);
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");
@@ -59,11 +64,16 @@ public class CommandHandler implements TabExecutor {
         this.baseCommands.add("setlocation");
         this.baseCommands.add("setminimum");
         this.baseCommands.add("setmaximum");
+        this.baseCommands.add("createtask");
 
         this.setLocCommands.add("map");
         this.setLocCommands.add("meeting");
         this.setLocCommands.add("startsign");
         this.setLocCommands.add("mapspawn");
+
+        for(java.util.Map.Entry<Object, String> entry : Tasks.taskNames.entrySet()) {
+            this.taskListCommands.add(entry.getValue());
+        }
     }
 
     @Override
@@ -116,6 +126,14 @@ public class CommandHandler implements TabExecutor {
             }
             return true;
         }
+        if(args[0].equalsIgnoreCase("createtask")) {
+            try {
+                createTaskCommand.execute(sender, args);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
         sender.sendMessage("here are argument options");
         return true;
     }
@@ -125,6 +143,7 @@ public class CommandHandler implements TabExecutor {
         final ArrayList<String> argList = new ArrayList<>(Arrays.asList(args));
         final ArrayList<String> baseCompletions = new ArrayList<>(baseCommands);
         final ArrayList<String> setLocCompletions = new ArrayList<>(setLocCommands);
+        final ArrayList<String> taskListCompletions = new ArrayList<>(taskListCommands);
         ArrayList<String> mapCompletions = new ArrayList<>();
         for(Map map : mapManager.getAllMaps()) {
             mapCompletions.add(map.getName());
@@ -169,6 +188,9 @@ public class CommandHandler implements TabExecutor {
                         }
                         numberCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         return numberCompletions;
+                    case "createtask":
+                        taskListCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        return taskListCompletions;
                     default:
                         return null;
                 }
@@ -177,7 +199,7 @@ public class CommandHandler implements TabExecutor {
             //ARG INDEX 2
             final String arg2 = argList.remove(0);
             if(argList.isEmpty()) {
-                if((arg0.equals("setlocation") && setLocCompletions.contains(arg1)) || ((arg0.equals("setminimum") || arg0.equals("setmaximum")) && numberCompletions.contains(arg1))) {
+                if((arg0.equals("setlocation") && setLocCompletions.contains(arg1)) || ((arg0.equals("setminimum") || arg0.equals("setmaximum")) && numberCompletions.contains(arg1)) || (arg0.equals("createtask") && taskListCompletions.contains(arg1))) {
                     mapCompletions.removeIf(completion -> !completion.startsWith(arg2.toLowerCase()));
                     if(mapCompletions.isEmpty()) {
                         return null;
