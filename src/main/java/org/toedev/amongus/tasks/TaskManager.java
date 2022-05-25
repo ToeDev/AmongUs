@@ -42,7 +42,7 @@ public class TaskManager {
                 String taskName = taskSet.getString("taskName");
                 Map map = mapManager.getMap(taskSet.getString("mapName"));
                 if(taskName.equalsIgnoreCase("wires")) {
-                    WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), taskLocation);
+                    WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, taskLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(wTask);
                     } else {
@@ -78,7 +78,7 @@ public class TaskManager {
     }
 
     public void addWiresTask(Map map, Location location) throws SQLException {
-        WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), location);
+        WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(wTask);
         } else {
@@ -89,15 +89,15 @@ public class TaskManager {
         saveTask(map, wTask);
     }
 
-    public boolean isLocationTaskLocation(Location location) {
+    public AbstractTask getTaskByLocation(Location location) {
         for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
             for(AbstractTask task : getAllTasks(entry.getKey())) {
                 if(task.getLocation().equals(location)) {
-                    return true;
+                    return task;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private void saveTask(Map map, AbstractTask task) throws SQLException {

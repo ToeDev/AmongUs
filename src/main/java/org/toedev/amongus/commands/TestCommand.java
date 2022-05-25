@@ -25,6 +25,8 @@ public class TestCommand {
             npcHandler.spawnNPC(Objects.requireNonNull(Bukkit.getPlayer(sender.getName())));
         } else if(args[1].equals("despawn")) {
             npcHandler.despawnAllNPCs();
+        } else if(args[1].equals("givewires")) {
+
         }
     }
 }

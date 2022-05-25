@@ -58,14 +58,6 @@ public class AbstractEventHandler implements Listener {
     }
 
     @EventHandler
-    public void onTaskBlockInteract(PlayerInteractEvent event) {
-        if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
-        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
-        if(!taskManager.isLocationTaskLocation(event.getClickedBlock().getLocation())) return;
-        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + event.getPlayer().getName() + purple + " clicked a task block");
-    }
-
-    @EventHandler
     public void onPlayerLogin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if(mapManager.isPlayerInAnyMap(player)) {

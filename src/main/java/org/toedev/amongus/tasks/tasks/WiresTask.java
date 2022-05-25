@@ -5,18 +5,20 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.toedev.amongus.map.Map;
 import org.toedev.amongus.tasks.AbstractTask;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 public class WiresTask extends AbstractTask {
 
-    private List<Inventory> wirePanels;
+    private final List<Inventory> wirePanels;
 
-    public WiresTask(String name, Location location) {
-        super(name, location);
+    public WiresTask(String name, Map map, Location location) {
+        super(name, map, location);
         Inventory wiresPanel1 = Bukkit.createInventory(null, 54, "Wires Panel");
         Inventory wiresPanel2 = Bukkit.createInventory(null, 54, "Wires Panel");
         Inventory wiresPanel3 = Bukkit.createInventory(null, 54, "Wires Panel");
@@ -46,7 +48,6 @@ public class WiresTask extends AbstractTask {
         wiresPanel2.setItem(13, new ItemStack(Material.SPONGE));
         wiresPanel2.setItem(14, new ItemStack(Material.SPONGE));
         wiresPanel2.setItem(23, new ItemStack(Material.SPONGE));
-        wiresPanel2.setItem(31, new ItemStack(Material.SPONGE));
         wiresPanel2.setItem(32, new ItemStack(Material.SPONGE));
         wiresPanel2.setItem(33, new ItemStack(Material.SPONGE));
         wiresPanel2.setItem(42, new ItemStack(Material.SPONGE));
@@ -142,6 +143,7 @@ public class WiresTask extends AbstractTask {
         wiresPanel9.setItem(36, new ItemStack(Material.SPONGE));
         wiresPanel9.setItem(45, new ItemStack(Material.SPONGE));
 
+        wirePanels = new ArrayList<>();
         wirePanels.add(wiresPanel1);
         wirePanels.add(wiresPanel2);
         wirePanels.add(wiresPanel3);

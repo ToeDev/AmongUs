@@ -55,8 +55,8 @@ public class AmongUs extends JavaPlugin {
         kitHandler = new KitHandler();
         mapManager = new MapManager(this, utility);
         npcHandler = new NPCHandler(this);
-        gameHandler = new GameHandler(this, mapManager);
         taskManager = new TaskManager(mapManager, utility);
+        gameHandler = new GameHandler(this, mapManager, taskManager);
         new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(mapManager, gameHandler, taskManager), this);
         getServer().getPluginManager().registerEvents(new TaskHandler(mapManager, gameHandler, taskManager), this);

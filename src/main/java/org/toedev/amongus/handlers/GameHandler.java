@@ -10,6 +10,9 @@ import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.tasks.AbstractTask;
+import org.toedev.amongus.tasks.TaskManager;
+import org.toedev.amongus.tasks.Tasks;
 
 import java.util.*;
 
@@ -23,15 +26,18 @@ public class GameHandler {
     private final BukkitScheduler scheduler;
     private final AmongUs amongUs;
     private final MapManager mapManager;
+    private final TaskManager taskManager;
 
     private final java.util.Map<Map, Set<Player>> playersInMap;
     private final java.util.Map<Map, Set<Player>> playersInMapQueue;
+
+    private final java.util.Map<Player, List<AbstractTask>> playerTasks;
 
     private final ChatColor purple = ChatColor.LIGHT_PURPLE;
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
 
-    public GameHandler(AmongUs amongUs, MapManager mapManager) {
+    public GameHandler(AmongUs amongUs, MapManager mapManager, TaskManager taskManager) {
         this.lobbySpawn = new Location(Bukkit.getWorld("amongus_skeld"), 2, 65, 36); //TODO THIS SHOULD BE A CONFIG ITEM
         this.mapQueueCountdown = 30; //TODO THIS SHOULD BE A CONFIG ITEM
         this.mapQueueCountdownTaskIds = new HashMap<>();
@@ -39,8 +45,11 @@ public class GameHandler {
         this.scheduler = amongUs.getServer().getScheduler();
         this.amongUs = amongUs;
         this.mapManager = mapManager;
+        this.taskManager = taskManager;
         this.playersInMap = new HashMap<>();
         this.playersInMapQueue = new HashMap<>();
+
+        this.playerTasks = new HashMap<>();
     }
 
     public Set<Player> getPlayersInMap(Map map) {
@@ -225,14 +234,13 @@ public class GameHandler {
         for(String split : mapName) {
             mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
         }
-        Set<Player> players = new HashSet<>();
         for(Player player : playersInMapQueue.get(map)) {
-            players.add(player);
+            addPlayerToMap(map, player);
+            givePlayerRandomTasks(map, player, 1);
             player.teleport(map.getMapSpawn());
             player.sendMessage(Prefix.prefix + purple + "Among Us game started on " + gold + mapNameFinal + purple + "!");
             removePlayerFromMapQueue(map, player);
         }
-        playersInMap.put(map, players);
     }
 
     public void stopGame(Map map) {
@@ -241,5 +249,22 @@ public class GameHandler {
         }
         map.setMapRunning(false);
         updateMapQueueHologram(map);
+    }
+
+    public void givePlayerRandomTasks(Map map, Player player, int tasks) {
+        while(tasks < 0) {
+            Random random = new Random();
+            int r = random.ints(0, taskManager.getAllTasks(map).size() - 1).findFirst().getAsInt();
+            AbstractTask task = taskManager.getAllTasks(map).get(r);
+            List<AbstractTask> pTasks = null;
+            if(playerTasks.get(player) == null) {
+                pTasks = new ArrayList<>();
+            } else {
+                pTasks = playerTasks.get(player);
+            }
+            pTasks.add(task);
+            playerTasks.put(player, pTasks);
+            tasks--;
+        }
     }
 }
