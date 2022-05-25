@@ -59,7 +59,7 @@ public class AmongUs extends JavaPlugin {
         gameHandler = new GameHandler(this, mapManager, taskManager);
         new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
         getServer().getPluginManager().registerEvents(new AbstractEventHandler(mapManager, gameHandler, taskManager), this);
-        getServer().getPluginManager().registerEvents(new TaskHandler(mapManager, gameHandler, taskManager), this);
+        getServer().getPluginManager().registerEvents(new TaskHandler(this, mapManager, gameHandler, taskManager), this);
 
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Plugin Enabled Successfully");
     }

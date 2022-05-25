@@ -12,7 +12,6 @@ import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
-import org.toedev.amongus.tasks.Tasks;
 
 import java.util.*;
 
@@ -84,6 +83,15 @@ public class GameHandler {
         if(playersInMap.get(map) != null) {
             playersInMap.get(map).remove(player);
         }
+    }
+
+    public Map getMapPlayerIsIn(Player player) {
+        for(Map map : mapManager.getAllMaps()) {
+            if(playersInMap.get(map) != null && playersInMap.get(map).contains(player)) {
+                return map;
+            }
+        }
+        return null;
     }
 
     public Set<Player> getPlayersInMapQueue(Map map) {

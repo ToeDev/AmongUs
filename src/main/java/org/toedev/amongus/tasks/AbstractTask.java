@@ -1,6 +1,7 @@
 package org.toedev.amongus.tasks;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.toedev.amongus.map.Map;
 
 public abstract class AbstractTask {

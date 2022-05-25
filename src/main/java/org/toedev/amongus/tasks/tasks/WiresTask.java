@@ -3,6 +3,7 @@ package org.toedev.amongus.tasks.tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.toedev.amongus.map.Map;
@@ -163,6 +164,10 @@ public class WiresTask extends AbstractTask {
         }
     }
 
+    public void execute(Player player, String color) {
+        player.openInventory(getRandomWiresPanel(color));
+    }
+
     public Inventory getRandomWiresPanel(String color) {
         ItemStack wool = null;
         if(color.equalsIgnoreCase("yellow")) wool = new ItemStack(Material.YELLOW_WOOL);
@@ -171,7 +176,10 @@ public class WiresTask extends AbstractTask {
 
         Random random = new Random();
         int r = random.ints(0, 8).findFirst().getAsInt();
-        Inventory wiresPanel = wirePanels.get(r);
+        Inventory wiresPanel = Bukkit.createInventory(null, 54, "Wires Panel");
+        for(int i = 0; i < wiresPanel.getSize(); i++) {
+            wiresPanel.setItem(i, wirePanels.get(r).getItem(i));
+        }
 
         for(int i = 0; i < wiresPanel.getSize(); i++) {
             if(Objects.equals(wiresPanel.getItem(i), new ItemStack(Material.SPONGE))) {
