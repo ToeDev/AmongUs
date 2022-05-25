@@ -260,9 +260,9 @@ public class GameHandler {
     }
 
     public void givePlayerRandomTasks(Map map, Player player, int tasks) {
-        while(tasks < 0) {
+        while(tasks > 0) {
             Random random = new Random();
-            int r = random.ints(0, taskManager.getAllTasks(map).size() - 1).findFirst().getAsInt();
+            int r = random.ints(0, taskManager.getAllTasks(map).size()).findFirst().getAsInt();
             AbstractTask task = taskManager.getAllTasks(map).get(r);
             List<AbstractTask> pTasks = null;
             if(playerTasks.get(player) == null) {

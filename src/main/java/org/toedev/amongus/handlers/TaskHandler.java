@@ -49,12 +49,13 @@ public class TaskHandler implements Listener {
         if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
         if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
         Player player = event.getPlayer();
-        //if(!gameHandler.isPlayerInAnyMap(player)) return;
-        //Map map = gameHandler.getMapPlayerIsIn(player);
-        //if(map == null) return;
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(map == null) return;
         AbstractTask task = taskManager.getTaskByLocation(event.getClickedBlock().getLocation());
         if(task == null) return;
-        //Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + event.getPlayer().getName() + purple + " clicked a task block");
+        if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
         }
@@ -112,16 +113,21 @@ public class TaskHandler implements Listener {
         if(!Objects.equals(left, block) && !Objects.equals(right, block) && !Objects.equals(up, block) && !Objects.equals(down, block)) return;
         if(Objects.equals(inv.getItem(slot), new ItemStack(Material.BLACK_STAINED_GLASS_PANE))) {
             inv.setItem(slot, block);
-            scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "yellow"), 10);
+            scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "yellow"), 5);
         } else {
             inv.setItem(slot, block);
             if(!inv.contains(new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE))) {
                 if(Objects.equals(block, new ItemStack(Material.YELLOW_WOOL))) {
-                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "blue"), 10);
+                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "blue"), 5);
                 } else if(Objects.equals(block, new ItemStack(Material.BLUE_WOOL))) {
-                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "red"), 10);
+                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "red"), 5);
                 } else if(Objects.equals(block, new ItemStack(Material.RED_WOOL))) {
-                    //TODO COMPLETE TASK METHOD
+                    scheduler.runTaskLater(amongUs, () -> {
+                        gameHandler.completePlayerTask(player, taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)));
+                        player.closeInventory();
+                        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " completed the task: " + gold + "wires");
+                    }, 5);
+
                 }
             }
         }

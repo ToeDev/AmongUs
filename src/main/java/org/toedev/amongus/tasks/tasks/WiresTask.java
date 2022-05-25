@@ -175,7 +175,7 @@ public class WiresTask extends AbstractTask {
         if(color.equalsIgnoreCase("red")) wool = new ItemStack(Material.RED_WOOL);
 
         Random random = new Random();
-        int r = random.ints(0, 8).findFirst().getAsInt();
+        int r = random.ints(0, 9).findFirst().getAsInt();
         Inventory wiresPanel = Bukkit.createInventory(null, 54, "Wires Panel");
         for(int i = 0; i < wiresPanel.getSize(); i++) {
             wiresPanel.setItem(i, wirePanels.get(r).getItem(i));
