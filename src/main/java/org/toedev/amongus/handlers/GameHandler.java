@@ -275,4 +275,32 @@ public class GameHandler {
             tasks--;
         }
     }
+
+    public List<AbstractTask> getPlayerTasks(Player player) {
+        return playerTasks.get(player);
+    }
+
+    public void completePlayerTask(Player player, AbstractTask task) {
+        if(playerTasks.get(player) != null) {
+            playerTasks.get(player).remove(task);
+        }
+    }
+
+    public int totalTasksLeft(Map map) {
+        int i = 0;
+        for(java.util.Map.Entry<Player, List<AbstractTask>> entry : playerTasks.entrySet()) {
+            if(isPlayerInMap(map, entry.getKey())) {
+                i = i + playerTasks.get(entry.getKey()).size();
+            }
+        }
+        return i;
+    }
+
+    public int playerTasksLeft(Player player) {
+        int i = 0;
+        if(playerTasks.get(player) != null) {
+            i = i + playerTasks.get(player).size();
+        }
+        return i;
+    }
 }
