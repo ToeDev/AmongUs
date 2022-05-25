@@ -264,7 +264,7 @@ public class GameHandler {
             Random random = new Random();
             int r = random.ints(0, taskManager.getAllTasks(map).size()).findFirst().getAsInt();
             AbstractTask task = taskManager.getAllTasks(map).get(r);
-            List<AbstractTask> pTasks = null;
+            List<AbstractTask> pTasks;
             if(playerTasks.get(player) == null) {
                 pTasks = new ArrayList<>();
             } else {
