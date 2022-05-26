@@ -19,6 +19,7 @@ import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
+import org.toedev.amongus.tasks.tasks.DownloadDataTask;
 import org.toedev.amongus.tasks.tasks.WiresTask;
 
 import java.util.Objects;
@@ -58,6 +59,8 @@ public class TaskHandler implements Listener {
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
+        } else if(task instanceof DownloadDataTask) {
+            ((DownloadDataTask) task).execute(player);
         }
     }
 
@@ -132,6 +135,9 @@ public class TaskHandler implements Listener {
             }
         }
     }
+
+
+
 
 
 

@@ -260,10 +260,12 @@ public class GameHandler {
     }
 
     public void givePlayerRandomTasks(Map map, Player player, int tasks) {
+        List<AbstractTask> newList = new ArrayList<>(taskManager.getAllTasks(map));
         while(tasks > 0) {
             Random random = new Random();
-            int r = random.ints(0, taskManager.getAllTasks(map).size()).findFirst().getAsInt();
-            AbstractTask task = taskManager.getAllTasks(map).get(r);
+            int r = random.ints(0, newList.size()).findFirst().getAsInt();
+            AbstractTask task = newList.get(r);
+            newList.remove(task);
             List<AbstractTask> pTasks;
             if(playerTasks.get(player) == null) {
                 pTasks = new ArrayList<>();
@@ -273,6 +275,7 @@ public class GameHandler {
             pTasks.add(task);
             playerTasks.put(player, pTasks);
             tasks--;
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + task.getName());
         }
     }
 

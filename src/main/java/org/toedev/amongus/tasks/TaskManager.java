@@ -3,10 +3,14 @@ package org.toedev.amongus.tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.sql.Utility;
+import org.toedev.amongus.tasks.tasks.DownloadDataTask;
+import org.toedev.amongus.tasks.tasks.UploadDataTask;
 import org.toedev.amongus.tasks.tasks.WiresTask;
 
 import java.sql.ResultSet;
@@ -17,6 +21,8 @@ import java.util.List;
 
 public class TaskManager {
 
+    private final AmongUs amongUs;
+
     private final Utility utility;
     private final MapManager mapManager;
 
@@ -26,7 +32,8 @@ public class TaskManager {
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
 
-    public TaskManager(MapManager mapManager, Utility utility) {
+    public TaskManager(AmongUs amongUs, MapManager mapManager, Utility utility) {
+        this.amongUs = amongUs;
         this.utility = utility;
         this.mapManager = mapManager;
         this.allTasks = new HashMap<>();
@@ -48,6 +55,15 @@ public class TaskManager {
                     } else {
                         ArrayList<AbstractTask> tasks = new ArrayList<>();
                         tasks.add(wTask);
+                        allTasks.put(map, tasks);
+                    }
+                } else if(taskName.equalsIgnoreCase("downloaddata")) {
+                    DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, taskLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(dTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(dTask);
                         allTasks.put(map, tasks);
                     }
                 }
@@ -87,6 +103,30 @@ public class TaskManager {
             allTasks.put(map, tasks);
         }
         saveTask(map, wTask);
+    }
+
+    public void addDownloadDataTask(Map map, Location location) throws SQLException {
+        DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, location);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(dTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(dTask);
+            allTasks.put(map, tasks);
+        }
+        saveTask(map, dTask);
+    }
+
+    public void addUploadDataTask(Map map, Location location) throws SQLException {
+        UploadDataTask uTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, location);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(uTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(uTask);
+            allTasks.put(map, tasks);
+        }
+        saveTask(map, uTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {

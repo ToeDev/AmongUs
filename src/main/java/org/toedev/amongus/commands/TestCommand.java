@@ -28,10 +28,10 @@ public class TestCommand {
             npcHandler.spawnNPC(Objects.requireNonNull(Bukkit.getPlayer(sender.getName())));
         } else if(args[1].equals("despawn")) {
             npcHandler.despawnAllNPCs();
-        } else if(args[1].equals("entermap")) {
+        } else if(args[1].equals("startmap")) {
             gameHandler.addPlayerToMap(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()));
-        } else if(args[1].equals("givewires")) {
-            gameHandler.givePlayerRandomTasks(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()), 1);
+        } else if(args[1].equals("givetasks")) {
+            gameHandler.givePlayerRandomTasks(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()), 2);
         }
     }
 }

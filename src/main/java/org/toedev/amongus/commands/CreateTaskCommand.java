@@ -52,9 +52,20 @@ public class CreateTaskCommand {
             sender.sendMessage(Prefix.prefix + red + "You can only select 1 block for this task!");
             return;
         }
-        Location loc = regionPoints.get(0);
-        taskManager.addWiresTask(mapManager.getMap(args[2]), loc);
-        sender.sendMessage(Prefix.prefix + purple + "Wires task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        if(args[1].equalsIgnoreCase("wires")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addWiresTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Wires task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("downloaddata")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addDownloadDataTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Download Data task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("uploaddata")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addUploadDataTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Upload Data task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        }
+
     }
 
     private List<Location> getPoints(CommandSender sender) {
