@@ -8,10 +8,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Prefix;
@@ -20,6 +25,7 @@ import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.tasks.DownloadDataTask;
+import org.toedev.amongus.tasks.tasks.UploadDataTask;
 import org.toedev.amongus.tasks.tasks.WiresTask;
 
 import java.util.Objects;
@@ -56,11 +62,21 @@ public class TaskHandler implements Listener {
         AbstractTask task = taskManager.getTaskByLocation(event.getClickedBlock().getLocation());
         if(task == null) return;
         if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
+        if(task.isInUse()) return;
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
+            task.setInUse(true);
         } else if(task instanceof DownloadDataTask) {
             ((DownloadDataTask) task).execute(player);
+            task.setInUse(true);
+        } else if(task instanceof UploadDataTask) {
+            if(gameHandler.getPlayerTasks(player).contains(taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
+                player.sendMessage(Prefix.prefix + red + "You must first complete the Download Data task before uploading the data here!");
+            } else {
+                ((UploadDataTask) task).execute(player);
+                task.setInUse(true);
+            }
         }
     }
 
@@ -76,10 +92,14 @@ public class TaskHandler implements Listener {
         int slot = event.getSlot();
         ItemStack block = null;
         Player player = (Player) event.getWhoClicked();
-        assert  player != null;
-        if(gameHandler.isPlayerInAnyMap(player));
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        ItemStack bPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta meta = bPane.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(" ");
+        bPane.setItemMeta(meta);
         for(int i = 0; i < 9; i++) {
-            if(!Objects.equals(inv.getItem(i), new ItemStack(Material.BLACK_STAINED_GLASS_PANE))) {
+            if(!Objects.equals(inv.getItem(i), bPane)) {
                 block = inv.getItem(i);
                 break;
             }
@@ -114,25 +134,95 @@ public class TaskHandler implements Listener {
         }
 
         if(!Objects.equals(left, block) && !Objects.equals(right, block) && !Objects.equals(up, block) && !Objects.equals(down, block)) return;
-        if(Objects.equals(inv.getItem(slot), new ItemStack(Material.BLACK_STAINED_GLASS_PANE))) {
+        if(Objects.equals(inv.getItem(slot), bPane)) {
             inv.setItem(slot, block);
             scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "yellow"), 5);
         } else {
             inv.setItem(slot, block);
-            if(!inv.contains(new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE))) {
-                if(Objects.equals(block, new ItemStack(Material.YELLOW_WOOL))) {
+            ItemStack gPane = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+            ItemMeta gMeta = gPane.getItemMeta();
+            assert gMeta != null;
+            gMeta.setDisplayName(" ");
+            gPane.setItemMeta(gMeta);
+            if(!inv.contains(gPane)) {
+                ItemStack yWool = new ItemStack(Material.YELLOW_WOOL);
+                ItemMeta yMeta = yWool.getItemMeta();
+                assert yMeta != null;
+                yMeta.setDisplayName(" ");
+                yWool.setItemMeta(yMeta);
+                ItemStack bWool = new ItemStack(Material.BLUE_WOOL);
+                ItemMeta bMeta = bWool.getItemMeta();
+                assert bMeta != null;
+                bMeta.setDisplayName(" ");
+                bWool.setItemMeta(bMeta);
+                ItemStack rWool = new ItemStack(Material.RED_WOOL);
+                ItemMeta rMeta = rWool.getItemMeta();
+                assert rMeta != null;
+                rMeta.setDisplayName(" ");
+                rWool.setItemMeta(rMeta);
+                if(Objects.equals(block, yWool)) {
                     scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "blue"), 5);
-                } else if(Objects.equals(block, new ItemStack(Material.BLUE_WOOL))) {
+                } else if(Objects.equals(block, bWool)) {
                     scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "red"), 5);
-                } else if(Objects.equals(block, new ItemStack(Material.RED_WOOL))) {
+                } else if(Objects.equals(block, rWool)) {
                     scheduler.runTaskLater(amongUs, () -> {
-                        gameHandler.completePlayerTask(player, taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)));
                         player.closeInventory();
-                        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " completed the task: " + gold + "wires");
+                        gameHandler.completePlayerTask(player, taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)));
                     }, 5);
 
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onWiresPanelClose(InventoryCloseEvent event) {
+        if(!event.getView().getTitle().equalsIgnoreCase("Wires Panel")) return;
+        Player player = (Player) event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player) == null) return;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof WiresTask) {
+                task.setInUse(false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLeaveTask(PlayerMoveEvent event) { //this is only for cancelling tasks that are in the middle of a scheduler
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player) == null) return;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof DownloadDataTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((DownloadDataTask) task).cancel();
+                    task.setInUse(false);
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the DownloadData task!");
+                    break;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDataTaskComplete(PlayerLevelChangeEvent event) {
+        if(event.getNewLevel() != 100) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player).contains(taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
+            scheduler.runTaskLater(amongUs, () -> {
+                player.setLevel(0);
+                player.setExp(0.0f);
+                gameHandler.completePlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)));
+            }, 20);
+        } else if(gameHandler.getPlayerTasks(player).contains(taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
+            scheduler.runTaskLater(amongUs, () -> {
+                player.setLevel(0);
+                player.setExp(0.0f);
+                gameHandler.completePlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)));
+            }, 20);
         }
     }
 

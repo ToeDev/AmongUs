@@ -66,6 +66,15 @@ public class TaskManager {
                         tasks.add(dTask);
                         allTasks.put(map, tasks);
                     }
+                } else if(taskName.equalsIgnoreCase("uploaddata")) {
+                    UploadDataTask dTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, taskLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(dTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(dTask);
+                        allTasks.put(map, tasks);
+                    }
                 }
                 Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
             }
@@ -86,6 +95,30 @@ public class TaskManager {
             for(AbstractTask task : allTasks.get(map)) {
                 if(task instanceof WiresTask) {
                     return (WiresTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public DownloadDataTask getDownloadDataTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof DownloadDataTask) {
+                    return (DownloadDataTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public UploadDataTask getUploadDataTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof UploadDataTask) {
+                    return (UploadDataTask) task;
                 }
             }
             return null;

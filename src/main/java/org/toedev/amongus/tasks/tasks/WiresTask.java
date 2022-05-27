@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.tasks.AbstractTask;
 
@@ -158,7 +159,12 @@ public class WiresTask extends AbstractTask {
         for(Inventory inv : wirePanels) {
             for(int i = 0; i < inv.getSize(); i++) {
                 if(!Objects.equals(inv.getItem(i), new ItemStack(Material.SPONGE))) {
-                    inv.setItem(i, new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+                    ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                    ItemMeta meta = item.getItemMeta();
+                    assert meta != null;
+                    meta.setDisplayName(" ");
+                    item.setItemMeta(meta);
+                    inv.setItem(i, item);
                 }
             }
         }
@@ -173,6 +179,11 @@ public class WiresTask extends AbstractTask {
         if(color.equalsIgnoreCase("yellow")) wool = new ItemStack(Material.YELLOW_WOOL);
         if(color.equalsIgnoreCase("blue")) wool = new ItemStack(Material.BLUE_WOOL);
         if(color.equalsIgnoreCase("red")) wool = new ItemStack(Material.RED_WOOL);
+        assert wool != null;
+        ItemMeta wMeta = wool.getItemMeta();
+        assert wMeta != null;
+        wMeta.setDisplayName(" ");
+        wool.setItemMeta(wMeta);
 
         Random random = new Random();
         int r = random.ints(0, 9).findFirst().getAsInt();
@@ -186,7 +197,12 @@ public class WiresTask extends AbstractTask {
                 if(i <= 8 || i >= 45) {
                     wiresPanel.setItem(i, wool);
                 } else {
-                    wiresPanel.setItem(i, new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE));
+                    ItemStack item = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+                    ItemMeta meta = item.getItemMeta();
+                    assert meta != null;
+                    meta.setDisplayName(" ");
+                    item.setItemMeta(meta);
+                    wiresPanel.setItem(i, item);
                 }
             }
         }

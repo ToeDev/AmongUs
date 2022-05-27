@@ -277,6 +277,19 @@ public class GameHandler {
             tasks--;
             Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + task.getName());
         }
+        List<AbstractTask> pTasks;
+        if(playerTasks.get(player).contains(taskManager.getDownloadDataTask(map)) && !playerTasks.get(player).contains(taskManager.getUploadDataTask(map))) {
+            pTasks = playerTasks.get(player);
+            pTasks.add(taskManager.getUploadDataTask(map));
+            playerTasks.put(player, pTasks);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "uploaddata");
+        }
+        if(playerTasks.get(player).contains(taskManager.getUploadDataTask(map)) && !playerTasks.get(player).contains(taskManager.getDownloadDataTask(map))) {
+            pTasks = playerTasks.get(player);
+            pTasks.add(taskManager.getDownloadDataTask(map));
+            playerTasks.put(player, pTasks);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "downloaddata");
+        }
     }
 
     public List<AbstractTask> getPlayerTasks(Player player) {
@@ -285,7 +298,10 @@ public class GameHandler {
 
     public void completePlayerTask(Player player, AbstractTask task) {
         if(playerTasks.get(player) != null) {
+            task.setInUse(false);
             playerTasks.get(player).remove(task);
+            player.sendMessage(Prefix.prefix + purple + "You have completed task: " + gold + task.getName());
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " completed the task: " + gold + task.getName());
         }
     }
 
