@@ -2,6 +2,8 @@ package org.toedev.amongus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.handlers.*;
 import org.toedev.amongus.map.MapManager;
@@ -28,6 +30,8 @@ public class AmongUs extends JavaPlugin {
     private NPCHandler npcHandler;
     private TaskManager taskManager;
 
+    private Integer distanceFromTask;
+
     private final ChatColor purple = ChatColor.LIGHT_PURPLE;
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
@@ -51,6 +55,18 @@ public class AmongUs extends JavaPlugin {
         }
         utility.load();
 
+        //read config file
+        YamlConfiguration mainConfig = new YamlConfiguration();
+        try {
+            mainConfig.load(configFile);
+
+            distanceFromTask = mainConfig.getInt("max-distance-from-tasks");
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Max distance from tasks set at: " + distanceFromTask);
+        } catch(IOException | InvalidConfigurationException e) {
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "Unable to load config file!");
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + e);
+        }
+
         //Start handlers and managers
         kitHandler = new KitHandler();
         mapManager = new MapManager(this, utility);
@@ -62,6 +78,10 @@ public class AmongUs extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TaskHandler(this, mapManager, gameHandler, taskManager), this);
 
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Plugin Enabled Successfully");
+    }
+
+    public Integer getDistanceFromTask() {
+        return this.distanceFromTask;
     }
 
     private void generateFile(File file) {

@@ -171,6 +171,7 @@ public class WiresTask extends AbstractTask {
     }
 
     public void execute(Player player, String color) {
+        setInUse(true);
         player.openInventory(getRandomWiresPanel(color));
     }
 

@@ -24,6 +24,7 @@ import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.tasks.DownloadDataTask;
+import org.toedev.amongus.tasks.tasks.FuelFillTask;
 import org.toedev.amongus.tasks.tasks.UploadDataTask;
 import org.toedev.amongus.tasks.tasks.WiresTask;
 
@@ -62,20 +63,24 @@ public class TaskHandler implements Listener {
         if(task == null) return;
         if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
         if(task.isInUse()) return;
+        if(task.getLocation().distance(player.getLocation()) > amongUs.getDistanceFromTask()) {
+            player.sendMessage(Prefix.prefix + red + "You must be closer to the task to start it!");
+            return;
+        }
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
             task.setInUse(true);
         } else if(task instanceof DownloadDataTask) {
             ((DownloadDataTask) task).execute(player);
-            task.setInUse(true);
         } else if(task instanceof UploadDataTask) {
             if(gameHandler.getPlayerTasks(player).contains(taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
                 player.sendMessage(Prefix.prefix + red + "You must first complete the Download Data task before uploading the data here!");
             } else {
                 ((UploadDataTask) task).execute(player);
-                task.setInUse(true);
             }
+        } else if(task instanceof FuelFillTask) {
+            ((FuelFillTask) task).execute(player);
         }
     }
 
@@ -201,6 +206,24 @@ public class TaskHandler implements Listener {
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the DownloadData task!");
                     break;
                 }
+            } else if(task instanceof UploadDataTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((UploadDataTask) task).cancel();
+                    task.setInUse(false);
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the UploadData task!");
+                    break;
+                }
+            } else if(task instanceof FuelFillTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((FuelFillTask) task).cancel();
+                    task.setInUse(false);
+                    ((FuelFillTask) task).clearInventory();
+                    player.closeInventory();
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the FuelFill task!");
+                    break;
+                }
             }
         }
     }
@@ -222,6 +245,46 @@ public class TaskHandler implements Listener {
                 player.setExp(0.0f);
                 gameHandler.completePlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)));
             }, 20);
+        }
+    }
+
+    @EventHandler
+    public void onFuelFillClick(InventoryClickEvent event) {
+        if(!event.getView().getTitle().equalsIgnoreCase("Fuel Fill")) return;
+        event.setCancelled(true);
+        if(event.getClickedInventory() == null) return;
+        if(event.getSlot() == -999) return;
+        if(event.getClickedInventory().getItem(event.getSlot()) == null) return;
+        if(event.getSlot() != 53) return;
+        ItemStack bluePane = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+        ItemMeta bluePaneMeta = bluePane.getItemMeta();
+        assert bluePaneMeta != null;
+        bluePaneMeta.setDisplayName(" ");
+        bluePane.setItemMeta(bluePaneMeta);
+        for(int i = 0; i <= 52; i++) {
+            if(!Objects.equals(event.getClickedInventory().getItem(i), bluePane)) {
+                return;
+            }
+        }
+        Player player = (Player) event.getWhoClicked();
+        scheduler.runTaskLater(amongUs, () -> {
+            player.closeInventory();
+            gameHandler.completePlayerTask(player, taskManager.getFuelFillTask(gameHandler.getMapPlayerIsIn(player)));
+        }, 5);
+    }
+
+    @EventHandler
+    public void onFuelFillClose(InventoryCloseEvent event) {
+        if(!event.getView().getTitle().equalsIgnoreCase("Fuel Fill")) return;
+        Player player = (Player) event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player) == null) return;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof FuelFillTask) {
+                ((FuelFillTask) task).cancel();
+                task.setInUse(false);
+                ((FuelFillTask) task).clearInventory();
+            }
         }
     }
 
