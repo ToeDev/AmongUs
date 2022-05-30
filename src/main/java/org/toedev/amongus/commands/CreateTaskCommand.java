@@ -68,6 +68,10 @@ public class CreateTaskCommand {
             Location loc = regionPoints.get(0);
             taskManager.addFuelFillTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Fuel Fill task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("fuelempty")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addFuelEmptyTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Fuel Empty task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         }
 
     }

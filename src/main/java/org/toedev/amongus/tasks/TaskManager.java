@@ -9,10 +9,7 @@ import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.sql.Utility;
-import org.toedev.amongus.tasks.tasks.DownloadDataTask;
-import org.toedev.amongus.tasks.tasks.FuelFillTask;
-import org.toedev.amongus.tasks.tasks.UploadDataTask;
-import org.toedev.amongus.tasks.tasks.WiresTask;
+import org.toedev.amongus.tasks.tasks.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,6 +82,15 @@ public class TaskManager {
                         tasks.add(fTask);
                         allTasks.put(map, tasks);
                     }
+                } else if(taskName.equalsIgnoreCase("fuelempty")) {
+                    FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, taskLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(fTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(fTask);
+                        allTasks.put(map, tasks);
+                    }
                 }
                 Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
             }
@@ -148,6 +154,18 @@ public class TaskManager {
         return null;
     }
 
+    public FuelEmptyTask getFuelEmptyTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof FuelEmptyTask) {
+                    return (FuelEmptyTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location);
         if(allTasks.get(map) != null) {
@@ -186,6 +204,18 @@ public class TaskManager {
 
     public void addFuelFillTask(Map map, Location location) throws SQLException {
         FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, location);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(fTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(fTask);
+            allTasks.put(map, tasks);
+        }
+        saveTask(map, fTask);
+    }
+
+    public void addFuelEmptyTask(Map map, Location location) throws SQLException {
+        FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, location);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(fTask);
         } else {

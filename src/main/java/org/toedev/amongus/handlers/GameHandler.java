@@ -290,6 +290,18 @@ public class GameHandler {
             playerTasks.put(player, pTasks);
             Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "downloaddata");
         }
+        if(playerTasks.get(player).contains(taskManager.getFuelFillTask(map)) && !playerTasks.get(player).contains(taskManager.getFuelEmptyTask(map))) {
+            pTasks = playerTasks.get(player);
+            pTasks.add(taskManager.getFuelEmptyTask(map));
+            playerTasks.put(player, pTasks);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelempty");
+        }
+        if(playerTasks.get(player).contains(taskManager.getFuelEmptyTask(map)) && !playerTasks.get(player).contains(taskManager.getFuelFillTask(map))) {
+            pTasks = playerTasks.get(player);
+            pTasks.add(taskManager.getFuelFillTask(map));
+            playerTasks.put(player, pTasks);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelfill");
+        }
     }
 
     public List<AbstractTask> getPlayerTasks(Player player) {

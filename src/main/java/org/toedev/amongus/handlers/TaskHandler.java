@@ -23,10 +23,7 @@ import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
-import org.toedev.amongus.tasks.tasks.DownloadDataTask;
-import org.toedev.amongus.tasks.tasks.FuelFillTask;
-import org.toedev.amongus.tasks.tasks.UploadDataTask;
-import org.toedev.amongus.tasks.tasks.WiresTask;
+import org.toedev.amongus.tasks.tasks.*;
 
 import java.util.Objects;
 
@@ -81,6 +78,12 @@ public class TaskHandler implements Listener {
             }
         } else if(task instanceof FuelFillTask) {
             ((FuelFillTask) task).execute(player);
+        } else if(task instanceof FuelEmptyTask) {
+            if(gameHandler.getPlayerTasks(player).contains(taskManager.getFuelFillTask(gameHandler.getMapPlayerIsIn(player)))) {
+                player.sendMessage(Prefix.prefix + red + "You must first complete the Fuel Fill task before emptying the gas here!");
+            } else {
+                ((FuelEmptyTask) task).execute(player);
+            }
         }
     }
 
@@ -249,7 +252,7 @@ public class TaskHandler implements Listener {
     }
 
     @EventHandler
-    public void onFuelFillClick(InventoryClickEvent event) {
+    public void onFuelClick(InventoryClickEvent event) {
         if(!event.getView().getTitle().equalsIgnoreCase("Fuel Fill")) return;
         event.setCancelled(true);
         if(event.getClickedInventory() == null) return;
@@ -261,20 +264,34 @@ public class TaskHandler implements Listener {
         assert bluePaneMeta != null;
         bluePaneMeta.setDisplayName(" ");
         bluePane.setItemMeta(bluePaneMeta);
-        for(int i = 0; i <= 52; i++) {
-            if(!Objects.equals(event.getClickedInventory().getItem(i), bluePane)) {
+        Player player = (Player) event.getWhoClicked();
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof FuelFillTask) {
+                for(int i = 0; i <= 52; i++) {
+                    if(!Objects.equals(event.getClickedInventory().getItem(i), bluePane)) {
+                        return;
+                    }
+                }
+                scheduler.runTaskLater(amongUs, () -> {
+                    player.closeInventory();
+                    gameHandler.completePlayerTask(player, taskManager.getFuelFillTask(gameHandler.getMapPlayerIsIn(player)));
+                }, 5);
                 return;
             }
         }
-        Player player = (Player) event.getWhoClicked();
+        for(int i = 0; i <= 52; i++) {
+            if(!Objects.equals(event.getClickedInventory().getItem(i), null)) {
+                return;
+            }
+        }
         scheduler.runTaskLater(amongUs, () -> {
             player.closeInventory();
-            gameHandler.completePlayerTask(player, taskManager.getFuelFillTask(gameHandler.getMapPlayerIsIn(player)));
+            gameHandler.completePlayerTask(player, taskManager.getFuelEmptyTask(gameHandler.getMapPlayerIsIn(player)));
         }, 5);
     }
 
     @EventHandler
-    public void onFuelFillClose(InventoryCloseEvent event) {
+    public void onFuelClose(InventoryCloseEvent event) {
         if(!event.getView().getTitle().equalsIgnoreCase("Fuel Fill")) return;
         Player player = (Player) event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
@@ -284,6 +301,10 @@ public class TaskHandler implements Listener {
                 ((FuelFillTask) task).cancel();
                 task.setInUse(false);
                 ((FuelFillTask) task).clearInventory();
+            } else if(task instanceof FuelEmptyTask) {
+                ((FuelEmptyTask) task).cancel();
+                task.setInUse(false);
+                ((FuelEmptyTask) task).clearInventory();
             }
         }
     }

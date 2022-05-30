@@ -55,7 +55,7 @@ public class FuelFillTask extends AbstractTask {
         glassStage5_6Meta.setDisplayName(" ");
         glassStage5_6.setItemMeta(glassStage5_6Meta);
 
-        gasCanHead = createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY5ZDlkZTYyZWNhZTliNzk4NTU1ZmQyM2U4Y2EzNWUyNjA1MjkxOTM5YzE4NjJmZTc5MDY2Njk4Yzk1MDhhNyJ9fX0=", "Click to grab the fuel");
+        gasCanHead = createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY5ZDlkZTYyZWNhZTliNzk4NTU1ZmQyM2U4Y2EzNWUyNjA1MjkxOTM5YzE4NjJmZTc5MDY2Njk4Yzk1MDhhNyJ9fX0=", "Click to grab the fuel can");
         taskIDs = new ArrayList<>();
     }
 
@@ -75,49 +75,29 @@ public class FuelFillTask extends AbstractTask {
         int i = 1;
         taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
             for(int s = 45; s <= 53; s++) {
-                if (s == 53) {
-                    fuelFillInv.setItem(s, gasCanHead);
-                } else {
-                    fuelFillInv.setItem(s, glassStage1_2);
-                }
+                fuelFillInv.setItem(s, glassStage1_2);
             }}, 20 * i).getTaskId());
         i++;
         taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
             for(int s = 36; s <= 53; s++) {
-                if (s == 53) {
-                    fuelFillInv.setItem(s, gasCanHead);
-                } else {
-                    fuelFillInv.setItem(s, glassStage1_2);
-                }
+                fuelFillInv.setItem(s, glassStage1_2);
             }}, 20 * i).getTaskId());
         i++;
         taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
             for(int s = 27; s <= 53; s++) {
-                if (s == 53) {
-                    fuelFillInv.setItem(s, gasCanHead);
-                } else {
-                    fuelFillInv.setItem(s, glassStage3_4);
-                }
+                fuelFillInv.setItem(s, glassStage3_4);
             }
         }, 20 * i).getTaskId());
         i++;
         taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
             for(int s = 18; s <= 53; s++) {
-                if (s == 53) {
-                    fuelFillInv.setItem(s, gasCanHead);
-                } else {
-                    fuelFillInv.setItem(s, glassStage3_4);
-                }
+                fuelFillInv.setItem(s, glassStage3_4);
             }
         }, 20 * i).getTaskId());
         i++;
         taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
             for(int s = 9; s <= 53; s++) {
-                if (s == 53) {
-                    fuelFillInv.setItem(s, gasCanHead);
-                } else {
-                    fuelFillInv.setItem(s, glassStage5_6);
-                }
+                fuelFillInv.setItem(s, glassStage5_6);
             }
         }, 20 * i).getTaskId());
         i++;
