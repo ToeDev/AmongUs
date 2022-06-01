@@ -45,21 +45,49 @@ public class SimonSaysTask extends AbstractTask {
         for(Integer i : taskIDs) {
             scheduler.cancelTask(i);
         }
+        slotOrder = new ArrayList<>();
     }
 
-    public void execute(Player player, Integer slots) {
+    public List<Integer> getSlotOrder() {
+        return slotOrder;
+    }
+
+    public ItemStack getRedBlock() {
+        return redBlock;
+    }
+
+    public ItemStack getGreenBlock() {
+        return greenBlock;
+    }
+
+    public Inventory getSimonInv() {
+        return simonInv;
+    }
+
+    public void execute(Player player) {
         setInUse(true);
-        slotOrder = new ArrayList<>();
+        if(slotOrder == null) slotOrder = new ArrayList<>();
         for(int i = 0; i <= simonInv.getSize() - 1; i++) {
             simonInv.setItem(i, redBlock);
         }
         player.openInventory(simonInv);
-        //TODO DO SOMETHING HERE
+        slotOrder.add(getRandomSlot());
+        int i = 1;
+        for(Integer slot : slotOrder) {
+            taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
+                simonInv.setItem(slot, greenBlock);
+            }, 20L * i).getTaskId());
+            i++;
+        }
+        taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
+            for(int f = 0; f <= simonInv.getSize() - 1; f++) {
+                simonInv.setItem(f, redBlock);
+            }
+        }, 20L * i).getTaskId());
     }
 
     public Integer getRandomSlot() {
-        Random random = new Random();
-        return random.ints(0, simonInv.getSize()).findFirst().getAsInt();
+        return new Random().ints(0, simonInv.getSize()).findFirst().getAsInt();
     }
 
     private ItemStack createPlayerHead(String base64, String name) {

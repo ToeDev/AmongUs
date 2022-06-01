@@ -91,6 +91,15 @@ public class TaskManager {
                         tasks.add(fTask);
                         allTasks.put(map, tasks);
                     }
+                } else if(taskName.equalsIgnoreCase("simonsays")) {
+                    SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, taskLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(sTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(sTask);
+                        allTasks.put(map, tasks);
+                    }
                 }
                 Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
             }
@@ -166,6 +175,18 @@ public class TaskManager {
         return null;
     }
 
+    public SimonSaysTask getSimonSaysTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof SimonSaysTask) {
+                    return (SimonSaysTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location);
         if(allTasks.get(map) != null) {
@@ -224,6 +245,18 @@ public class TaskManager {
             allTasks.put(map, tasks);
         }
         saveTask(map, fTask);
+    }
+
+    public void addSimonSaysTask(Map map, Location location) throws SQLException {
+        SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, location);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(sTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(sTask);
+            allTasks.put(map, tasks);
+        }
+        saveTask(map, sTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {

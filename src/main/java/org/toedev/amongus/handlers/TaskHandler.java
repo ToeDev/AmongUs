@@ -25,6 +25,7 @@ import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.tasks.*;
 
+import java.util.List;
 import java.util.Objects;
 
 public class TaskHandler implements Listener {
@@ -67,7 +68,6 @@ public class TaskHandler implements Listener {
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
-            task.setInUse(true);
         } else if(task instanceof DownloadDataTask) {
             ((DownloadDataTask) task).execute(player);
         } else if(task instanceof UploadDataTask) {
@@ -84,6 +84,8 @@ public class TaskHandler implements Listener {
             } else {
                 ((FuelEmptyTask) task).execute(player);
             }
+        } else if(task instanceof SimonSaysTask) {
+            ((SimonSaysTask) task).execute(player);
         }
     }
 
@@ -305,6 +307,42 @@ public class TaskHandler implements Listener {
                 ((FuelEmptyTask) task).cancel();
                 task.setInUse(false);
                 ((FuelEmptyTask) task).clearInventory();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSimonSaysClick(InventoryClickEvent event) {
+        if(!event.getView().getTitle().equalsIgnoreCase("Simon Says")) return;
+        event.setCancelled(true);
+        if(event.getClickedInventory() == null) return;
+        if(event.getSlot() == -999) return;
+        if(event.getClickedInventory().getItem(event.getSlot()) == null) return;
+        List<Integer> slotOrder = null;
+        int currentGreen = 0;
+        Player player = (Player) event.getWhoClicked();
+        AbstractTask t = null;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof SimonSaysTask) {
+                slotOrder = ((SimonSaysTask) task).getSlotOrder();
+                Inventory inv = ((SimonSaysTask) task).getSimonInv();
+                for(int i = 0; i <= inv.getSize() - 1; i++) {
+                    if(Objects.equals(inv.getItem(i), ((SimonSaysTask) task).getGreenBlock())) { //TODO THESE TWO ARENT COMPARING
+                        currentGreen++;
+                    }
+                }
+                t = task;
+                break;
+            }
+        }
+        assert slotOrder != null;
+        if(event.getSlot() == slotOrder.get(currentGreen)) {
+            ((SimonSaysTask) t).getSimonInv().setItem(event.getSlot(), ((SimonSaysTask) t).getGreenBlock());
+            if(slotOrder.size() == currentGreen + 1) {
+                AbstractTask finalT = t;
+                scheduler.runTaskLater(amongUs, () -> {
+                    ((SimonSaysTask) finalT).execute(player);
+                }, 20);
             }
         }
     }
