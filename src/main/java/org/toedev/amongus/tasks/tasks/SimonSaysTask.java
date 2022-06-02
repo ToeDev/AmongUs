@@ -66,18 +66,26 @@ public class SimonSaysTask extends AbstractTask {
 
     public void execute(Player player) {
         setInUse(true);
-        if(slotOrder == null) slotOrder = new ArrayList<>();
-        for(int i = 0; i <= simonInv.getSize() - 1; i++) {
-            simonInv.setItem(i, redBlock);
+        int i = 1;
+        if(slotOrder == null) {
+            slotOrder = new ArrayList<>();
+            for(int s = 0; s <= simonInv.getSize() - 1; s++) {
+                simonInv.setItem(s, redBlock);
+            }
+        } else  {
+            taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
+                for(int s = 0; s <= simonInv.getSize() - 1; s++) {
+                    simonInv.setItem(s, redBlock);
+                }
+            }, 20L * i).getTaskId());
+            i++;
         }
         player.openInventory(simonInv);
-        int r;
-        for(int s : slotOrder) {
+        int r = getRandomSlot();
+        while(slotOrder.contains(r)) {
             r = getRandomSlot();
-            if(r != s) break;
         }
         slotOrder.add(r);
-        int i = 1;
         for(Integer slot : slotOrder) {
             taskIDs.add(scheduler.runTaskLater(amongUs, () -> {
                 simonInv.setItem(slot, greenBlock);
