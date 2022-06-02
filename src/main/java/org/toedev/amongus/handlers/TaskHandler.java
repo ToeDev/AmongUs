@@ -186,6 +186,7 @@ public class TaskHandler implements Listener {
 
     @EventHandler
     public void onWiresPanelClose(InventoryCloseEvent event) {
+        System.out.println("wires close");
         if(!event.getView().getTitle().equalsIgnoreCase("Wires Panel")) return;
         Player player = (Player) event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
@@ -343,8 +344,26 @@ public class TaskHandler implements Listener {
                     ((SimonSaysTask) finalT).execute(player);
                 }, 20);
             }
+        } else {
+            ((SimonSaysTask) t).cancel();
         }
     }
+
+    @EventHandler
+    public void onSimonSaysClose(InventoryCloseEvent event) {
+        System.out.println("simon close");
+        if(!event.getView().getTitle().equalsIgnoreCase("Simon Says")) return;
+        Player player = (Player) event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player) == null) return;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof SimonSaysTask) {
+                ((SimonSaysTask) task).cancel();
+                task.setInUse(false);
+            }
+        }
+    }
+
 
 
 

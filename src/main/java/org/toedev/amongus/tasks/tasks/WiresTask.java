@@ -172,7 +172,15 @@ public class WiresTask extends AbstractTask {
 
     public void execute(Player player, String color) {
         setInUse(true);
-        player.openInventory(getRandomWiresPanel(color));
+        if(!player.getOpenInventory().getTitle().equalsIgnoreCase("Wires Panel")) {
+            player.openInventory(getRandomWiresPanel(color));
+        } else {
+            Inventory pInv = player.getOpenInventory().getTopInventory();
+            Inventory inv = getRandomWiresPanel(color);
+            for(int i = 0; i <= pInv.getSize() - 1; i++) {
+                pInv.setItem(i, inv.getItem(i));
+            }
+        }
     }
 
     public Inventory getRandomWiresPanel(String color) {

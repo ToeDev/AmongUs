@@ -45,6 +45,9 @@ public class SimonSaysTask extends AbstractTask {
         for(Integer i : taskIDs) {
             scheduler.cancelTask(i);
         }
+        for(int s = 0; s <= simonInv.getSize() - 1; s++) {
+            simonInv.setItem(s, redBlock);
+        }
         slotOrder = new ArrayList<>();
     }
 
@@ -80,7 +83,9 @@ public class SimonSaysTask extends AbstractTask {
             }, 20L * i).getTaskId());
             i++;
         }
-        player.openInventory(simonInv);
+        if(!player.getOpenInventory().getTitle().equalsIgnoreCase("Simon Says")) {
+            player.openInventory(simonInv);
+        }
         int r = getRandomSlot();
         while(slotOrder.contains(r)) {
             r = getRandomSlot();
