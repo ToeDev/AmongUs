@@ -325,9 +325,8 @@ public class TaskHandler implements Listener {
         for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
             if(task instanceof SimonSaysTask) {
                 slotOrder = ((SimonSaysTask) task).getSlotOrder();
-                Inventory inv = ((SimonSaysTask) task).getSimonInv();
-                for(int i = 0; i <= inv.getSize() - 1; i++) {
-                    if(Objects.equals(inv.getItem(i), ((SimonSaysTask) task).getGreenBlock())) { //TODO THESE TWO ARENT COMPARING
+                for(int i = 0; i <= event.getClickedInventory().getSize() - 1; i++) {
+                    if(Objects.equals(event.getClickedInventory().getItem(i).toString(), ((SimonSaysTask) task).getGreenBlock().toString())) {
                         currentGreen++;
                     }
                 }

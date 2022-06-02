@@ -31,7 +31,7 @@ public class TestCommand {
         } else if(args[1].equals("startmap")) {
             gameHandler.addPlayerToMap(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()));
         } else if(args[1].equals("givetasks")) {
-            gameHandler.givePlayerRandomTasks(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()), 4);
+            gameHandler.givePlayerRandomTasks(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()), 6);
         }
     }
 }
