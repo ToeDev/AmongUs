@@ -49,6 +49,7 @@ public class SimonSaysTask extends AbstractTask {
             simonInv.setItem(s, redBlock);
         }
         slotOrder = new ArrayList<>();
+        setInUse(false);
     }
 
     public List<Integer> getSlotOrder() {

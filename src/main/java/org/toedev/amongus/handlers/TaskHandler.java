@@ -3,6 +3,7 @@ package org.toedev.amongus.handlers;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -86,6 +87,8 @@ public class TaskHandler implements Listener {
             }
         } else if(task instanceof SimonSaysTask) {
             ((SimonSaysTask) task).execute(player);
+        } else if(task instanceof KeypadTask) {
+            ((KeypadTask) task).execute(player);
         }
     }
 
@@ -186,7 +189,6 @@ public class TaskHandler implements Listener {
 
     @EventHandler
     public void onWiresPanelClose(InventoryCloseEvent event) {
-        System.out.println("wires close");
         if(!event.getView().getTitle().equalsIgnoreCase("Wires Panel")) return;
         Player player = (Player) event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
@@ -335,23 +337,30 @@ public class TaskHandler implements Listener {
                 break;
             }
         }
-        assert slotOrder != null;
-        if(event.getSlot() == slotOrder.get(currentGreen)) {
+        AbstractTask finalT = t;
+        if(slotOrder.size() > currentGreen && event.getSlot() == slotOrder.get(currentGreen)) {
             ((SimonSaysTask) t).getSimonInv().setItem(event.getSlot(), ((SimonSaysTask) t).getGreenBlock());
             if(slotOrder.size() == currentGreen + 1) {
-                AbstractTask finalT = t;
-                scheduler.runTaskLater(amongUs, () -> {
+                if(slotOrder.size() == 5) {
+                    scheduler.runTaskLater(amongUs, () -> {
+                        player.closeInventory();
+                        gameHandler.completePlayerTask(player, finalT);
+                    }, 20);
+                } else {
                     ((SimonSaysTask) finalT).execute(player);
-                }, 20);
+                }
             }
         } else {
-            ((SimonSaysTask) t).cancel();
+            ((SimonSaysTask) t).getSimonInv().setItem(event.getSlot(), ((SimonSaysTask) t).getGreenBlock());
+            scheduler.runTaskLater(amongUs, () -> {
+                ((SimonSaysTask) finalT).cancel();
+                player.closeInventory();
+            }, 20);
         }
     }
 
     @EventHandler
     public void onSimonSaysClose(InventoryCloseEvent event) {
-        System.out.println("simon close");
         if(!event.getView().getTitle().equalsIgnoreCase("Simon Says")) return;
         Player player = (Player) event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
@@ -359,8 +368,36 @@ public class TaskHandler implements Listener {
         for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
             if(task instanceof SimonSaysTask) {
                 ((SimonSaysTask) task).cancel();
-                task.setInUse(false);
             }
+        }
+    }
+
+    @EventHandler
+    public void onKeypadClick(InventoryClickEvent event) {
+        if(!event.getView().getTitle().equalsIgnoreCase("Keypad")) return;
+        event.setCancelled(true);
+        if(event.getClickedInventory() == null) return;
+        if(event.getSlot() == -999) return;
+        if(event.getClickedInventory().getItem(event.getSlot()) == null) return;
+        Player player = (Player) event.getWhoClicked();
+        AbstractTask t = null;
+        List<Integer> keypadOrder = null;
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof KeypadTask) {
+                keypadOrder = ((KeypadTask) task).getKeypadOrder();
+                t = task;
+                break;
+            }
+        }
+        if(keypadOrder.get(event.getSlot()) == ((KeypadTask)t).getCompleted()) {
+            ((KeypadTask)t).getKeypadInv().setItem(event.getSlot(), ((KeypadTask)t).getNumberHeadsDone().get(keypadOrder.get(event.getSlot())));
+        } else {
+            ((KeypadTask)t).cancel();
+            player.closeInventory();
+        }
+        if(((KeypadTask)t).getCompleted() == ((KeypadTask)t).getKeypadInv().getSize()) {
+            player.closeInventory();
+            gameHandler.completePlayerTask(player, t);
         }
     }
 

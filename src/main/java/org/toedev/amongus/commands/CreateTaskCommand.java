@@ -76,8 +76,11 @@ public class CreateTaskCommand {
             Location loc = regionPoints.get(0);
             taskManager.addSimonSaysTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Simon Says task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("keypad")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addKeypadTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Keypad task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         }
-
     }
 
     private List<Location> getPoints(CommandSender sender) {
