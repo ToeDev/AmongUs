@@ -80,16 +80,6 @@ public class KeypadTask extends AbstractTask {
     public void execute(Player player) {
         setInUse(true);
         keypadOrder = new ArrayList<>();
-        /*int i = 0;
-        for(ItemStack stack : numberHeads) {
-            int r = getRandomSlot();
-            while(keypadOrder.contains(r)) {
-                r = getRandomSlot();
-            }
-            keypadOrder.add(r);
-            keypadInv.setItem(0, numberHeads.get(r));
-            i++;
-        }*/
         for(int i = 0; i <= keypadInv.getSize() - 1; i++) {
             int r = getRandomSlot();
             while(keypadOrder.contains(r)) {
@@ -117,7 +107,6 @@ public class KeypadTask extends AbstractTask {
                 }
             }
         }
-        System.out.println(i);
         return i;
     }
 

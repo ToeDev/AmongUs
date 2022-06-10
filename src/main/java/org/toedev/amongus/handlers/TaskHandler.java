@@ -380,22 +380,22 @@ public class TaskHandler implements Listener {
         if(event.getSlot() == -999) return;
         if(event.getClickedInventory().getItem(event.getSlot()) == null) return;
         Player player = (Player) event.getWhoClicked();
-        AbstractTask t = null;
+        KeypadTask t = null;
         List<Integer> keypadOrder = null;
         for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
             if(task instanceof KeypadTask) {
                 keypadOrder = ((KeypadTask) task).getKeypadOrder();
-                t = task;
+                t = (KeypadTask) task;
                 break;
             }
         }
-        if(keypadOrder.get(event.getSlot()) == ((KeypadTask)t).getCompleted()) {
-            ((KeypadTask)t).getKeypadInv().setItem(event.getSlot(), ((KeypadTask)t).getNumberHeadsDone().get(keypadOrder.get(event.getSlot())));
+        if(keypadOrder.get(event.getSlot()) == t.getCompleted()) {
+            t.getKeypadInv().setItem(event.getSlot(), t.getNumberHeadsDone().get(keypadOrder.get(event.getSlot())));
         } else {
-            ((KeypadTask)t).cancel();
+            t.cancel();
             player.closeInventory();
         }
-        if(((KeypadTask)t).getCompleted() == ((KeypadTask)t).getKeypadInv().getSize()) {
+        if(t.getCompleted() == t.getKeypadInv().getSize()) {
             player.closeInventory();
             gameHandler.completePlayerTask(player, t);
         }

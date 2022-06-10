@@ -309,6 +309,17 @@ public class TaskManager {
         return null;
     }
 
+    public AbstractTask getTaskByName(String name) {
+        for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
+            for(AbstractTask task : getAllTasks(entry.getKey())) {
+                if(task.getName().equalsIgnoreCase(name)) {
+                    return task;
+                }
+            }
+        }
+        return null;
+    }
+
     private void saveTask(Map map, AbstractTask task) throws SQLException {
         utility.addTask(map, task);
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" added to DB");
