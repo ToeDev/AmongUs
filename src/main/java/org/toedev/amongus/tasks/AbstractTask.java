@@ -12,12 +12,12 @@ public abstract class AbstractTask {
     private Location taskAreaMaxLocation;
     private boolean inUse;
 
-    public AbstractTask(String name, Map map, Location location) {
+    public AbstractTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
         this.name = name;
         this.map = map;
         this.location = location;
-        this.taskAreaMinLocation = null;
-        this.taskAreaMaxLocation = null;
+        this.taskAreaMinLocation = taskAreaMinLocation;
+        this.taskAreaMaxLocation = taskAreaMaxLocation;
         this.inUse = false;
     }
 
@@ -34,10 +34,16 @@ public abstract class AbstractTask {
     }
 
     public Location getTaskAreaMinLocation() {
+        if(taskAreaMinLocation == null || taskAreaMinLocation.getWorld() == null) {
+            return null;
+        }
         return taskAreaMinLocation;
     }
 
     public Location getTaskAreaMaxLocation() {
+        if(taskAreaMaxLocation == null || taskAreaMaxLocation.getWorld() == null) {
+            return null;
+        }
         return taskAreaMaxLocation;
     }
 

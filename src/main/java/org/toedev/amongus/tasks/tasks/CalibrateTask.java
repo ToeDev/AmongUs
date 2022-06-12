@@ -18,14 +18,14 @@ public class CalibrateTask extends AbstractTask {
     public Location taskAreaMin;
     public Location taskAreaMax;
 
-    public CalibrateTask(AmongUs amongus, String name, Map map, Location location) {
-        super(name, map, location);
+    public CalibrateTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
         this.amongUs = amongus;
         this.scheduler = amongus.getServer().getScheduler();
 
         this.taskIDs = new ArrayList<>();
-        taskAreaMin = getTaskAreaMinLocation();
-        taskAreaMax = getTaskAreaMaxLocation();
+        this.taskAreaMin = getTaskAreaMinLocation();
+        this.taskAreaMax = getTaskAreaMaxLocation();
     }
 
     public void cancel() {

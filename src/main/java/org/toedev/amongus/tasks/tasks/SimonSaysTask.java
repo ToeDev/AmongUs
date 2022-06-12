@@ -30,8 +30,8 @@ public class SimonSaysTask extends AbstractTask {
     public ItemStack greenBlock;
     public List<Integer> slotOrder;
 
-    public SimonSaysTask(AmongUs amongUs, String name, Map map, Location location) {
-        super(name, map, location);
+    public SimonSaysTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
         this.amongUs = amongUs;
         this.scheduler = amongUs.getServer().getScheduler();
 

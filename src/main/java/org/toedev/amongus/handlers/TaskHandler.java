@@ -89,6 +89,8 @@ public class TaskHandler implements Listener {
             ((SimonSaysTask) task).execute(player);
         } else if(task instanceof KeypadTask) {
             ((KeypadTask) task).execute(player);
+        } else if(task instanceof CalibrateTask) {
+            ((CalibrateTask) task).execute(player);
         }
     }
 

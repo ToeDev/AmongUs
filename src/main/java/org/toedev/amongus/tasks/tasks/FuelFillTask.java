@@ -33,8 +33,8 @@ public class FuelFillTask extends AbstractTask {
 
     private List<Integer> taskIDs;
 
-    public FuelFillTask(AmongUs amongUs, String name, Map map, Location location) {
-        super(name, map, location);
+    public FuelFillTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
         this.amongUs = amongUs;
         this.scheduler = amongUs.getServer().getScheduler();
 

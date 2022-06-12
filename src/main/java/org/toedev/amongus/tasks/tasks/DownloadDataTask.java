@@ -16,8 +16,8 @@ public class DownloadDataTask extends AbstractTask {
     private final BukkitScheduler scheduler;
     private List<Integer> taskIDs;
 
-    public DownloadDataTask(AmongUs amongUs, String name, Map map, Location location) {
-        super(name, map, location);
+    public DownloadDataTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
         this.amongUs = amongUs;
         this.scheduler = amongUs.getServer().getScheduler();
         this.taskIDs = new ArrayList<>();

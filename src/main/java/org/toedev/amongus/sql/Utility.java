@@ -171,22 +171,22 @@ public class Utility extends Database {
         double taskX = task.getLocation().getX();
         double taskY = task.getLocation().getY();
         double taskZ = task.getLocation().getZ();
-        World taskAreaMinWorld = task.getTaskAreaMinLocation().getWorld();
-        double taskAreaMinX = task.getTaskAreaMinLocation().getX();
-        double taskAreaMinY = task.getTaskAreaMinLocation().getY();
-        double taskAreaMinZ = task.getTaskAreaMinLocation().getZ();
-        World taskAreaMaxWorld = task.getTaskAreaMaxLocation().getWorld();
-        double taskAreaMaxX = task.getTaskAreaMaxLocation().getX();
-        double taskAreaMaxY = task.getTaskAreaMaxLocation().getY();
-        double taskAreaMaxZ = task.getTaskAreaMaxLocation().getZ();
+        World taskAreaMinWorld = task.getTaskAreaMinLocation() == null ? null : task.getTaskAreaMinLocation().getWorld();
+        double taskAreaMinX = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getX();
+        double taskAreaMinY = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getY();
+        double taskAreaMinZ = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getZ();
+        World taskAreaMaxWorld = task.getTaskAreaMaxLocation() == null ? null : task.getTaskAreaMaxLocation().getWorld();
+        double taskAreaMaxX = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getX();
+        double taskAreaMaxY = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getY();
+        double taskAreaMaxZ = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getZ();
         update("INSERT INTO `tasks` (mapName, taskName, " +
                 "taskWorld, taskX, taskY, taskZ, " +
                 "taskAreaMinWorld, taskAreaMinX, taskAreaMinY, taskAreaMinZ, " +
                 "taskAreaMaxWorld, taskAreaMaxX, taskAreaMaxY, taskAreaMaxZ) " +
                 "VALUES(\"" + map.getName() + "\", \"" + task.getName() + "\", " +
                 "\"" + Objects.requireNonNull(taskWorld).getName() + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\", " +
-                "\"" + Objects.requireNonNull(taskAreaMinWorld).getName() + "\", \"" + taskAreaMinX + "\", \"" + taskAreaMinY + "\", \"" + taskAreaMinZ + "\", " +
-                "\"" + Objects.requireNonNull(taskAreaMaxWorld).getName() + "\", \"" + taskAreaMaxX + "\", \"" + taskAreaMaxY + "\", \"" + taskAreaMaxZ + "\");"
+                "\"" + (taskAreaMinWorld == null ? null : taskAreaMinWorld.getName()) + "\", \"" + taskAreaMinX + "\", \"" + taskAreaMinY + "\", \"" + taskAreaMinZ + "\", " +
+                "\"" + (taskAreaMaxWorld == null ? null : taskAreaMaxWorld.getName()) + "\", \"" + taskAreaMaxX + "\", \"" + taskAreaMaxY + "\", \"" + taskAreaMaxZ + "\");"
         );
     }
 
