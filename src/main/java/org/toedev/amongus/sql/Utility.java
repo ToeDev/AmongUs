@@ -190,19 +190,35 @@ public class Utility extends Database {
         );
     }
 
-    /*public void updateTask(Map map, AbstractTask task) {
+    public void updateTask(Map map, AbstractTask task) {
         World taskWorld = task.getLocation().getWorld();
         double taskX = task.getLocation().getX();
         double taskY = task.getLocation().getY();
         double taskZ = task.getLocation().getZ();
+        World taskAreaMinWorld = task.getTaskAreaMinLocation() == null ? null : task.getTaskAreaMinLocation().getWorld();
+        double taskAreaMinX = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getX();
+        double taskAreaMinY = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getY();
+        double taskAreaMinZ = task.getTaskAreaMinLocation() == null ? 0 : task.getTaskAreaMinLocation().getZ();
+        World taskAreaMaxWorld = task.getTaskAreaMaxLocation() == null ? null : task.getTaskAreaMaxLocation().getWorld();
+        double taskAreaMaxX = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getX();
+        double taskAreaMaxY = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getY();
+        double taskAreaMaxZ = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getZ();
         update("UPDATE `tasks`" +
                 " SET" +
                 " taskWorld = \"" + Objects.requireNonNull(taskWorld).getName() + "\"," +
                 " taskX = \"" + taskX + "\"," +
                 " taskY = \"" + taskY + "\"," +
-                " taskZ = \"" + taskZ + "\"" +
+                " taskZ = \"" + taskZ + "\"," +
+                " taskAreaMinWorld = \"" + (taskAreaMinWorld == null ? null : taskAreaMinWorld.getName()) + "\"," +
+                " taskAreaMinX = \"" + taskAreaMinX + "\"," +
+                " taskAreaMinY = \"" + taskAreaMinY + "\"," +
+                " taskAreaMinZ = \"" + taskAreaMinZ + "\"," +
+                " taskAreaMaxWorld = \"" + (taskAreaMaxWorld == null ? null : taskAreaMaxWorld.getName()) + "\"," +
+                " taskAreaMaxX = \"" + taskAreaMaxX + "\"," +
+                " taskAreaMaxY = \"" + taskAreaMaxY + "\"," +
+                " taskAreaMaxZ = \"" + taskAreaMaxZ + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\"" +
                 " AND taskName = \"" + task.getName() + "\";"
         );
-    }*/
+    }
 }

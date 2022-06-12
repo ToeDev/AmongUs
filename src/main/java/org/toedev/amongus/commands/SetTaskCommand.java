@@ -51,8 +51,7 @@ public class SetTaskCommand {
         if(args[3].equalsIgnoreCase("setarea")) {
             Location taskAreaMin = regionPoints.get(0);
             Location taskAreaMax = regionPoints.get(1);
-            taskManager.getTaskByName(args[1]).setTaskAreaMinLocation(taskAreaMin);
-            taskManager.getTaskByName(args[1]).setTaskAreaMaxLocation(taskAreaMax);
+            taskManager.setTaskArea(mapManager.getMap(args[2]), args[1], taskAreaMin, taskAreaMax);
             sender.sendMessage(Prefix.prefix + purple + "Task area set at " + gold + taskAreaMin.getBlockX() + ", " + taskAreaMin.getBlockY() + ", " + taskAreaMin.getBlockZ() + purple + " - " + gold + taskAreaMax.getBlockX() + ", " + taskAreaMax.getBlockY() + ", " + taskAreaMax.getBlockZ());
             return;
         }

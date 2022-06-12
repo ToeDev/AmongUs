@@ -118,6 +118,16 @@ public class TaskManager {
                         allTasks.put(map, tasks);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                } else if(taskName.equalsIgnoreCase("calibrate")) {
+                    CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(cTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(cTask);
+                        allTasks.put(map, tasks);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 }
             }
         } catch (SQLException e) {
@@ -216,6 +226,18 @@ public class TaskManager {
         return null;
     }
 
+    public CalibrateTask getCalibrateTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof CalibrateTask) {
+                    return (CalibrateTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null);
         if(allTasks.get(map) != null) {
@@ -300,6 +322,18 @@ public class TaskManager {
         saveTask(map, kTask);
     }
 
+    public void addCalibrateTask(Map map, Location location) throws SQLException {
+        CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, location, null, null);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(cTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(cTask);
+            allTasks.put(map, tasks);
+        }
+        saveTask(map, cTask);
+    }
+
     public AbstractTask getTaskByLocation(Location location) {
         for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
             for(AbstractTask task : getAllTasks(entry.getKey())) {
@@ -320,6 +354,24 @@ public class TaskManager {
             }
         }
         return null;
+    }
+
+    public void setTaskArea(Map map, String name, Location taskAreaMin, Location taskAreaMax) throws SQLException {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task.getName().equalsIgnoreCase(name)) {
+                    task.setTaskAreaMinLocation(taskAreaMin);
+                    task.setTaskAreaMaxLocation(taskAreaMax);
+                    updateTask(map, task);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void updateTask(Map map, AbstractTask task) throws SQLException {
+        utility.updateTask(map, task);
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" updated in the DB");
     }
 
     private void saveTask(Map map, AbstractTask task) throws SQLException {
