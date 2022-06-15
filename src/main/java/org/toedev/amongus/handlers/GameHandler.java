@@ -12,6 +12,7 @@ import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
+import org.toedev.amongus.tasks.tasks.CalibrateTask;
 
 import java.util.*;
 
@@ -261,6 +262,7 @@ public class GameHandler {
 
     public void givePlayerRandomTasks(Map map, Player player, int tasks) {
         List<AbstractTask> newList = new ArrayList<>(taskManager.getAllTasks(map));
+
         while(tasks > 0) {
             Random random = new Random();
             int r = random.ints(0, newList.size()).findFirst().getAsInt();
