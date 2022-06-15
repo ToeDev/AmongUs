@@ -190,6 +190,13 @@ public class Utility extends Database {
         );
     }
 
+    public void removeTask(Map map, String name) {
+        update("DELETE FROM `tasks`" +
+                " WHERE mapName = \"" + map.getName() + "\"" +
+                " AND taskName = \"" + name + "\";"
+        );
+    }
+
     public void updateTask(Map map, AbstractTask task) {
         World taskWorld = task.getLocation().getWorld();
         double taskX = task.getLocation().getX();

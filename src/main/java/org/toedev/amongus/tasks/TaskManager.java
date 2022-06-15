@@ -247,7 +247,7 @@ public class TaskManager {
             tasks.add(wTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, wTask);
+        addTaskToDB(map, wTask);
     }
 
     public void addDownloadDataTask(Map map, Location location) throws SQLException {
@@ -259,7 +259,7 @@ public class TaskManager {
             tasks.add(dTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, dTask);
+        addTaskToDB(map, dTask);
     }
 
     public void addUploadDataTask(Map map, Location location) throws SQLException {
@@ -271,7 +271,7 @@ public class TaskManager {
             tasks.add(uTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, uTask);
+        addTaskToDB(map, uTask);
     }
 
     public void addFuelFillTask(Map map, Location location) throws SQLException {
@@ -283,7 +283,7 @@ public class TaskManager {
             tasks.add(fTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, fTask);
+        addTaskToDB(map, fTask);
     }
 
     public void addFuelEmptyTask(Map map, Location location) throws SQLException {
@@ -295,7 +295,7 @@ public class TaskManager {
             tasks.add(fTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, fTask);
+        addTaskToDB(map, fTask);
     }
 
     public void addSimonSaysTask(Map map, Location location) throws SQLException {
@@ -307,7 +307,7 @@ public class TaskManager {
             tasks.add(sTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, sTask);
+        addTaskToDB(map, sTask);
     }
 
     public void addKeypadTask(Map map, Location location) throws SQLException {
@@ -319,7 +319,7 @@ public class TaskManager {
             tasks.add(kTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, kTask);
+        addTaskToDB(map, kTask);
     }
 
     public void addCalibrateTask(Map map, Location location) throws SQLException {
@@ -331,7 +331,7 @@ public class TaskManager {
             tasks.add(cTask);
             allTasks.put(map, tasks);
         }
-        saveTask(map, cTask);
+        addTaskToDB(map, cTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {
@@ -356,26 +356,55 @@ public class TaskManager {
         return null;
     }
 
-    public void setTaskArea(Map map, String name, Location taskAreaMin, Location taskAreaMax) throws SQLException {
+    public AbstractTask getTaskByMap(Map map, String name) {
         if(allTasks.get(map) != null) {
             for(AbstractTask task : allTasks.get(map)) {
                 if(task.getName().equalsIgnoreCase(name)) {
-                    task.setTaskAreaMinLocation(taskAreaMin);
-                    task.setTaskAreaMaxLocation(taskAreaMax);
-                    updateTask(map, task);
-                    return;
+                    return task;
                 }
             }
         }
+        return null;
     }
 
-    private void updateTask(Map map, AbstractTask task) throws SQLException {
-        utility.updateTask(map, task);
-        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" updated in the DB");
+    public void setTaskArea(Map map, String name, Location taskAreaMin, Location taskAreaMax) throws SQLException {
+        if(getTaskByMap(map, name) != null) {
+            getTaskByMap(map, name).setTaskAreaMinLocation(taskAreaMin);
+            getTaskByMap(map, name).setTaskAreaMaxLocation(taskAreaMax);
+            updateTaskInDB(map, getTaskByMap(map, name));
+        }
     }
 
-    private void saveTask(Map map, AbstractTask task) throws SQLException {
+    public void removeTask(Map map, String name) throws SQLException {
+        if(doesTaskExistInMap(map, name)) {
+            allTasks.get(map).remove(getTaskByName(name));
+            deleteTaskFromDB(map, name);
+        }
+    }
+
+    public boolean doesTaskExistInMap(Map map, String name) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task.getName().equalsIgnoreCase(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void addTaskToDB(Map map, AbstractTask task) throws SQLException {
         utility.addTask(map, task);
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" added to DB");
+    }
+
+    private void deleteTaskFromDB(Map map, String name) throws SQLException {
+        utility.removeTask(map, name);
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + name + "\" for Map: \"" + map.getName() + "\" deleted from the DB");
+    }
+
+    private void updateTaskInDB(Map map, AbstractTask task) throws SQLException {
+        utility.updateTask(map, task);
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" updated in the DB");
     }
 }

@@ -70,6 +70,8 @@ public class CalibrateTask extends AbstractTask {
                     }
                 }
             }
+        } else {
+            System.out.println("TASK AREA NULL");
         }
     }
 
