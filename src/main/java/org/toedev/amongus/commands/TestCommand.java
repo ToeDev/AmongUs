@@ -29,9 +29,9 @@ public class TestCommand {
         } else if(args[1].equals("despawn")) {
             npcHandler.despawnAllNPCs();
         } else if(args[1].equals("startmap")) {
-            gameHandler.addPlayerToMap(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()));
+            gameHandler.addPlayerToMap(mapManager.getMap("skeld"), Bukkit.getPlayer(sender.getName()));
         } else if(args[1].equals("givetasks")) {
-            gameHandler.givePlayerRandomTasks(mapManager.getMap("polus"), Bukkit.getPlayer(sender.getName()), 7);
+            gameHandler.givePlayerRandomTasks(mapManager.getMap("skeld"), Bukkit.getPlayer(sender.getName()), 8);
         }
     }
 }
