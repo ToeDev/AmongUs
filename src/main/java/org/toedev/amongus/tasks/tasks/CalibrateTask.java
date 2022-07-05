@@ -1,6 +1,8 @@
 package org.toedev.amongus.tasks.tasks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.toedev.amongus.AmongUs;
@@ -15,8 +17,8 @@ public class CalibrateTask extends AbstractTask {
     private final AmongUs amongUs;
     private final BukkitScheduler scheduler;
     public List<Integer> taskIDs;
-    public Location taskAreaMin;
-    public Location taskAreaMax;
+
+    public List<Material> blocks;
 
     public CalibrateTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
         super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
@@ -24,8 +26,11 @@ public class CalibrateTask extends AbstractTask {
         this.scheduler = amongus.getServer().getScheduler();
 
         this.taskIDs = new ArrayList<>();
-        this.taskAreaMin = getTaskAreaMinLocation();
-        this.taskAreaMax = getTaskAreaMaxLocation();
+        this.blocks = new ArrayList<>();
+        this.blocks.add(Material.RED_WOOL);
+        this.blocks.add(Material.BLUE_WOOL);
+        this.blocks.add(Material.LIME_WOOL);
+        this.blocks.add(Material.YELLOW_WOOL);
     }
 
     public void cancel() {
@@ -36,7 +41,12 @@ public class CalibrateTask extends AbstractTask {
     }
 
     public void execute(Player player) {
-        System.out.println(getTaskAreaMinLocation());
-        System.out.println(getTaskAreaMaxLocation());
+        setInUse(true);
+        List<Location> locs = new ArrayList<>(getTaskAreaLocs());
+        for(Location loc : locs) {
+            for(Material mat : blocks) {
+                loc.getBlock().setType(mat);
+            }
+        }
     }
 }

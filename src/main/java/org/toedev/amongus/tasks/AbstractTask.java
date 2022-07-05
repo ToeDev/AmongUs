@@ -20,6 +20,8 @@ public abstract class AbstractTask {
         this.map = map;
         this.location = location;
         this.taskAreaLocs = new ArrayList<>();
+        this.setTaskAreaMinLocation(taskAreaMinLocation);
+        this.setTaskAreaMaxLocation(taskAreaMaxLocation);
         this.inUse = false;
     }
 
@@ -33,6 +35,10 @@ public abstract class AbstractTask {
 
     public Location getLocation() {
         return location;
+    }
+
+    public List<Location> getTaskAreaLocs() {
+        return taskAreaLocs;
     }
 
     public Location getTaskAreaMinLocation() {
