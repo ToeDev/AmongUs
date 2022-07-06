@@ -2,6 +2,7 @@ package org.toedev.amongus.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -211,7 +212,6 @@ public class TaskHandler implements Listener {
             if(task instanceof DownloadDataTask) {
                 if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
                     ((DownloadDataTask) task).cancel();
-                    task.setInUse(false);
                     player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the DownloadData task!");
                     break;
@@ -219,7 +219,6 @@ public class TaskHandler implements Listener {
             } else if(task instanceof UploadDataTask) {
                 if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
                     ((UploadDataTask) task).cancel();
-                    task.setInUse(false);
                     player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the UploadData task!");
                     break;
@@ -227,11 +226,18 @@ public class TaskHandler implements Listener {
             } else if(task instanceof FuelFillTask) {
                 if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
                     ((FuelFillTask) task).cancel();
-                    task.setInUse(false);
                     ((FuelFillTask) task).clearInventory();
                     player.closeInventory();
                     player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the FuelFill task!");
+                    break;
+                }
+            } else if(task instanceof CalibrateTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((CalibrateTask) task).cancel();
+                    player.getInventory().clear();
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Calibrate task!");
                     break;
                 }
             }
@@ -400,6 +406,42 @@ public class TaskHandler implements Listener {
         if(t.getCompleted() == t.getKeypadInv().getSize()) {
             player.closeInventory();
             gameHandler.completePlayerTask(player, t);
+        }
+    }
+
+    @EventHandler
+    public void onCalibrateBlockInteract(PlayerInteractEvent event) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
+        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(map == null) return;
+        AbstractTask task = taskManager.getTaskByTaskAreaLocation(event.getClickedBlock().getLocation());
+        if(task == null) return;
+        if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
+        if(!task.isInUse()) return;
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task area block which is part of task: " + gold + task.getName());
+        Location location = event.getClickedBlock().getLocation();
+        if(!(task instanceof CalibrateTask)) return;
+        if(((CalibrateTask) task).isBlockMoving(location)) {
+            if(location.getBlock().getType().equals(((CalibrateTask) task).getCurrentBlock())) {
+                ((CalibrateTask) task).stopBlock(location);
+                if(((CalibrateTask) task).areAllBlocksStopped()) {
+                    player.getInventory().clear();
+                    gameHandler.completePlayerTask(player, task);
+                }
+            } else {
+                ((CalibrateTask) task).cancel();
+                player.getInventory().clear();
+                player.sendMessage(Prefix.prefix + red + "Wrong block! Try again!");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Calibrate task!");
+            }
+        } else {
+            ((CalibrateTask) task).cancel();
+            player.getInventory().clear();
+            player.sendMessage(Prefix.prefix + red + "You already stopped this block! Try again!");
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Calibrate task!");
         }
     }
 

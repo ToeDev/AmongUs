@@ -40,6 +40,7 @@ public class DownloadDataTask extends AbstractTask {
         for(Integer i : taskIDs) {
             scheduler.cancelTask(i);
         }
+        setInUse(false);
     }
 
     public void execute(Player player) {

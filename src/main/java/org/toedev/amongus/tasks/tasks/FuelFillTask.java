@@ -63,6 +63,7 @@ public class FuelFillTask extends AbstractTask {
         for(Integer i : taskIDs) {
             scheduler.cancelTask(i);
         }
+        setInUse(false);
     }
 
     public void clearInventory() {

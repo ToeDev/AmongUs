@@ -345,6 +345,17 @@ public class TaskManager {
         return null;
     }
 
+    public AbstractTask getTaskByTaskAreaLocation(Location location) {
+        for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
+            for(AbstractTask task : getAllTasks(entry.getKey())) {
+                if(task.getTaskAreaLocs().contains(location)) {
+                    return task;
+                }
+            }
+        }
+        return null;
+    }
+
     public AbstractTask getTaskByName(String name) {
         for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
             for(AbstractTask task : getAllTasks(entry.getKey())) {
