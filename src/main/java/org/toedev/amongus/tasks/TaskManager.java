@@ -128,6 +128,16 @@ public class TaskManager {
                         allTasks.put(map, tasks);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                } else if(taskName.equalsIgnoreCase("medbayscan")) {
+                    MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(mTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(mTask);
+                        allTasks.put(map, tasks);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 }
             }
         } catch (SQLException e) {
@@ -238,6 +248,18 @@ public class TaskManager {
         return null;
     }
 
+    public MedbayScanTask getMedbayScanTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof MedbayScanTask) {
+                    return (MedbayScanTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null);
         if(allTasks.get(map) != null) {
@@ -334,6 +356,18 @@ public class TaskManager {
         addTaskToDB(map, cTask);
     }
 
+    public void addMedbayScanTask(Map map, Location location) throws SQLException {
+        MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, location, null, null);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(mTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(mTask);
+            allTasks.put(map, tasks);
+        }
+        addTaskToDB(map, mTask);
+    }
+
     public AbstractTask getTaskByLocation(Location location) {
         for(java.util.Map.Entry<Map, List<AbstractTask>> entry : allTasks.entrySet()) {
             for(AbstractTask task : getAllTasks(entry.getKey())) {
@@ -380,8 +414,7 @@ public class TaskManager {
 
     public void setTaskArea(Map map, String name, Location taskAreaMin, Location taskAreaMax) throws SQLException {
         if(getTaskByMap(map, name) != null) {
-            getTaskByMap(map, name).setTaskAreaMinLocation(taskAreaMin);
-            getTaskByMap(map, name).setTaskAreaMaxLocation(taskAreaMax);
+            getTaskByMap(map, name).setTaskAreaCorners(taskAreaMin, taskAreaMax);
             updateTaskInDB(map, getTaskByMap(map, name));
         }
     }

@@ -84,6 +84,10 @@ public class CreateTaskCommand {
             Location loc = regionPoints.get(0);
             taskManager.addCalibrateTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Calibrate task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("medbayscan")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addMedbayScanTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Medbay Scan task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         }
     }
 

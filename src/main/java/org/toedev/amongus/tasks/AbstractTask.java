@@ -20,8 +20,7 @@ public abstract class AbstractTask {
         this.map = map;
         this.location = location;
         this.taskAreaLocs = new ArrayList<>();
-        this.setTaskAreaMinLocation(taskAreaMinLocation);
-        this.setTaskAreaMaxLocation(taskAreaMaxLocation);
+        if(taskAreaMinLocation.getWorld() != null) this.setTaskAreaCorners(taskAreaMinLocation, taskAreaMaxLocation);
         this.inUse = false;
     }
 
@@ -49,7 +48,7 @@ public abstract class AbstractTask {
         return findExtremeLoc(false);
     }
 
-    public void setTaskAreaMinLocation(Location location) {
+    /*public void setTaskAreaMinLocation(Location location) {
         taskAreaLocs.add(location);
         if(taskAreaLocs.size() == 2) {
             iterateTaskArea();
@@ -61,6 +60,13 @@ public abstract class AbstractTask {
         if(taskAreaLocs.size() == 2) {
             iterateTaskArea();
         }
+    }*/
+
+    public void setTaskAreaCorners(Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+        taskAreaLocs.clear();
+        taskAreaLocs.add(taskAreaMinLocation);
+        taskAreaLocs.add(taskAreaMaxLocation);
+        iterateTaskArea();
     }
 
     private Location findExtremeLoc(boolean min) {
