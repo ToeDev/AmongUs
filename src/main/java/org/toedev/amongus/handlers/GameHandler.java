@@ -310,6 +310,15 @@ public class GameHandler {
         return playerTasks.get(player);
     }
 
+    public AbstractTask getPlayerTask(Player player, String name) {
+        for(AbstractTask t : getPlayerTasks(player)) {
+            if(t.getName().equalsIgnoreCase(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     public void completePlayerTask(Player player, AbstractTask task) {
         if(playerTasks.get(player) != null) {
             task.setInUse(false);

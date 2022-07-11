@@ -20,7 +20,7 @@ public abstract class AbstractTask {
         this.map = map;
         this.location = location;
         this.taskAreaLocs = new ArrayList<>();
-        if(taskAreaMinLocation.getWorld() != null) this.setTaskAreaCorners(taskAreaMinLocation, taskAreaMaxLocation);
+        if(taskAreaMinLocation != null) this.setTaskAreaCorners(taskAreaMinLocation, taskAreaMaxLocation);
         this.inUse = false;
     }
 

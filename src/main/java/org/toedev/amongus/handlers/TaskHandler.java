@@ -93,7 +93,11 @@ public class TaskHandler implements Listener {
         } else if(task instanceof CalibrateTask) {
             ((CalibrateTask) task).execute(player);
         } else if(task instanceof MedbayScanTask) {
-            ((MedbayScanTask) task).execute(player);
+            if(((MedbayScanTask) task).isWithinTaskArea(player)) {
+                ((MedbayScanTask) task).execute(player);
+            } else {
+                player.sendMessage(Prefix.prefix + red + "You must be standing in the scan area to start the task!");
+            }
         }
     }
 
@@ -242,6 +246,13 @@ public class TaskHandler implements Listener {
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Calibrate task!");
                     break;
                 }
+            } else if(task instanceof MedbayScanTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((MedbayScanTask) task).cancel();
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the MedbayScan task!");
+                    break;
+                }
             }
         }
     }
@@ -252,17 +263,21 @@ public class TaskHandler implements Listener {
         Player player = event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
         if(gameHandler.getPlayerTasks(player).contains(taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
-            scheduler.runTaskLater(amongUs, () -> {
-                player.setLevel(0);
-                player.setExp(0.0f);
-                gameHandler.completePlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)));
-            }, 20);
+            if(gameHandler.getPlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)).getName()).isInUse()) {
+                scheduler.runTaskLater(amongUs, () -> {
+                    player.setLevel(0);
+                    player.setExp(0.0f);
+                    gameHandler.completePlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)));
+                }, 20);
+            }
         } else if(gameHandler.getPlayerTasks(player).contains(taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
-            scheduler.runTaskLater(amongUs, () -> {
-                player.setLevel(0);
-                player.setExp(0.0f);
-                gameHandler.completePlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)));
-            }, 20);
+            if(gameHandler.getPlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)).getName()).isInUse()) {
+                scheduler.runTaskLater(amongUs, () -> {
+                    player.setLevel(0);
+                    player.setExp(0.0f);
+                    gameHandler.completePlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)));
+                }, 20);
+            }
         }
     }
 
@@ -444,6 +459,25 @@ public class TaskHandler implements Listener {
             player.getInventory().clear();
             player.sendMessage(Prefix.prefix + red + "You already stopped this block! Try again!");
             Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Calibrate task!");
+        }
+    }
+
+    @EventHandler
+    public void onMedbayScanCompleteTask(PlayerLevelChangeEvent event) {
+        if(event.getNewLevel() != 100) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        MedbayScanTask task = taskManager.getMedbayScanTask(gameHandler.getMapPlayerIsIn(player));
+        if(task == null) return;
+        if(gameHandler.getPlayerTasks(player).contains(task)) {
+            if(gameHandler.getPlayerTask(player, task.getName()).isInUse()) {
+                scheduler.runTaskLater(amongUs, () -> {
+                    player.setLevel(0);
+                    player.setExp(0.0f);
+                    task.cancel();
+                    gameHandler.completePlayerTask(player, task);
+                }, 20);
+            }
         }
     }
 
