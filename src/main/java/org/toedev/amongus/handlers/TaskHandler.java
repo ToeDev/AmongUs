@@ -98,6 +98,8 @@ public class TaskHandler implements Listener {
             } else {
                 player.sendMessage(Prefix.prefix + red + "You must be standing in the scan area to start the task!");
             }
+        } else if(task instanceof InspectSampleTask) {
+            ((InspectSampleTask) task).execute(player);
         }
     }
 
@@ -480,6 +482,26 @@ public class TaskHandler implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void onInspectSampleCompleteTask(PlayerInteractEvent event) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
+        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(map == null) return;
+        InspectSampleTask task = taskManager.getInspectSampleTask(gameHandler.getMapPlayerIsIn(player));
+        if(task == null) return;
+        if(gameHandler.getPlayerTasks(player).contains(task)) {
+            if(gameHandler.getPlayerTask(player, task.getName()).isInUse() && task.isFinished()) {
+                scheduler.runTaskLater(amongUs, () -> {
+                    gameHandler.completePlayerTask(player, task);
+                }, 0);
+            }
+        }
+    }
+
 
 
 

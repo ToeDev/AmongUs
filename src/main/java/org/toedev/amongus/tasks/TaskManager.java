@@ -138,6 +138,16 @@ public class TaskManager {
                         allTasks.put(map, tasks);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                } else if(taskName.equalsIgnoreCase("inspectsample")) {
+                    InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(iTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(iTask);
+                        allTasks.put(map, tasks);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 }
             }
         } catch (SQLException e) {
@@ -260,6 +270,18 @@ public class TaskManager {
         return null;
     }
 
+    public InspectSampleTask getInspectSampleTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof InspectSampleTask) {
+                    return (InspectSampleTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null);
         if(allTasks.get(map) != null) {
@@ -366,6 +388,18 @@ public class TaskManager {
             allTasks.put(map, tasks);
         }
         addTaskToDB(map, mTask);
+    }
+
+    public void addInspectSampleTask(Map map, Location location) throws SQLException {
+        InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, location, null, null);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(iTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(iTask);
+            allTasks.put(map, tasks);
+        }
+        addTaskToDB(map, iTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {
