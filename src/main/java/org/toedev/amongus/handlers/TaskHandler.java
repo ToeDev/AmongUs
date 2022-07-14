@@ -100,6 +100,8 @@ public class TaskHandler implements Listener {
             }
         } else if(task instanceof InspectSampleTask) {
             ((InspectSampleTask) task).execute(player);
+        } else if(task instanceof ShieldsTask) {
+            ((ShieldsTask) task).execute(player);
         }
     }
 

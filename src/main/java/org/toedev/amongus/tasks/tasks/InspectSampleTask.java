@@ -1,7 +1,6 @@
 package org.toedev.amongus.tasks.tasks;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.toedev.amongus.AmongUs;

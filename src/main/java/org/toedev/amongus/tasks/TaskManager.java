@@ -148,6 +148,16 @@ public class TaskManager {
                         allTasks.put(map, tasks);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                } else if(taskName.equalsIgnoreCase("shields")) {
+                    ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(sTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(sTask);
+                        allTasks.put(map, tasks);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 }
             }
         } catch (SQLException e) {
@@ -282,6 +292,18 @@ public class TaskManager {
         return null;
     }
 
+    public ShieldsTask getShieldsTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof ShieldsTask) {
+                    return (ShieldsTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
         WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null);
         if(allTasks.get(map) != null) {
@@ -400,6 +422,18 @@ public class TaskManager {
             allTasks.put(map, tasks);
         }
         addTaskToDB(map, iTask);
+    }
+
+    public void addShieldsTask(Map map, Location location) throws SQLException {
+        ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, location, null, null);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(sTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(sTask);
+            allTasks.put(map, tasks);
+        }
+        addTaskToDB(map, sTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {
