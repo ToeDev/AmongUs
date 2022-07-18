@@ -96,6 +96,10 @@ public class CreateTaskCommand {
             Location loc = regionPoints.get(0);
             taskManager.addShieldsTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Shields task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
+        } else if(args[1].equalsIgnoreCase("clearasteroids")) {
+            Location loc = regionPoints.get(0);
+            taskManager.addClearAsteroidsTask(mapManager.getMap(args[2]), loc);
+            sender.sendMessage(Prefix.prefix + purple + "Clear Asteroids task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         }
     }
 

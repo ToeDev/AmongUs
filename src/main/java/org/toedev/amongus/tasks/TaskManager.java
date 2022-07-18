@@ -46,10 +46,11 @@ public class TaskManager {
                 Location taskLocation = new Location(Bukkit.getWorld(taskSet.getString("taskWorld")), taskSet.getDouble("taskX"), taskSet.getDouble("taskY"), taskSet.getDouble("taskZ"));
                 Location taskAreaMinLocation = new Location(Bukkit.getWorld(taskSet.getString("taskAreaMinWorld")), taskSet.getDouble("taskAreaMinX"), taskSet.getDouble("taskAreaMinY"), taskSet.getDouble("taskAreaMinZ"));
                 Location taskAreaMaxLocation = new Location(Bukkit.getWorld(taskSet.getString("taskAreaMaxWorld")), taskSet.getDouble("taskAreaMaxX"), taskSet.getDouble("taskAreaMaxY"), taskSet.getDouble("taskAreaMaxZ"));
+                Location teleportLocation = new Location(Bukkit.getWorld(taskSet.getString("taskTeleportWorld")), taskSet.getDouble("taskTeleportX"), taskSet.getDouble("taskTeleportY"), taskSet.getDouble("taskTeleportZ"));
                 String taskName = taskSet.getString("taskName");
                 Map map = mapManager.getMap(taskSet.getString("mapName"));
                 if(taskName.equalsIgnoreCase("wires")) {
-                    WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(wTask);
                     } else {
@@ -59,7 +60,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("downloaddata")) {
-                    DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(dTask);
                     } else {
@@ -69,7 +70,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("uploaddata")) {
-                    UploadDataTask dTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    UploadDataTask dTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(dTask);
                     } else {
@@ -79,7 +80,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("fuelfill")) {
-                    FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(fTask);
                     } else {
@@ -89,7 +90,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("fuelempty")) {
-                    FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(fTask);
                     } else {
@@ -99,7 +100,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("simonsays")) {
-                    SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(sTask);
                     } else {
@@ -109,7 +110,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("keypad")) {
-                    KeypadTask tTask = new KeypadTask(Tasks.taskNames.get(KeypadTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    KeypadTask tTask = new KeypadTask(Tasks.taskNames.get(KeypadTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(tTask);
                     } else {
@@ -119,7 +120,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("calibrate")) {
-                    CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(cTask);
                     } else {
@@ -129,7 +130,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("medbayscan")) {
-                    MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(mTask);
                     } else {
@@ -139,7 +140,7 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("inspectsample")) {
-                    InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(iTask);
                     } else {
@@ -149,12 +150,22 @@ public class TaskManager {
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
                 } else if(taskName.equalsIgnoreCase("shields")) {
-                    ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation);
+                    ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
                         allTasks.get(map).add(sTask);
                     } else {
                         ArrayList<AbstractTask> tasks = new ArrayList<>();
                         tasks.add(sTask);
+                        allTasks.put(map, tasks);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                } else if(taskName.equalsIgnoreCase("clearasteroids")) {
+                    ClearAsteroidsTask cTask = new ClearAsteroidsTask(amongUs, Tasks.taskNames.get(ClearAsteroidsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
+                    if(allTasks.get(map) != null) {
+                        allTasks.get(map).add(cTask);
+                    } else {
+                        ArrayList<AbstractTask> tasks = new ArrayList<>();
+                        tasks.add(cTask);
                         allTasks.put(map, tasks);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
@@ -304,8 +315,20 @@ public class TaskManager {
         return null;
     }
 
+    public ClearAsteroidsTask getClearAsteroidsTask(Map map) {
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task instanceof ClearAsteroidsTask) {
+                    return (ClearAsteroidsTask) task;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addWiresTask(Map map, Location location) throws SQLException {
-        WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null);
+        WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(wTask);
         } else {
@@ -317,7 +340,7 @@ public class TaskManager {
     }
 
     public void addDownloadDataTask(Map map, Location location) throws SQLException {
-        DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, location, null, null);
+        DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(dTask);
         } else {
@@ -329,7 +352,7 @@ public class TaskManager {
     }
 
     public void addUploadDataTask(Map map, Location location) throws SQLException {
-        UploadDataTask uTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, location, null, null);
+        UploadDataTask uTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(uTask);
         } else {
@@ -341,7 +364,7 @@ public class TaskManager {
     }
 
     public void addFuelFillTask(Map map, Location location) throws SQLException {
-        FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, location, null, null);
+        FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(fTask);
         } else {
@@ -353,7 +376,7 @@ public class TaskManager {
     }
 
     public void addFuelEmptyTask(Map map, Location location) throws SQLException {
-        FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, location, null, null);
+        FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(fTask);
         } else {
@@ -365,7 +388,7 @@ public class TaskManager {
     }
 
     public void addSimonSaysTask(Map map, Location location) throws SQLException {
-        SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, location, null, null);
+        SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(sTask);
         } else {
@@ -377,7 +400,7 @@ public class TaskManager {
     }
 
     public void addKeypadTask(Map map, Location location) throws SQLException {
-        KeypadTask kTask = new KeypadTask(Tasks.taskNames.get(KeypadTask.class), map, location, null, null);
+        KeypadTask kTask = new KeypadTask(Tasks.taskNames.get(KeypadTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(kTask);
         } else {
@@ -389,7 +412,7 @@ public class TaskManager {
     }
 
     public void addCalibrateTask(Map map, Location location) throws SQLException {
-        CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, location, null, null);
+        CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(cTask);
         } else {
@@ -401,7 +424,7 @@ public class TaskManager {
     }
 
     public void addMedbayScanTask(Map map, Location location) throws SQLException {
-        MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, location, null, null);
+        MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(mTask);
         } else {
@@ -413,7 +436,7 @@ public class TaskManager {
     }
 
     public void addInspectSampleTask(Map map, Location location) throws SQLException {
-        InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, location, null, null);
+        InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(iTask);
         } else {
@@ -425,7 +448,7 @@ public class TaskManager {
     }
 
     public void addShieldsTask(Map map, Location location) throws SQLException {
-        ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, location, null, null);
+        ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, location, null, null, null);
         if(allTasks.get(map) != null) {
             allTasks.get(map).add(sTask);
         } else {
@@ -434,6 +457,18 @@ public class TaskManager {
             allTasks.put(map, tasks);
         }
         addTaskToDB(map, sTask);
+    }
+
+    public void addClearAsteroidsTask(Map map, Location location) throws SQLException {
+        ClearAsteroidsTask cTask = new ClearAsteroidsTask(amongUs, Tasks.taskNames.get(ClearAsteroidsTask.class), map, location, null, null, null);
+        if(allTasks.get(map) != null) {
+            allTasks.get(map).add(cTask);
+        } else {
+            ArrayList<AbstractTask> tasks = new ArrayList<>();
+            tasks.add(cTask);
+            allTasks.put(map, tasks);
+        }
+        addTaskToDB(map, cTask);
     }
 
     public AbstractTask getTaskByLocation(Location location) {
@@ -483,6 +518,13 @@ public class TaskManager {
     public void setTaskArea(Map map, String name, Location taskAreaMin, Location taskAreaMax) throws SQLException {
         if(getTaskByMap(map, name) != null) {
             getTaskByMap(map, name).setTaskAreaCorners(taskAreaMin, taskAreaMax);
+            updateTaskInDB(map, getTaskByMap(map, name));
+        }
+    }
+
+    public void setTeleport(Map map, String name, Location location) throws SQLException {
+        if(getTaskByMap(map, name) != null) {
+            getTaskByMap(map, name).setTeleport(location);
             updateTaskInDB(map, getTaskByMap(map, name));
         }
     }

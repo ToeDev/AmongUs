@@ -19,8 +19,8 @@ public class WiresTask extends AbstractTask {
 
     private final List<Inventory> wirePanels;
 
-    public WiresTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
-        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
+    public WiresTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
         Inventory wiresPanel1 = Bukkit.createInventory(null, 54, "Wires Panel");
         Inventory wiresPanel2 = Bukkit.createInventory(null, 54, "Wires Panel");
         Inventory wiresPanel3 = Bukkit.createInventory(null, 54, "Wires Panel");

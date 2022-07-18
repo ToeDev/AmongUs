@@ -5,10 +5,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -24,7 +27,9 @@ import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
+import org.toedev.amongus.tasks.CompleteTask;
 import org.toedev.amongus.tasks.TaskManager;
+import org.toedev.amongus.tasks.Tasks;
 import org.toedev.amongus.tasks.tasks.*;
 
 import java.util.List;
@@ -63,6 +68,7 @@ public class TaskHandler implements Listener {
         if(task == null) return;
         if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
         if(task.isInUse()) return;
+        if(task instanceof ClearAsteroidsTask) return;
         if(task.getLocation().distance(player.getLocation()) > amongUs.getDistanceFromTask()) {
             player.sendMessage(Prefix.prefix + red + "You must be closer to the task to start it!");
             return;
@@ -102,6 +108,26 @@ public class TaskHandler implements Listener {
             ((InspectSampleTask) task).execute(player);
         } else if(task instanceof ShieldsTask) {
             ((ShieldsTask) task).execute(player);
+        }
+    }
+
+    @EventHandler
+    public void onClearAsteroidsEnter(PlayerInteractEvent event) {
+        if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock() == null) return;
+        if(Objects.equals(event.getHand(), EquipmentSlot.OFF_HAND)) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(map == null) return;
+        AbstractTask task = taskManager.getTaskByLocation(event.getClickedBlock().getLocation());
+        if(task == null) return;
+        if(task instanceof ClearAsteroidsTask) {
+            if(task.getLocation().distance(player.getLocation()) > amongUs.getDistanceFromTask()) {
+                player.sendMessage(Prefix.prefix + red + "You must be closer to the task to start it!");
+                return;
+            }
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
+            ((ClearAsteroidsTask) task).execute(player);
         }
     }
 
@@ -255,6 +281,13 @@ public class TaskHandler implements Listener {
                     ((MedbayScanTask) task).cancel();
                     player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the MedbayScan task!");
+                    break;
+                }
+            } else if(task instanceof ShieldsTask) {
+                if(task.isInUse() && player.getLocation().distance(task.getLocation()) > 2) {
+                    ((ShieldsTask) task).cancel();
+                    player.sendMessage(Prefix.prefix + red + "You left the task area! Please return and try again!");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + red + " has left/cancelled the Shields task!");
                     break;
                 }
             }
@@ -500,6 +533,73 @@ public class TaskHandler implements Listener {
                 scheduler.runTaskLater(amongUs, () -> {
                     gameHandler.completePlayerTask(player, task);
                 }, 0);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onShieldsCompleteTask(CompleteTask event) {
+        /*if(!event.getBlock().getType().equals(Material.REDSTONE_LAMP)) return;
+        System.out.println("fired");
+        for(Map map : mapManager.getAllMaps()) {
+            if(map.isMapRunning()) {
+                for(Player player : gameHandler.getPlayersInMap(map)) {
+                    AbstractTask task = gameHandler.getPlayerTask(player, Tasks.taskNames.get(ShieldsTask.class));
+                    if(task != null) {
+                        if(task.isInUse() && ((ShieldsTask) task).isCompleted()) {
+                            scheduler.runTaskLater(amongUs, () -> {
+                                gameHandler.completePlayerTask(player, task);
+                            }, 0);
+                            return;
+                        }
+                    }
+                }
+            }
+        }*/
+        if(event.getTask() instanceof ShieldsTask) {
+            ((ShieldsTask) event.getTask()).cancel();
+        }
+        gameHandler.completePlayerTask(event.getPlayer(), event.getTask());
+    }
+
+    @EventHandler
+    public void onTargetHit(ProjectileHitEvent event) {
+        if(!event.getEntity().getType().equals(EntityType.ARROW)) return;
+        if(event.getHitEntity() != null) return;
+        if(event.getHitBlock() == null || !event.getHitBlock().getType().equals(Material.GILDED_BLACKSTONE)) return;
+        if(!(event.getEntity().getShooter() instanceof Player)) return;
+        Player player = (Player) event.getEntity().getShooter();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(map == null) return;
+        AbstractTask task = taskManager.getTaskByTaskAreaLocation(event.getHitBlock().getLocation());
+        if(task == null) return;
+        if(gameHandler.getPlayerTasks(player) == null || !gameHandler.getPlayerTasks(player).contains(task)) return;
+        if(!(task instanceof ClearAsteroidsTask)) return;
+        ((ClearAsteroidsTask) task).recordHit();
+        player.sendMessage(Prefix.prefix + purple + "Hit! Total hit: " + gold + ((ClearAsteroidsTask) task).getTotalHit() + purple + "/" + gold + "10");
+        if(((ClearAsteroidsTask) task).getTotalHit() >= 10) {
+            gameHandler.completePlayerTask(player, task);
+        }
+    }
+
+    @EventHandler
+    public void onClearAsteroidsLeave(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        if(gameHandler.getPlayerTasks(player) == null) return;
+        if(!gameHandler.getPlayerTasks(player).contains(taskManager.getClearAsteroidsTask(gameHandler.getMapPlayerIsIn(player)))) {
+            ClearAsteroidsTask task = taskManager.getClearAsteroidsTask(gameHandler.getMapPlayerIsIn(player));
+            if(task.getTeleportLocation().distance(event.getTo()) > 2 && task.getTeleportLocation().distance(event.getFrom()) < 2) {
+                task.playerLeave(player);
+            }
+        } else {
+            for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+                if(task instanceof ClearAsteroidsTask) {
+                    if(task.getTeleportLocation().distance(event.getTo()) > 2 && task.getTeleportLocation().distance(event.getFrom()) < 2) {
+                        ((ClearAsteroidsTask) task).playerLeave(player);
+                    }
+                }
             }
         }
     }

@@ -13,13 +13,15 @@ public abstract class AbstractTask {
     private final Map map;
     private final Location location;
     private final List<Location> taskAreaLocs;
+    private Location teleportLocation;
     private boolean inUse;
 
-    public AbstractTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
+    public AbstractTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
         this.name = name;
         this.map = map;
         this.location = location;
         this.taskAreaLocs = new ArrayList<>();
+        if(teleportLocation != null) this.teleportLocation = teleportLocation;
         if(taskAreaMinLocation != null) this.setTaskAreaCorners(taskAreaMinLocation, taskAreaMaxLocation);
         this.inUse = false;
     }
@@ -48,25 +50,19 @@ public abstract class AbstractTask {
         return findExtremeLoc(false);
     }
 
-    /*public void setTaskAreaMinLocation(Location location) {
-        taskAreaLocs.add(location);
-        if(taskAreaLocs.size() == 2) {
-            iterateTaskArea();
-        }
+    public Location getTeleportLocation() {
+        return teleportLocation;
     }
-
-    public void setTaskAreaMaxLocation(Location location) {
-        taskAreaLocs.add(location);
-        if(taskAreaLocs.size() == 2) {
-            iterateTaskArea();
-        }
-    }*/
 
     public void setTaskAreaCorners(Location taskAreaMinLocation, Location taskAreaMaxLocation) {
         taskAreaLocs.clear();
         taskAreaLocs.add(taskAreaMinLocation);
         taskAreaLocs.add(taskAreaMaxLocation);
         iterateTaskArea();
+    }
+
+    public void setTeleport(Location location) {
+        teleportLocation = location;
     }
 
     private Location findExtremeLoc(boolean min) {

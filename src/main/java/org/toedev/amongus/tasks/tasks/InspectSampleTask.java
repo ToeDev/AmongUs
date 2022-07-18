@@ -18,8 +18,8 @@ public class InspectSampleTask extends AbstractTask {
     public List<Integer> taskIDs;
     public boolean finished;
 
-    public InspectSampleTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
-        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
+    public InspectSampleTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
         this.amongUs = amongus;
         this.scheduler = amongus.getServer().getScheduler();
 
@@ -47,6 +47,7 @@ public class InspectSampleTask extends AbstractTask {
             i.getAndDecrement();
             if(i.get() == -1) {
                 cancel();
+                player.setExp(0);
                 finished = true;
             }
         }, 0, 20).getTaskId());

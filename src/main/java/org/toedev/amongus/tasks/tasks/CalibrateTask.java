@@ -22,8 +22,8 @@ public class CalibrateTask extends AbstractTask {
     public List<Material> blocks;
     public Material currentBlock;
 
-    public CalibrateTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
-        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
+    public CalibrateTask(AmongUs amongus, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
         this.amongUs = amongus;
         this.scheduler = amongus.getServer().getScheduler();
 

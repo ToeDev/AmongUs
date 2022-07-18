@@ -68,7 +68,11 @@ public class Utility extends Database {
             "`taskAreaMaxWorld` varchar(64) NOT NULL," +
             "`taskAreaMaxX` BIGINT NOT NULL," +
             "`taskAreaMaxY` BIGINT NOT NULL," +
-            "`taskAreaMaxZ` BIGINT NOT NULL" +
+            "`taskAreaMaxZ` BIGINT NOT NULL," +
+            "`taskTeleportWorld` varchar(64) NOT NULL," +
+            "`taskTeleportX` BIGINT NOT NULL," +
+            "`taskTeleportY` BIGINT NOT NULL," +
+            "`taskTeleportZ` BIGINT NOT NULL" +
             ");";
 
     public void load() {
@@ -179,14 +183,20 @@ public class Utility extends Database {
         double taskAreaMaxX = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getX();
         double taskAreaMaxY = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getY();
         double taskAreaMaxZ = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getZ();
+        World taskTeleportWorld = task.getTeleportLocation() == null ? null : task.getTeleportLocation().getWorld();
+        double taskTeleportX = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getX();
+        double taskTeleportY = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getY();
+        double taskTeleportZ = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getZ();
         update("INSERT INTO `tasks` (mapName, taskName, " +
                 "taskWorld, taskX, taskY, taskZ, " +
                 "taskAreaMinWorld, taskAreaMinX, taskAreaMinY, taskAreaMinZ, " +
-                "taskAreaMaxWorld, taskAreaMaxX, taskAreaMaxY, taskAreaMaxZ) " +
+                "taskAreaMaxWorld, taskAreaMaxX, taskAreaMaxY, taskAreaMaxZ, " +
+                "taskTeleportWorld, taskTeleportX, taskTeleportY, taskTeleportZ) " +
                 "VALUES(\"" + map.getName() + "\", \"" + task.getName() + "\", " +
                 "\"" + Objects.requireNonNull(taskWorld).getName() + "\", \"" + taskX + "\", \"" + taskY + "\", \"" + taskZ + "\", " +
                 "\"" + (taskAreaMinWorld == null ? null : taskAreaMinWorld.getName()) + "\", \"" + taskAreaMinX + "\", \"" + taskAreaMinY + "\", \"" + taskAreaMinZ + "\", " +
-                "\"" + (taskAreaMaxWorld == null ? null : taskAreaMaxWorld.getName()) + "\", \"" + taskAreaMaxX + "\", \"" + taskAreaMaxY + "\", \"" + taskAreaMaxZ + "\");"
+                "\"" + (taskAreaMaxWorld == null ? null : taskAreaMaxWorld.getName()) + "\", \"" + taskAreaMaxX + "\", \"" + taskAreaMaxY + "\", \"" + taskAreaMaxZ + "\", " +
+                "\"" + (taskTeleportWorld == null ? null : taskTeleportWorld.getName()) + "\", \"" + taskTeleportX + "\", \"" + taskTeleportY + "\", \"" + taskTeleportZ + "\");"
         );
     }
 
@@ -210,6 +220,10 @@ public class Utility extends Database {
         double taskAreaMaxX = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getX();
         double taskAreaMaxY = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getY();
         double taskAreaMaxZ = task.getTaskAreaMaxLocation() == null ? 0 : task.getTaskAreaMaxLocation().getZ();
+        World taskTeleportWorld = task.getTeleportLocation() == null ? null : task.getTeleportLocation().getWorld();
+        double taskTeleportX = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getX();
+        double taskTeleportY = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getY();
+        double taskTeleportZ = task.getTeleportLocation() == null ? 0 : task.getTeleportLocation().getZ();
         update("UPDATE `tasks`" +
                 " SET" +
                 " taskWorld = \"" + Objects.requireNonNull(taskWorld).getName() + "\"," +
@@ -223,7 +237,11 @@ public class Utility extends Database {
                 " taskAreaMaxWorld = \"" + (taskAreaMaxWorld == null ? null : taskAreaMaxWorld.getName()) + "\"," +
                 " taskAreaMaxX = \"" + taskAreaMaxX + "\"," +
                 " taskAreaMaxY = \"" + taskAreaMaxY + "\"," +
-                " taskAreaMaxZ = \"" + taskAreaMaxZ + "\"" +
+                " taskAreaMaxZ = \"" + taskAreaMaxZ + "\"," +
+                " taskTeleportWorld = \"" + (taskTeleportWorld == null ? null : taskTeleportWorld.getName()) + "\"," +
+                " taskTeleportX = \"" + taskTeleportX + "\"," +
+                " taskTeleportY = \"" + taskTeleportY + "\"," +
+                " taskTeleportZ = \"" + taskTeleportZ + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\"" +
                 " AND taskName = \"" + task.getName() + "\";"
         );

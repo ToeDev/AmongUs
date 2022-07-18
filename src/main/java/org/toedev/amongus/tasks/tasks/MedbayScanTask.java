@@ -18,8 +18,8 @@ public class MedbayScanTask extends AbstractTask {
     private final BukkitScheduler scheduler;
     private final List<Integer> taskIDs;
 
-    public MedbayScanTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation) {
-        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation);
+    public MedbayScanTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
+        super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
         this.amongUs = amongUs;
         this.scheduler = amongUs.getServer().getScheduler();
         this.taskIDs = new ArrayList<>();

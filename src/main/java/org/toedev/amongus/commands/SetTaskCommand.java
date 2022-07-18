@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.TaskManager;
@@ -53,6 +54,11 @@ public class SetTaskCommand {
             Location taskAreaMax = regionPoints.get(1);
             taskManager.setTaskArea(mapManager.getMap(args[2]), args[1], taskAreaMin, taskAreaMax);
             sender.sendMessage(Prefix.prefix + purple + "Task area set at " + gold + taskAreaMin.getBlockX() + ", " + taskAreaMin.getBlockY() + ", " + taskAreaMin.getBlockZ() + purple + " - " + gold + taskAreaMax.getBlockX() + ", " + taskAreaMax.getBlockY() + ", " + taskAreaMax.getBlockZ());
+            return;
+        } else if(args[3].equalsIgnoreCase("setteleport")) {
+            Location location = ((Player) sender).getLocation();
+            taskManager.setTeleport(mapManager.getMap(args[2]), args[1], location);
+            sender.sendMessage(Prefix.prefix + purple + "Teleport location set at " + gold + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
             return;
         }
         sender.sendMessage(Prefix.prefix + red + "AHHH");
