@@ -34,6 +34,7 @@ import org.toedev.amongus.tasks.tasks.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class TaskHandler implements Listener {
 
@@ -73,7 +74,8 @@ public class TaskHandler implements Listener {
             player.sendMessage(Prefix.prefix + red + "You must be closer to the task to start it!");
             return;
         }
-        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
+        Location loc = task.getLocation();
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName() + purple + " At: " + gold + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + Objects.requireNonNull(loc.getWorld()).getName());
         if(task instanceof WiresTask) {
             ((WiresTask) task).execute(player, "yellow");
         } else if(task instanceof DownloadDataTask) {
@@ -126,7 +128,8 @@ public class TaskHandler implements Listener {
                 player.sendMessage(Prefix.prefix + red + "You must be closer to the task to start it!");
                 return;
             }
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName());
+            Location loc = task.getLocation();
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " clicked a task block initiating task: " + gold + task.getName() + purple + " At: " + gold + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + Objects.requireNonNull(loc.getWorld()).getName());
             ((ClearAsteroidsTask) task).execute(player);
         }
     }
@@ -184,10 +187,27 @@ public class TaskHandler implements Listener {
             down = null;
         }
 
+        UUID uuid = null;
+        for(int i = 53; i > 0; i--) {
+            if(inv.getItem(i).getType().equals(Material.BLACK_STAINED_GLASS_PANE)) {
+                uuid = UUID.fromString(inv.getItem(i).getItemMeta().getDisplayName().substring(2));
+                break;
+            }
+        }
+        WiresTask task = null;
+        for(AbstractTask t : gameHandler.getPlayerTasks(player)) {
+            if(t instanceof WiresTask && ((WiresTask) t).getUnique() != null) {
+                if(((WiresTask) t).getUnique().equals(uuid)) {
+                    task = (WiresTask) t;
+                    break;
+                }
+            }
+        }
         if(!Objects.equals(left, block) && !Objects.equals(right, block) && !Objects.equals(up, block) && !Objects.equals(down, block)) return;
         if(Objects.equals(inv.getItem(slot), bPane)) {
             inv.setItem(slot, block);
-            scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "yellow"), 5);
+            WiresTask finalTask = task;
+            scheduler.runTaskLater(amongUs, () -> finalTask.execute(player, "yellow"), 5);
         } else {
             inv.setItem(slot, block);
             ItemStack gPane = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
@@ -212,13 +232,16 @@ public class TaskHandler implements Listener {
                 rMeta.setDisplayName(" ");
                 rWool.setItemMeta(rMeta);
                 if(Objects.equals(block, yWool)) {
-                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "blue"), 5);
+                    WiresTask finalTask1 = task;
+                    scheduler.runTaskLater(amongUs, () -> finalTask1.execute(player, "blue"), 5);
                 } else if(Objects.equals(block, bWool)) {
-                    scheduler.runTaskLater(amongUs, () -> taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)).execute(player, "red"), 5);
+                    WiresTask finalTask2 = task;
+                    scheduler.runTaskLater(amongUs, () -> finalTask2.execute(player, "red"), 5);
                 } else if(Objects.equals(block, rWool)) {
+                    WiresTask finalTask3 = task;
                     scheduler.runTaskLater(amongUs, () -> {
                         player.closeInventory();
-                        gameHandler.completePlayerTask(player, taskManager.getWiresTask(gameHandler.getMapPlayerIsIn(player)));
+                        gameHandler.completePlayerTask(player, finalTask3);
                     }, 5);
 
                 }
@@ -539,23 +562,6 @@ public class TaskHandler implements Listener {
 
     @EventHandler
     public void onShieldsCompleteTask(CompleteTask event) {
-        /*if(!event.getBlock().getType().equals(Material.REDSTONE_LAMP)) return;
-        System.out.println("fired");
-        for(Map map : mapManager.getAllMaps()) {
-            if(map.isMapRunning()) {
-                for(Player player : gameHandler.getPlayersInMap(map)) {
-                    AbstractTask task = gameHandler.getPlayerTask(player, Tasks.taskNames.get(ShieldsTask.class));
-                    if(task != null) {
-                        if(task.isInUse() && ((ShieldsTask) task).isCompleted()) {
-                            scheduler.runTaskLater(amongUs, () -> {
-                                gameHandler.completePlayerTask(player, task);
-                            }, 0);
-                            return;
-                        }
-                    }
-                }
-            }
-        }*/
         if(event.getTask() instanceof ShieldsTask) {
             ((ShieldsTask) event.getTask()).cancel();
         }

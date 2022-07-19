@@ -1,6 +1,7 @@
 package org.toedev.amongus.tasks.tasks;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,14 +11,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.tasks.AbstractTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class WiresTask extends AbstractTask {
 
     private final List<Inventory> wirePanels;
+    private UUID unique;
 
     public WiresTask(String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
         super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
@@ -170,6 +169,10 @@ public class WiresTask extends AbstractTask {
         }
     }
 
+    public UUID getUnique() {
+        return unique;
+    }
+
     public void execute(Player player, String color) {
         setInUse(true);
         if(!player.getOpenInventory().getTitle().equalsIgnoreCase("Wires Panel")) {
@@ -213,6 +216,16 @@ public class WiresTask extends AbstractTask {
                     item.setItemMeta(meta);
                     wiresPanel.setItem(i, item);
                 }
+            }
+        }
+
+        for(int i = 53; i > 0; i--) {
+            if(wiresPanel.getItem(i).getType().equals(Material.BLACK_STAINED_GLASS_PANE)) {
+                ItemMeta meta = wiresPanel.getItem(i).getItemMeta();
+                unique = UUID.randomUUID();
+                meta.setDisplayName(ChatColor.BLACK + unique.toString());
+                wiresPanel.getItem(i).setItemMeta(meta);
+                break;
             }
         }
 
