@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.Tasks;
 
@@ -50,6 +51,11 @@ public class CreateTaskCommand {
         }
         if(!regionPoints.get(0).equals(regionPoints.get(1))) {
             sender.sendMessage(Prefix.prefix + red + "You can only select 1 block for this task!");
+            return;
+        }
+        AbstractTask t = taskManager.getTaskByLocation(regionPoints.get(0));
+        if(t != null) {
+            sender.sendMessage(Prefix.prefix + red + "The task " + gold + t.getName() + red + " already exists at this location! Task locations cannot overlap!");
             return;
         }
         if(args[1].equalsIgnoreCase("wires")) {

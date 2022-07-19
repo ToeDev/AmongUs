@@ -1,8 +1,10 @@
 package org.toedev.amongus.handlers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.commands.*;
 import org.toedev.amongus.map.Map;
@@ -30,6 +32,8 @@ public class CommandHandler implements TabExecutor {
     private final StartCommand startCommand;
     private final StopCommand stopCommand;
     private final ListMapsCommand listMapsCommand;
+    private final MapInfoCommand mapInfoCommand;
+    private final PlayerInfoCommand playerInfoCommand;
     private final CreateMapCommand createMapCommand;
     private final SetLocationCommand setLocationCommand;
     private final SetMinimumCommand setMinimumCommand;
@@ -54,6 +58,8 @@ public class CommandHandler implements TabExecutor {
         this.startCommand = new StartCommand(mapManager, gameHandler);
         this.stopCommand = new StopCommand(mapManager, gameHandler);
         this.listMapsCommand = new ListMapsCommand(mapManager);
+        this.mapInfoCommand = new MapInfoCommand(mapManager, taskManager);
+        this.playerInfoCommand = new PlayerInfoCommand(mapManager, taskManager, gameHandler);
         this.createMapCommand = new CreateMapCommand(mapManager);
         this.setLocationCommand = new SetLocationCommand(mapManager);
         this.setMinimumCommand = new SetMinimumCommand(mapManager, gameHandler);
@@ -66,6 +72,8 @@ public class CommandHandler implements TabExecutor {
         this.baseCommands.add("start");
         this.baseCommands.add("stop");
         this.baseCommands.add("listmaps");
+        this.baseCommands.add("mapinfo");
+        this.baseCommands.add("playerinfo");
         this.baseCommands.add("createmap");
         this.baseCommands.add("setlocation");
         this.baseCommands.add("setminimum");
@@ -106,6 +114,14 @@ public class CommandHandler implements TabExecutor {
         }
         if(args[0].equalsIgnoreCase("listmaps")) {
             listMapsCommand.execute(sender, args);
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("mapinfo")) {
+            mapInfoCommand.execute(sender, args);
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("playerinfo")) {
+            playerInfoCommand.execute(sender, args);
             return true;
         }
         if(args[0].equalsIgnoreCase("createmap")) {
@@ -179,6 +195,10 @@ public class CommandHandler implements TabExecutor {
         for(int i = 1; i <= 20; i++) {
             numberCompletions.add(String.valueOf(i));
         }
+        final ArrayList<String> playerNameCompletions = new ArrayList<>();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            playerNameCompletions.add(p.getName());
+        }
 
         if(sender.hasPermission("amongus.admin")) {
 
@@ -200,6 +220,7 @@ public class CommandHandler implements TabExecutor {
                 switch (arg0) {
                     case "start":
                     case "stop":
+                    case "mapinfo":
                         mapCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         if (mapCompletions.isEmpty()) {
                             return null;
@@ -220,6 +241,9 @@ public class CommandHandler implements TabExecutor {
                     case "settask":
                         taskListCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         return taskListCompletions;
+                    case "playerinfo":
+                        playerNameCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        return playerNameCompletions;
                     default:
                         return null;
                 }

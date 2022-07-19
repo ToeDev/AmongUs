@@ -530,17 +530,17 @@ public class TaskManager {
         }
     }
 
-    public void removeTask(Map map, String name) throws SQLException {
-        if(doesTaskExistInMap(map, name)) {
-            allTasks.get(map).remove(getTaskByName(name));
-            deleteTaskFromDB(map, name);
+    public void removeTask(Map map, String name, Location location) throws SQLException {
+        if(doesTaskExistInMap(map, name, location)) {
+            allTasks.get(map).removeIf(t -> t.getLocation().equals(location));
+            deleteTaskFromDB(map, name, location);
         }
     }
 
-    public boolean doesTaskExistInMap(Map map, String name) {
+    public boolean doesTaskExistInMap(Map map, String name, Location location) {
         if(allTasks.get(map) != null) {
             for(AbstractTask task : allTasks.get(map)) {
-                if(task.getName().equalsIgnoreCase(name)) {
+                if(task.getName().equalsIgnoreCase(name) && task.getLocation().equals(location)) {
                     return true;
                 }
             }
@@ -548,14 +548,27 @@ public class TaskManager {
         return false;
     }
 
+    public int countTaskInMap(Map map, String name) {
+        int i = 0;
+        if(allTasks.get(map) != null) {
+            for(AbstractTask task : allTasks.get(map)) {
+                if(task.getName().equalsIgnoreCase(name)) {
+                    i++;
+                }
+            }
+        }
+        return i;
+    }
+
     private void addTaskToDB(Map map, AbstractTask task) throws SQLException {
         utility.addTask(map, task);
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + task.getName() + "\" for Map: \"" + map.getName() + "\" added to DB");
     }
 
-    private void deleteTaskFromDB(Map map, String name) throws SQLException {
-        utility.removeTask(map, name);
-        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + name + "\" for Map: \"" + map.getName() + "\" deleted from the DB");
+    private void deleteTaskFromDB(Map map, String name, Location location) throws SQLException {
+        utility.removeTask(map, name, location);
+        String loc = location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + "," + location.getWorld().getName();
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + name + "\" At: \"" + loc + "\" for Map: \"" + map.getName() + "\" deleted from the DB");
     }
 
     private void updateTaskInDB(Map map, AbstractTask task) throws SQLException {

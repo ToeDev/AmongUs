@@ -1,5 +1,9 @@
 package org.toedev.amongus.commands;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.toedev.amongus.Prefix;
@@ -27,7 +31,12 @@ public class ListMapsCommand {
         } else {
             sender.sendMessage(Prefix.prefix + purple + "---------------" + gold + "Maps" + purple + "---------------");
             for(Map map : maps) {
-                sender.sendMessage(Prefix.prefix + purple + " - " + gold + map.getName());
+                TextComponent out = new TextComponent(Prefix.prefix + purple + " - ");
+                TextComponent mapClick = new TextComponent(gold + map.getName());
+                mapClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/au mapinfo " + map.getName()));
+                mapClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("More info")));
+                out.addExtra(mapClick);
+                sender.spigot().sendMessage(out);
             }
         }
     }

@@ -100,6 +100,15 @@ public class GameHandler {
         return playersInMapQueue.get(map);
     }
 
+    public Map getMapQueuePlayerIsIn(Player player) {
+        for(Map map : mapManager.getAllMaps()) {
+            if(isPlayerInMapQueue(map, player)) {
+                return map;
+            }
+        }
+        return null;
+    }
+
     public boolean isPlayerInAnyMapQueue(Player player) {
         for(Map map : mapManager.getAllMaps()) {
             if(isPlayerInMapQueue(map, player)) {
