@@ -12,7 +12,7 @@ import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
-import org.toedev.amongus.tasks.tasks.CalibrateTask;
+import org.toedev.amongus.tasks.tasks.*;
 
 import java.util.*;
 
@@ -276,42 +276,58 @@ public class GameHandler {
             Random random = new Random();
             int r = random.ints(0, newList.size()).findFirst().getAsInt();
             AbstractTask task = newList.get(r);
-            newList.remove(task);
-            List<AbstractTask> pTasks;
-            if(playerTasks.get(player) == null) {
-                pTasks = new ArrayList<>();
-            } else {
-                pTasks = playerTasks.get(player);
+            if(!(task instanceof FuelEmptyTask) || playerTasks.get(player) == null || !playerTasks.get(player).contains(taskManager.getFuelEmptyTask(map))) {
+                newList.remove(task);
+                List<AbstractTask> pTasks;
+                if(playerTasks.get(player) == null) {
+                    pTasks = new ArrayList<>();
+                } else {
+                    pTasks = playerTasks.get(player);
+                }
+                pTasks.add(task);
+                playerTasks.put(player, pTasks);
+                tasks--;
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + task.getName());
             }
-            pTasks.add(task);
-            playerTasks.put(player, pTasks);
-            tasks--;
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + task.getName());
         }
+
         List<AbstractTask> pTasks;
-        if(playerTasks.get(player).contains(taskManager.getDownloadDataTask(map)) && !playerTasks.get(player).contains(taskManager.getUploadDataTask(map))) {
-            pTasks = playerTasks.get(player);
-            pTasks.add(taskManager.getUploadDataTask(map));
-            playerTasks.put(player, pTasks);
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "uploaddata");
+        boolean dData = false;
+        boolean uData = false;
+        boolean fFill = false;
+        boolean fEmpty = false;
+        for(AbstractTask task : playerTasks.get(player)) {
+            if(task instanceof DownloadDataTask) {
+                dData = true;
+            } else if(task instanceof UploadDataTask) {
+                uData = true;
+            } else if(task instanceof FuelFillTask) {
+                fFill = true;
+            } else if(task instanceof FuelEmptyTask) {
+                fEmpty = true;
+            }
         }
-        if(playerTasks.get(player).contains(taskManager.getUploadDataTask(map)) && !playerTasks.get(player).contains(taskManager.getDownloadDataTask(map))) {
+        if((dData || uData) && !(dData && uData)) {
             pTasks = playerTasks.get(player);
-            pTasks.add(taskManager.getDownloadDataTask(map));
+            if(dData) {
+                pTasks.add(taskManager.getUploadDataTask(map));
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "uploaddata");
+            } else {
+                pTasks.add(taskManager.getDownloadDataTask(map));
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "downloaddata");
+            }
             playerTasks.put(player, pTasks);
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "downloaddata");
         }
-        if(playerTasks.get(player).contains(taskManager.getFuelFillTask(map)) && !playerTasks.get(player).contains(taskManager.getFuelEmptyTask(map))) {
+        if((fFill || fEmpty) && !(fFill && fEmpty)) {
             pTasks = playerTasks.get(player);
-            pTasks.add(taskManager.getFuelEmptyTask(map));
+            if(fFill) {
+                pTasks.add(taskManager.getFuelEmptyTask(map));
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelempty");
+            } else {
+                pTasks.add(taskManager.getFuelFillTask(map));
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelfill");
+            }
             playerTasks.put(player, pTasks);
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelempty");
-        }
-        if(playerTasks.get(player).contains(taskManager.getFuelEmptyTask(map)) && !playerTasks.get(player).contains(taskManager.getFuelFillTask(map))) {
-            pTasks = playerTasks.get(player);
-            pTasks.add(taskManager.getFuelFillTask(map));
-            playerTasks.put(player, pTasks);
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + gold + player.getName() + purple + " was given task: " + gold + "fuelfill");
         }
     }
 

@@ -73,6 +73,10 @@ public class CreateTaskCommand {
         } else if(args[1].equalsIgnoreCase("fuelfill")) {
             Location loc = regionPoints.get(0);
             taskManager.addFuelFillTask(mapManager.getMap(args[2]), loc);
+            if(taskManager.getFuelFillTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Fuel Fill task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             sender.sendMessage(Prefix.prefix + purple + "Fuel Fill task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("fuelempty")) {
             Location loc = regionPoints.get(0);

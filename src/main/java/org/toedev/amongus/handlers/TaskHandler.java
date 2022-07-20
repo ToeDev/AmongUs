@@ -322,21 +322,21 @@ public class TaskHandler implements Listener {
         if(event.getNewLevel() != 100) return;
         Player player = event.getPlayer();
         if(!gameHandler.isPlayerInAnyMap(player)) return;
-        if(gameHandler.getPlayerTasks(player).contains(taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
-            if(gameHandler.getPlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)).getName()).isInUse()) {
+        for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
+            if(task instanceof DownloadDataTask) {
                 scheduler.runTaskLater(amongUs, () -> {
                     player.setLevel(0);
                     player.setExp(0.0f);
-                    gameHandler.completePlayerTask(player, taskManager.getDownloadDataTask(gameHandler.getMapPlayerIsIn(player)));
+                    gameHandler.completePlayerTask(player, task);
                 }, 20);
-            }
-        } else if(gameHandler.getPlayerTasks(player).contains(taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)))) {
-            if(gameHandler.getPlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)).getName()).isInUse()) {
+                break;
+            } else if(task instanceof UploadDataTask) {
                 scheduler.runTaskLater(amongUs, () -> {
                     player.setLevel(0);
                     player.setExp(0.0f);
-                    gameHandler.completePlayerTask(player, taskManager.getUploadDataTask(gameHandler.getMapPlayerIsIn(player)));
+                    gameHandler.completePlayerTask(player, task);
                 }, 20);
+                break;
             }
         }
     }
