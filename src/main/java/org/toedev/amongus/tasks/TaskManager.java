@@ -59,7 +59,7 @@ public class TaskManager {
                         tasks.add(wTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("downloaddata")) {
                     DownloadDataTask dTask = new DownloadDataTask(amongUs, Tasks.taskNames.get(DownloadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -69,7 +69,7 @@ public class TaskManager {
                         tasks.add(dTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("uploaddata")) {
                     UploadDataTask dTask = new UploadDataTask(amongUs, Tasks.taskNames.get(UploadDataTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -79,7 +79,7 @@ public class TaskManager {
                         tasks.add(dTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("fuelfill")) {
                     FuelFillTask fTask = new FuelFillTask(amongUs, Tasks.taskNames.get(FuelFillTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -89,7 +89,7 @@ public class TaskManager {
                         tasks.add(fTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("fuelempty")) {
                     FuelEmptyTask fTask = new FuelEmptyTask(amongUs, Tasks.taskNames.get(FuelEmptyTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -99,7 +99,7 @@ public class TaskManager {
                         tasks.add(fTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("simonsays")) {
                     SimonSaysTask sTask = new SimonSaysTask(amongUs, Tasks.taskNames.get(SimonSaysTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -109,7 +109,7 @@ public class TaskManager {
                         tasks.add(sTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("keypad")) {
                     KeypadTask tTask = new KeypadTask(Tasks.taskNames.get(KeypadTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -119,7 +119,7 @@ public class TaskManager {
                         tasks.add(tTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("calibrate")) {
                     CalibrateTask cTask = new CalibrateTask(amongUs, Tasks.taskNames.get(CalibrateTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -129,7 +129,7 @@ public class TaskManager {
                         tasks.add(cTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("medbayscan")) {
                     MedbayScanTask mTask = new MedbayScanTask(amongUs, Tasks.taskNames.get(MedbayScanTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -139,7 +139,7 @@ public class TaskManager {
                         tasks.add(mTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("inspectsample")) {
                     InspectSampleTask iTask = new InspectSampleTask(amongUs, Tasks.taskNames.get(InspectSampleTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -149,7 +149,7 @@ public class TaskManager {
                         tasks.add(iTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("shields")) {
                     ShieldsTask sTask = new ShieldsTask(amongUs, Tasks.taskNames.get(ShieldsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -159,7 +159,7 @@ public class TaskManager {
                         tasks.add(sTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 } else if(taskName.equalsIgnoreCase("clearasteroids")) {
                     ClearAsteroidsTask cTask = new ClearAsteroidsTask(amongUs, Tasks.taskNames.get(ClearAsteroidsTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
                     if(allTasks.get(map) != null) {
@@ -169,7 +169,7 @@ public class TaskManager {
                         tasks.add(cTask);
                         allTasks.put(map, tasks);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: \"" + taskName + "\" for Map: \"" + map.getName() + "\" imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 }
             }
         } catch (SQLException e) {

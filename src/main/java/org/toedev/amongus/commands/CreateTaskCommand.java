@@ -80,18 +80,34 @@ public class CreateTaskCommand {
             sender.sendMessage(Prefix.prefix + purple + "Fuel Empty task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("simonsays")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getSimonSaysTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Simon Says task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addSimonSaysTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Simon Says task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("keypad")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getKeypadTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Keypad task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addKeypadTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Keypad task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("calibrate")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getCalibrateTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Calibrate task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addCalibrateTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Calibrate task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("medbayscan")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getMedbayScanTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Medbay task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addMedbayScanTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Medbay Scan task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("inspectsample")) {
@@ -100,10 +116,18 @@ public class CreateTaskCommand {
             sender.sendMessage(Prefix.prefix + purple + "Inspect Sample task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("shields")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getShieldsTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Shields task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addShieldsTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Shields task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         } else if(args[1].equalsIgnoreCase("clearasteroids")) {
             Location loc = regionPoints.get(0);
+            if(taskManager.getClearAsteroidsTask(mapManager.getMap(args[2])) != null) {
+                sender.sendMessage(Prefix.prefix + red + "Clear asteroids task already exists! You cannot have more than one of this task type per map!");
+                return;
+            }
             taskManager.addClearAsteroidsTask(mapManager.getMap(args[2]), loc);
             sender.sendMessage(Prefix.prefix + purple + "Clear Asteroids task created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
         }

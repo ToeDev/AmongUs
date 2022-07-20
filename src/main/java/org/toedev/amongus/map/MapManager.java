@@ -57,7 +57,7 @@ public class MapManager {
                 map.setMapQueueHologram(mapStartSign); //TODO THIS PROBABLY NEEDS CHANGED
                 resetStartSign(map); //TODO THIS PROBABLY NEEDS CHANGED
                 this.maps.add(map);
-                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Map \"" + map.getName() + "\" imported from the DB");
+                Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Map: " + gold + map.getName() + purple + " imported from the DB");
             }
         } catch (SQLException e) {
             e.printStackTrace();

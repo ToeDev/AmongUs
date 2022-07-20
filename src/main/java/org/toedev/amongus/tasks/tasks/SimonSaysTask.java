@@ -29,6 +29,7 @@ public class SimonSaysTask extends AbstractTask {
     public ItemStack redBlock;
     public ItemStack greenBlock;
     public List<Integer> slotOrder;
+    private UUID unique;
 
     public SimonSaysTask(AmongUs amongUs, String name, Map map, Location location, Location taskAreaMinLocation, Location taskAreaMaxLocation, Location teleportLocation) {
         super(name, map, location, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);

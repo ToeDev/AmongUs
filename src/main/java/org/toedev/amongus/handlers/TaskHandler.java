@@ -406,25 +406,27 @@ public class TaskHandler implements Listener {
         if(event.getClickedInventory() == null) return;
         if(event.getSlot() == -999) return;
         if(event.getClickedInventory().getItem(event.getSlot()) == null) return;
+        Inventory inv = event.getClickedInventory();
         List<Integer> slotOrder = null;
         int currentGreen = 0;
         Player player = (Player) event.getWhoClicked();
-        AbstractTask t = null;
+
+        SimonSaysTask t = null;
         for(AbstractTask task : gameHandler.getPlayerTasks(player)) {
             if(task instanceof SimonSaysTask) {
                 slotOrder = ((SimonSaysTask) task).getSlotOrder();
-                for(int i = 0; i <= event.getClickedInventory().getSize() - 1; i++) {
-                    if(Objects.equals(event.getClickedInventory().getItem(i).toString(), ((SimonSaysTask) task).getGreenBlock().toString())) {
+                for(int i = 0; i <= inv.getSize() - 1; i++) {
+                    if(Objects.equals(inv.getItem(i).toString(), ((SimonSaysTask) task).getGreenBlock().toString())) {
                         currentGreen++;
                     }
                 }
-                t = task;
+                t = (SimonSaysTask) task;
                 break;
             }
         }
-        AbstractTask finalT = t;
+        SimonSaysTask finalT = t;
         if(slotOrder.size() > currentGreen && event.getSlot() == slotOrder.get(currentGreen)) {
-            ((SimonSaysTask) t).getSimonInv().setItem(event.getSlot(), ((SimonSaysTask) t).getGreenBlock());
+            t.getSimonInv().setItem(event.getSlot(), t.getGreenBlock());
             if(slotOrder.size() == currentGreen + 1) {
                 if(slotOrder.size() == 5) {
                     scheduler.runTaskLater(amongUs, () -> {
@@ -432,13 +434,13 @@ public class TaskHandler implements Listener {
                         gameHandler.completePlayerTask(player, finalT);
                     }, 20);
                 } else {
-                    ((SimonSaysTask) finalT).execute(player);
+                    finalT.execute(player);
                 }
             }
         } else {
-            ((SimonSaysTask) t).getSimonInv().setItem(event.getSlot(), ((SimonSaysTask) t).getGreenBlock());
+            t.getSimonInv().setItem(event.getSlot(), t.getGreenBlock());
             scheduler.runTaskLater(amongUs, () -> {
-                ((SimonSaysTask) finalT).cancel();
+                finalT.cancel();
                 player.closeInventory();
             }, 20);
         }
@@ -549,23 +551,29 @@ public class TaskHandler implements Listener {
         if(!gameHandler.isPlayerInAnyMap(player)) return;
         Map map = gameHandler.getMapPlayerIsIn(player);
         if(map == null) return;
-        InspectSampleTask task = taskManager.getInspectSampleTask(gameHandler.getMapPlayerIsIn(player));
-        if(task == null) return;
-        if(gameHandler.getPlayerTasks(player).contains(task)) {
-            if(gameHandler.getPlayerTask(player, task.getName()).isInUse() && task.isFinished()) {
-                scheduler.runTaskLater(amongUs, () -> {
-                    gameHandler.completePlayerTask(player, task);
-                }, 0);
+        for(AbstractTask t : gameHandler.getPlayerTasks(player)) {
+            if(t instanceof InspectSampleTask && t.getLocation().equals(event.getClickedBlock().getLocation())) {
+                if(t.isInUse() && ((InspectSampleTask) t).isFinished()) {
+                    scheduler.runTaskLater(amongUs, () -> {
+                        gameHandler.completePlayerTask(player, t);
+                    }, 0);
+                }
             }
         }
     }
 
     @EventHandler
     public void onShieldsCompleteTask(CompleteTask event) {
-        if(event.getTask() instanceof ShieldsTask) {
-            ((ShieldsTask) event.getTask()).cancel();
+        ShieldsTask task = null;
+        for(AbstractTask t : gameHandler.getPlayerTasks(event.getPlayer())) {
+            if(event.getTask() instanceof ShieldsTask && event.getTask().getLocation().equals(t.getLocation())) {
+                task = (ShieldsTask) t;
+            }
         }
-        gameHandler.completePlayerTask(event.getPlayer(), event.getTask());
+        if(task != null) {
+            task.cancel();
+            gameHandler.completePlayerTask(event.getPlayer(), task);
+        }
     }
 
     @EventHandler

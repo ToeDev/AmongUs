@@ -61,7 +61,7 @@ public class AmongUs extends JavaPlugin {
             mainConfig.load(configFile);
 
             distanceFromTask = mainConfig.getInt("max-distance-from-tasks");
-            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Max distance from tasks set at: " + distanceFromTask);
+            Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Max distance from tasks set at: " + gold + distanceFromTask);
         } catch(IOException | InvalidConfigurationException e) {
             Bukkit.getConsoleSender().sendMessage(Prefix.prefix + red + "Unable to load config file!");
             Bukkit.getConsoleSender().sendMessage(Prefix.prefix + e);
