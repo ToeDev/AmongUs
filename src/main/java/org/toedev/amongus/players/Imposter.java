@@ -10,4 +10,8 @@ public class Imposter extends AbstractPlayer {
         super(player, color, map);
     }
 
+    public void openImposterMenu() {
+
+    }
+
 }

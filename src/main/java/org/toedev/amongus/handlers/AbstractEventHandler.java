@@ -2,6 +2,8 @@ package org.toedev.amongus.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,10 +12,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.toedev.amongus.Materials;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.players.PlayerManager;
 import org.toedev.amongus.tasks.TaskManager;
 
 import java.util.Objects;
@@ -23,15 +27,29 @@ public class AbstractEventHandler implements Listener {
     private final MapManager mapManager;
     private final GameHandler gameHandler;
     private final TaskManager taskManager;
+    private final PlayerManager playerManager;
 
     private final ChatColor purple = ChatColor.LIGHT_PURPLE;
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
 
-    public AbstractEventHandler(MapManager mapManager, GameHandler gameHandler, TaskManager taskManager) {
+    public AbstractEventHandler(MapManager mapManager, GameHandler gameHandler, TaskManager taskManager, PlayerManager playerManager) {
         this.mapManager = mapManager;
         this.gameHandler = gameHandler;
         this.taskManager = taskManager;
+        this.playerManager = playerManager;
+    }
+
+    @EventHandler
+    public void onCompassClick(PlayerInteractEvent event) {
+        if(event.getItem() == null) return;
+        ItemStack item = event.getItem();
+        if(!item.getType().equals(Material.COMPASS)) return;
+        if(!item.getEnchantments().containsKey(Enchantment.DURABILITY)) return;
+        Player player = event.getPlayer();
+        if(!gameHandler.isPlayerInAnyMap(player)) return;
+        Map map = gameHandler.getMapPlayerIsIn(player);
+        if(!playerManager.isPlayerImposter(player)) return;
     }
 
     @EventHandler

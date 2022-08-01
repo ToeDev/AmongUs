@@ -2,14 +2,19 @@ package org.toedev.amongus.handlers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.toedev.amongus.AmongUs;
+import org.toedev.amongus.Colors;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.players.AbstractPlayer;
+import org.toedev.amongus.players.Crewmate;
+import org.toedev.amongus.players.Imposter;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.tasks.*;
@@ -28,7 +33,7 @@ public class GameHandler {
     private final MapManager mapManager;
     private final TaskManager taskManager;
 
-    private final java.util.Map<Map, Set<Player>> playersInMap;
+    private final java.util.Map<Map, Set<AbstractPlayer>> playersInMap;
     private final java.util.Map<Map, Set<Player>> playersInMapQueue;
 
     private final java.util.Map<Player, List<AbstractTask>> playerTasks;
@@ -52,9 +57,22 @@ public class GameHandler {
         this.playerTasks = new HashMap<>();
     }
 
-    public Set<Player> getPlayersInMap(Map map) {
+    public Set<AbstractPlayer> getPlayersInMap(Map map) {
         if(playersInMap.isEmpty() || playersInMap.get(map) == null || playersInMap.get(map).isEmpty()) return null;
         return playersInMap.get(map);
+    }
+
+    public AbstractPlayer getPlayerInMap(Map map, Player player) {
+        for(AbstractPlayer p : getPlayersInMap(map)) {
+            if(p.getPlayer().equals(player)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public boolean isPlayerCrewmate(AbstractPlayer player) {
+        return player instanceof Crewmate;
     }
 
     public boolean isPlayerInAnyMap(Player player) {
@@ -67,12 +85,19 @@ public class GameHandler {
     }
 
     public boolean isPlayerInMap(Map map, Player player) {
-        return playersInMap.get(map) != null && playersInMap.get(map).contains(player);
+        if(playersInMap.get(map) != null) {
+            for(AbstractPlayer p : playersInMap.get(map)) {
+                if(p.getPlayer().equals(player)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public void addPlayerToMap(Map map, Player player) {
+    public void addPlayerToMap(Map map, AbstractPlayer player) {
         if(playersInMap.get(map) == null) {
-            Set<Player> players = new HashSet<>();
+            Set<AbstractPlayer> players = new HashSet<>();
             players.add(player);
             playersInMap.put(map, players);
         } else {
@@ -80,7 +105,7 @@ public class GameHandler {
         }
     }
 
-    public void removePlayerFromMap(Map map, Player player) {
+    public void removePlayerFromMap(Map map, AbstractPlayer player) {
         if(playersInMap.get(map) != null) {
             playersInMap.get(map).remove(player);
         }
@@ -88,8 +113,12 @@ public class GameHandler {
 
     public Map getMapPlayerIsIn(Player player) {
         for(Map map : mapManager.getAllMaps()) {
-            if(playersInMap.get(map) != null && playersInMap.get(map).contains(player)) {
-                return map;
+            if(playersInMap.get(map) != null) {
+                for(AbstractPlayer p : playersInMap.get(map)) {
+                    if(p.getPlayer().equals(player)) {
+                        return map;
+                    }
+                }
             }
         }
         return null;
@@ -225,7 +254,8 @@ public class GameHandler {
                     if(playersInMapQueue.get(map).size() >= map.getMinPlayers() && playersInMapQueue.get(map).size() <= map.getMaxPlayers()) {
                         startGame(map);
                     } else if(playersInMapQueue.get(map).size() < map.getMinPlayers()) {
-                        for(Player player : playersInMapQueue.get(map)) {
+                        List<Player> p = new ArrayList<>(playersInMapQueue.get(map));
+                        for(Player player : p) {
                             if(player.isOnline() && isPlayerInMapQueue(map, player)) {
                                 player.sendMessage(Prefix.prefix + red + "Not enough players! " + gold + map.getName() + " has a minimum of " + gold + map.getMinPlayers() + red + " players needed to start a game!");
                             }
@@ -233,7 +263,8 @@ public class GameHandler {
                         }
 
                     } else if(playersInMapQueue.get(map).size() > map.getMaxPlayers()) {
-                        for(Player player : playersInMapQueue.get(map)) {
+                        List<Player> p = new ArrayList<>(playersInMapQueue.get(map));
+                        for(Player player : p) {
                             if(player.isOnline() && isPlayerInMapQueue(map, player)) {
                                 player.sendMessage(Prefix.prefix + red + "Too many players! " + gold + map.getName() + " has a maximum of " + gold + map.getMaxPlayers() + red + " players in a game!");
                             }
@@ -252,18 +283,37 @@ public class GameHandler {
         for(String split : mapName) {
             mapNameFinal.append(split.substring(0, 1).toUpperCase()).append(split.substring(1).toLowerCase());
         }
+        List<Player> crewmates = new ArrayList<>(playersInMapQueue.get(map));
+        List<Player> imposters = new ArrayList<>(); //TODO add 2 imposter support?
+        imposters.add(crewmates.remove(new Random().ints(0, crewmates.size()).findFirst().getAsInt()));
         for(Player player : playersInMapQueue.get(map)) {
-            addPlayerToMap(map, player);
-            givePlayerRandomTasks(map, player, 1);
             player.teleport(map.getMapSpawn());
             player.sendMessage(Prefix.prefix + purple + "Among Us game started on " + gold + mapNameFinal + purple + "!");
+        }
+        for(Player player : crewmates) {
+            givePlayerRandomTasks(map, player, 1);
             removePlayerFromMapQueue(map, player);
+            addPlayerToMap(map, new Crewmate(player, getAvailableColor(map), map));
+        }
+        for(Player player : imposters) {
+            removePlayerFromMapQueue(map, player);
+            addPlayerToMap(map, new Imposter(player, getAvailableColor(map), map));
         }
     }
 
+    public Color getAvailableColor(Map map) {
+        List<Color> colors = new ArrayList<>(Colors.kitColors);
+        if(playersInMap.get(map) != null) {
+            for(AbstractPlayer player : playersInMap.get(map)) {
+                colors.removeIf(color -> player.getColor().equals(color));
+            }
+        }
+        return colors.get(new Random().ints(0, colors.size()).findFirst().getAsInt());
+    }
+
     public void stopGame(Map map) {
-        for(Player player : playersInMap.get(map)) {
-            player.teleport(lobbySpawn);
+        for(AbstractPlayer player : playersInMap.get(map)) {
+            player.getPlayer().teleport(lobbySpawn);
         }
         map.setMapRunning(false);
         updateMapQueueHologram(map);

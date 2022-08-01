@@ -92,4 +92,17 @@ public class PlayerManager {
             return null;
         }
     }
+
+    public boolean isPlayerImposter(Player player) {
+        for(AbstractPlayer abstractPlayer : abstractPlayers) {
+            if(abstractPlayer.getPlayer().equals(player)) {
+                if(abstractPlayer instanceof Imposter) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 }

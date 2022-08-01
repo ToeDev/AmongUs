@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.handlers.*;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.players.PlayerManager;
 import org.toedev.amongus.sql.Utility;
 import org.toedev.amongus.tasks.TaskManager;
 
@@ -29,6 +30,7 @@ public class AmongUs extends JavaPlugin {
     private TaskHandler taskHandler;
     private NPCHandler npcHandler;
     private TaskManager taskManager;
+    private PlayerManager playerManager;
 
     private Integer distanceFromTask;
 
@@ -68,13 +70,14 @@ public class AmongUs extends JavaPlugin {
         }
 
         //Start handlers and managers
+        playerManager = new PlayerManager();
         kitHandler = new KitHandler();
         mapManager = new MapManager(this, utility);
         npcHandler = new NPCHandler(this);
         taskManager = new TaskManager(this, mapManager, utility);
         gameHandler = new GameHandler(this, mapManager, taskManager);
         new CommandHandler(this, mapManager, npcHandler, gameHandler, taskManager);
-        getServer().getPluginManager().registerEvents(new AbstractEventHandler(mapManager, gameHandler, taskManager), this);
+        getServer().getPluginManager().registerEvents(new AbstractEventHandler(mapManager, gameHandler, taskManager, playerManager), this);
         getServer().getPluginManager().registerEvents(new TaskHandler(this, mapManager, gameHandler, taskManager), this);
 
         Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Plugin Enabled Successfully");

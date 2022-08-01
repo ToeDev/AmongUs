@@ -28,10 +28,11 @@ public class TestCommand {
             npcHandler.spawnNPC(Objects.requireNonNull(Bukkit.getPlayer(sender.getName())));
         } else if(args[1].equals("despawn")) {
             npcHandler.despawnAllNPCs();
-        } else if(args[1].equals("startmap")) {
+        }
+        /*else if(args[1].equals("startmap")) {
             gameHandler.addPlayerToMap(mapManager.getMap("skeld"), Bukkit.getPlayer(sender.getName()));
         } else if(args[1].equals("givetasks")) {
             gameHandler.givePlayerRandomTasks(mapManager.getMap("skeld"), Bukkit.getPlayer(sender.getName()), 12);
-        }
+        }*/
     }
 }
