@@ -7,6 +7,7 @@ import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.sabotages.sabotages.LightsSabotage;
 import org.toedev.amongus.sql.Utility;
 import org.toedev.amongus.tasks.AbstractTask;
 import org.toedev.amongus.tasks.Tasks;
@@ -36,34 +37,32 @@ public class SabotageManager {
         this.utility = utility;
         this.mapManager = mapManager;
         this.allSabotages = new HashMap<>();
-        //importSabotagesFromDB(utility);
+        importSabotagesFromDB(utility);
     }
 
-    /*public void importTasksFromDB(Utility utility) {
+    public void importSabotagesFromDB(Utility utility) {
         try {
-            ResultSet taskSet = utility.getAllTasks();
-            if(taskSet == null) return;
-            while(taskSet.next()) {
-                Location taskLocation = new Location(Bukkit.getWorld(taskSet.getString("taskWorld")), taskSet.getDouble("taskX"), taskSet.getDouble("taskY"), taskSet.getDouble("taskZ"));
-                Location taskAreaMinLocation = new Location(Bukkit.getWorld(taskSet.getString("taskAreaMinWorld")), taskSet.getDouble("taskAreaMinX"), taskSet.getDouble("taskAreaMinY"), taskSet.getDouble("taskAreaMinZ"));
-                Location taskAreaMaxLocation = new Location(Bukkit.getWorld(taskSet.getString("taskAreaMaxWorld")), taskSet.getDouble("taskAreaMaxX"), taskSet.getDouble("taskAreaMaxY"), taskSet.getDouble("taskAreaMaxZ"));
-                Location teleportLocation = new Location(Bukkit.getWorld(taskSet.getString("taskTeleportWorld")), taskSet.getDouble("taskTeleportX"), taskSet.getDouble("taskTeleportY"), taskSet.getDouble("taskTeleportZ"));
-                String taskName = taskSet.getString("taskName");
-                Map map = mapManager.getMap(taskSet.getString("mapName"));
-                if(taskName.equalsIgnoreCase("lights")) {
-                    WiresTask wTask = new WiresTask(Tasks.taskNames.get(WiresTask.class), map, taskLocation, taskAreaMinLocation, taskAreaMaxLocation, teleportLocation);
-                    if(allTasks.get(map) != null) {
-                        allTasks.get(map).add(wTask);
+            ResultSet sabotageSet = utility.getAllSabotages();
+            if(sabotageSet == null) return;
+            while(sabotageSet.next()) {
+                Location sabotageLocation = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageWorld")), sabotageSet.getDouble("sabotageX"), sabotageSet.getDouble("sabotageY"), sabotageSet.getDouble("sabotageZ"));
+                Location sabotageOptionalLocation = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageOptionalWorld")), sabotageSet.getDouble("sabotageOptionalX"), sabotageSet.getDouble("sabotageOptionalY"), sabotageSet.getDouble("sabotageOptionalZ"));
+                String sabotageName = sabotageSet.getString("sabotageName");
+                Map map = mapManager.getMap(sabotageSet.getString("mapName"));
+                if(sabotageName.equalsIgnoreCase("lights")) {
+                    LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, sabotageLocation, sabotageOptionalLocation);
+                    if(allSabotages.get(map) != null) {
+                        allSabotages.get(map).add(lSabotage);
                     } else {
-                        ArrayList<AbstractTask> tasks = new ArrayList<>();
-                        tasks.add(wTask);
-                        allTasks.put(map, tasks);
+                        ArrayList<AbstractSabotage> sabotages = new ArrayList<>();
+                        sabotages.add(lSabotage);
+                        allSabotages.put(map, sabotages);
                     }
-                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Task: " + gold + taskName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: " + gold + sabotageName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }

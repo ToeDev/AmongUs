@@ -5,6 +5,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.map.Map;
+import org.toedev.amongus.sabotages.AbstractSabotage;
 import org.toedev.amongus.tasks.AbstractTask;
 
 import java.io.File;
@@ -75,10 +76,25 @@ public class Utility extends Database {
             "`taskTeleportZ` BIGINT NOT NULL" +
             ");";
 
+    public String SQLiteCreateSabotagesTable = "CREATE TABLE IF NOT EXISTS sabotages (" +
+            "`sabotageID` INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "`mapName` varchar(32) NOT NULL," +
+            "`sabotageName` varchar(32) NOT NULL," +
+            "`sabotageWorld` varchar(64) NOT NULL," +
+            "`sabotageX` BIGINT NOT NULL," +
+            "`sabotageY` BIGINT NOT NULL," +
+            "`sabotageZ` BIGINT NOT NULL," +
+            "`sabotageOptionalWorld` varchar(64) NOT NULL," +
+            "`sabotageOptionalX` BIGINT NOT NULL," +
+            "`sabotageOptionalY` BIGINT NOT NULL," +
+            "`sabotageOptionalZ` BIGINT NOT NULL," +
+            ");";
+
     public void load() {
         connect();
         update(SQLiteCreateMapsTable);
         update(SQLiteCreateTasksTable);
+        update(SQLiteCreateSabotagesTable);
     }
 
     public ResultSet getAllMaps() {
@@ -87,6 +103,10 @@ public class Utility extends Database {
 
     public ResultSet getAllTasks() {
         return getResult("SELECT * FROM `tasks`");
+    }
+
+    public ResultSet getAllSabotages() {
+        return getResult("SELECT * FROM `sabotages`");
     }
 
     public boolean isMapInDB(Map map) throws SQLException {
@@ -252,6 +272,50 @@ public class Utility extends Database {
                 " taskTeleportZ = \"" + taskTeleportZ + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\"" +
                 " AND taskName = \"" + task.getName() + "\";"
+        );
+    }
+
+    public void addSabotage(Map map, AbstractSabotage sabotage) {
+        World sabotageWorld = sabotage.getLocation().getWorld();
+        double sabotageX = sabotage.getLocation().getX();
+        double sabotageY = sabotage.getLocation().getY();
+        double sabotageZ = sabotage.getLocation().getZ();
+        World sabotageOptionalWorld = sabotage.getOptionalLocation().getWorld();
+        double sabotageOptionalX = sabotage.getOptionalLocation().getX();
+        double sabotageOptionalY = sabotage.getOptionalLocation().getY();
+        double sabotageOptionalZ = sabotage.getOptionalLocation().getZ();
+        update("INSERT INTO `sabotages` (mapName, taskName, " +
+                "taskWorld, taskX, taskY, taskZ, " +
+                "taskAreaMinWorld, taskAreaMinX, taskAreaMinY, taskAreaMinZ, " +
+                "taskAreaMaxWorld, taskAreaMaxX, taskAreaMaxY, taskAreaMaxZ, " +
+                "taskTeleportWorld, taskTeleportX, taskTeleportY, taskTeleportZ) " +
+                "VALUES(\"" + map.getName() + "\", \"" + sabotage.getName() + "\", " +
+                "\"" + Objects.requireNonNull(sabotageWorld).getName() + "\", \"" + sabotageX + "\", \"" + sabotageY + "\", \"" + sabotageZ + "\", " +
+                "\"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\", \"" + sabotageOptionalX + "\", \"" + sabotageOptionalY + "\", \"" + sabotageOptionalZ + "\");"
+        );
+    }
+
+    public void updateSabotage(Map map, AbstractSabotage sabotage) {
+        World sabotageWorld = sabotage.getLocation().getWorld();
+        double sabotageX = sabotage.getLocation().getX();
+        double sabotageY = sabotage.getLocation().getY();
+        double sabotageZ = sabotage.getLocation().getZ();
+        World sabotageOptionalWorld = sabotage.getOptionalLocation().getWorld();
+        double sabotageOptionalX = sabotage.getOptionalLocation().getX();
+        double sabotageOptionalY = sabotage.getOptionalLocation().getY();
+        double sabotageOptionalZ = sabotage.getOptionalLocation().getZ();
+        update("UPDATE `sabotages`" +
+                " SET" +
+                " sabotageWorld = \"" + Objects.requireNonNull(sabotageWorld).getName() + "\"," +
+                " sabotageX = \"" + sabotageX + "\"," +
+                " sabotageY = \"" + sabotageY + "\"," +
+                " sabotageZ = \"" + sabotageZ + "\"," +
+                " sabotageOptionalWorld = \"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\"," +
+                " sabotageOptionalX = \"" + sabotageOptionalX + "\"," +
+                " sabotageOptionalY = \"" + sabotageOptionalY + "\"," +
+                " sabotageOptionalZ = \"" + sabotageOptionalZ + "\"" +
+                " WHERE mapName = \"" + map.getName() + "\"" +
+                " AND sabotageName = \"" + sabotage.getName() + "\";"
         );
     }
 }
