@@ -10,9 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.MapManager;
-import org.toedev.amongus.sabotages.AbstractSabotage;
 import org.toedev.amongus.sabotages.SabotageManager;
 import org.toedev.amongus.sabotages.Sabotages;
 import org.toedev.amongus.tasks.Tasks;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CreateSabotageCommand {
+public class SetSabotageCommand {
 
     private final MapManager mapManager;
     private final SabotageManager sabotageManager;
@@ -31,7 +31,7 @@ public class CreateSabotageCommand {
     private final ChatColor gold = ChatColor.GOLD;
     private final ChatColor red = ChatColor.RED;
 
-    public CreateSabotageCommand(MapManager mapManager, SabotageManager sabotageManager) {
+    public SetSabotageCommand(MapManager mapManager, SabotageManager sabotageManager) {
         this.mapManager = mapManager;
         this.sabotageManager = sabotageManager;
     }
@@ -54,20 +54,13 @@ public class CreateSabotageCommand {
             sender.sendMessage(Prefix.prefix + red + "You can only select 1 block for this sabotage!");
             return;
         }
-        AbstractSabotage s = sabotageManager.getSabotageByLocation(regionPoints.get(0));
-        if(s != null) {
-            sender.sendMessage(Prefix.prefix + red + "The sabotage " + gold + s.getName() + red + " already exists at this location! Sabotage locations cannot overlap!");
+        if(args[3].equalsIgnoreCase("setoptionallocation")) {
+            Location sabotageOptionalLoc = regionPoints.get(0);
+            sabotageManager.setOptionalLocation(mapManager.getMap(args[2]), args[1], sabotageOptionalLoc);
+            sender.sendMessage(Prefix.prefix + purple + "Sabotage optional location set at " + gold + sabotageOptionalLoc.getBlockX() + ", " + sabotageOptionalLoc.getBlockY() + ", " + sabotageOptionalLoc.getBlockZ());
             return;
         }
-        if(args[1].equalsIgnoreCase("lights")) {
-            Location loc = regionPoints.get(0);
-            sabotageManager.addLightsSabotage(mapManager.getMap(args[2]), loc);
-            sender.sendMessage(Prefix.prefix + purple + "Lights sabotage created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
-        } else if(args[1].equalsIgnoreCase("door")) {
-            Location loc = regionPoints.get(0);
-            sabotageManager.addDoorSabotage(mapManager.getMap(args[2]), loc);
-            sender.sendMessage(Prefix.prefix + purple + "Door sabotage created at " + gold + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
-        }
+        sender.sendMessage(Prefix.prefix + red + "AHHH");
     }
 
     private List<Location> getPoints(CommandSender sender) {

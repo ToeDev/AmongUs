@@ -31,6 +31,7 @@ public class CommandHandler implements TabExecutor {
     private final List<String> taskListCommands;
     private final List<String> sabotageListCommands;
     private final List<String> setTaskCommands;
+    private final List<String> setSabotageCommands;
 
     private final TestCommand testCommand;
     private final StartCommand startCommand;
@@ -60,6 +61,7 @@ public class CommandHandler implements TabExecutor {
         this.taskListCommands = new ArrayList<>();
         this.sabotageListCommands = new ArrayList<>();
         this.setTaskCommands = new ArrayList<>();
+        this.setSabotageCommands = new ArrayList<>();
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
         this.testCommand = new TestCommand(gameHandler, npcHandler, taskManager, mapManager);
@@ -108,6 +110,7 @@ public class CommandHandler implements TabExecutor {
         }
 
         this.setTaskCommands.add("setarea");
+        this.setSabotageCommands.add("setoptionallocation");
     }
 
     @Override
@@ -220,6 +223,7 @@ public class CommandHandler implements TabExecutor {
         final ArrayList<String> taskListCompletions = new ArrayList<>(taskListCommands);
         final ArrayList<String> sabotageListCompletions = new ArrayList<>(sabotageListCommands);
         final ArrayList<String> setTaskCompletions = new ArrayList<>(setTaskCommands);
+        final ArrayList<String> setSabotageCompletions = new ArrayList<>(setSabotageCommands);
         ArrayList<String> mapCompletions = new ArrayList<>();
         for(Map map : mapManager.getAllMaps()) {
             mapCompletions.add(map.getName());
@@ -309,6 +313,12 @@ public class CommandHandler implements TabExecutor {
                         return null;
                     }
                     return setTaskCompletions;
+                } else if(arg0.equals("setsabotage") && sabotageListCompletions.contains(arg1) && mapCompletions.contains(arg2)) {
+                    setSabotageCompletions.removeIf(completion -> !completion.startsWith(arg3.toLowerCase()));
+                    if(setSabotageCompletions.isEmpty()) {
+                        return null;
+                    }
+                    return setSabotageCompletions;
                 } else {
                     return null;
                 }

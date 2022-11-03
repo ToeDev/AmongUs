@@ -7,6 +7,7 @@ import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.Prefix;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.sabotages.sabotages.DoorSabotage;
 import org.toedev.amongus.sabotages.sabotages.LightsSabotage;
 import org.toedev.amongus.sql.Utility;
 import org.toedev.amongus.tasks.AbstractTask;
@@ -85,6 +86,18 @@ public class SabotageManager {
         return null;
     }
 
+    public DoorSabotage getDoorSabotage(Map map) {
+        if(allSabotages.get(map) != null) {
+            for(AbstractSabotage sabotage : allSabotages.get(map)) {
+                if(sabotage instanceof DoorSabotage) {
+                    return (DoorSabotage) sabotage;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
     public void addLightsSabotage(Map map, Location location) throws SQLException {
         LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, location, null);
         if(allSabotages.get(map) != null) {
@@ -95,6 +108,18 @@ public class SabotageManager {
             allSabotages.put(map, sabotages);
         }
         addSabotageToDB(map, lSabotage);
+    }
+
+    public void addDoorSabotage(Map map, Location location) throws SQLException {
+        DoorSabotage dSabotage = new DoorSabotage(Sabotages.sabotageNames.get(DoorSabotage.class), map, location, null);
+        if(allSabotages.get(map) != null) {
+            allSabotages.get(map).add(dSabotage);
+        } else {
+            ArrayList<AbstractSabotage> sabotages = new ArrayList<>();
+            sabotages.add(dSabotage);
+            allSabotages.put(map, sabotages);
+        }
+        addSabotageToDB(map, dSabotage);
     }
 
     public AbstractSabotage getSabotageByLocation(Location location) {

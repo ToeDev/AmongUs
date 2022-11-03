@@ -1,5 +1,6 @@
 package org.toedev.amongus.sabotages;
 
+import org.toedev.amongus.sabotages.sabotages.DoorSabotage;
 import org.toedev.amongus.sabotages.sabotages.LightsSabotage;
 import org.toedev.amongus.tasks.tasks.*;
 
@@ -13,5 +14,6 @@ public class Sabotages {
         sabotageNames = new HashMap<>();
 
         sabotageNames.put(LightsSabotage.class, "lights");
+        sabotageNames.put(DoorSabotage.class, "door");
     }
 }
