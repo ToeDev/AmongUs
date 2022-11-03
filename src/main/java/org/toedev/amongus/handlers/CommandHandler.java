@@ -9,6 +9,8 @@ import org.toedev.amongus.AmongUs;
 import org.toedev.amongus.commands.*;
 import org.toedev.amongus.map.Map;
 import org.toedev.amongus.map.MapManager;
+import org.toedev.amongus.sabotages.SabotageManager;
+import org.toedev.amongus.sabotages.Sabotages;
 import org.toedev.amongus.tasks.TaskManager;
 import org.toedev.amongus.tasks.Tasks;
 
@@ -22,10 +24,12 @@ public class CommandHandler implements TabExecutor {
     private final NPCHandler npcHandler;
     private final GameHandler gameHandler;
     private final TaskManager taskManager;
+    private final SabotageManager sabotageManager;
 
     private final List<String> baseCommands;
     private final List<String> setLocCommands;
     private final List<String> taskListCommands;
+    private final List<String> sabotageListCommands;
     private final List<String> setTaskCommands;
 
     private final TestCommand testCommand;
@@ -41,16 +45,20 @@ public class CommandHandler implements TabExecutor {
     private final CreateTaskCommand createTaskCommand;
     private final RemoveTaskCommand removeTaskCommand;
     private final SetTaskCommand setTaskCommand;
+    private final CreateSabotageCommand createSabotageCommand;
+    private final RemoveSabotageCommand removeSabotageCommand;
 
-    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager) {
+    public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager, SabotageManager sabotageManager) {
         this.mapManager = mapManager;
         this.npcHandler = npcHandler;
         this.gameHandler = gameHandler;
         this.taskManager = taskManager;
+        this.sabotageManager = sabotageManager;
 
         this.baseCommands = new ArrayList<>();
         this.setLocCommands = new ArrayList<>();
         this.taskListCommands = new ArrayList<>();
+        this.sabotageListCommands = new ArrayList<>();
         this.setTaskCommands = new ArrayList<>();
         Objects.requireNonNull(amongUs.getCommand("amongus")).setExecutor(this);
         Objects.requireNonNull(amongUs.getCommand("amongus")).setTabCompleter(this);
@@ -67,6 +75,8 @@ public class CommandHandler implements TabExecutor {
         this.createTaskCommand = new CreateTaskCommand(mapManager, taskManager);
         this.removeTaskCommand = new RemoveTaskCommand(mapManager, taskManager);
         this.setTaskCommand = new SetTaskCommand(mapManager, taskManager);
+        this.createSabotageCommand = new CreateSabotageCommand(mapManager, sabotageManager);
+        this.removeSabotageCommand = new RemoveSabotageCommand(mapManager, sabotageManager);
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");
@@ -81,6 +91,8 @@ public class CommandHandler implements TabExecutor {
         this.baseCommands.add("createtask");
         this.baseCommands.add("removetask");
         this.baseCommands.add("settask");
+        this.baseCommands.add("createsabotage");
+        this.baseCommands.add("removesabotage");
 
         this.setLocCommands.add("map");
         this.setLocCommands.add("meeting");
@@ -89,6 +101,10 @@ public class CommandHandler implements TabExecutor {
 
         for(java.util.Map.Entry<Object, String> entry : Tasks.taskNames.entrySet()) {
             this.taskListCommands.add(entry.getValue());
+        }
+
+        for(java.util.Map.Entry<Object, String> entry : Sabotages.sabotageNames.entrySet()) {
+            this.sabotageListCommands.add(entry.getValue());
         }
 
         this.setTaskCommands.add("setarea");
@@ -176,6 +192,22 @@ public class CommandHandler implements TabExecutor {
             }
             return true;
         }
+        if(args[0].equalsIgnoreCase("createsabotage")) {
+            try {
+                createSabotageCommand.execute(sender, args);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("removesabotage")) {
+            try {
+                removeSabotageCommand.execute(sender, args);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
         sender.sendMessage("here are argument options");
         return true;
     }
@@ -186,6 +218,7 @@ public class CommandHandler implements TabExecutor {
         final ArrayList<String> baseCompletions = new ArrayList<>(baseCommands);
         final ArrayList<String> setLocCompletions = new ArrayList<>(setLocCommands);
         final ArrayList<String> taskListCompletions = new ArrayList<>(taskListCommands);
+        final ArrayList<String> sabotageListCompletions = new ArrayList<>(sabotageListCommands);
         final ArrayList<String> setTaskCompletions = new ArrayList<>(setTaskCommands);
         ArrayList<String> mapCompletions = new ArrayList<>();
         for(Map map : mapManager.getAllMaps()) {
@@ -241,6 +274,10 @@ public class CommandHandler implements TabExecutor {
                     case "settask":
                         taskListCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         return taskListCompletions;
+                    case "createsabotage":
+                    case "removesabotage":
+                        sabotageListCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
+                        return sabotageListCompletions;
                     case "playerinfo":
                         playerNameCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         return playerNameCompletions;
