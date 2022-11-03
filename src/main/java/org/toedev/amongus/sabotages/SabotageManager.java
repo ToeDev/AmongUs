@@ -65,4 +65,121 @@ public class SabotageManager {
             e.printStackTrace();
         }
     }
+
+    public List<AbstractSabotage> getAllSabotages(Map map) {
+        if(allSabotages.get(map) != null) {
+            return allSabotages.get(map);
+        }
+        return null;
+    }
+
+    public LightsSabotage getLightsSabotage(Map map) {
+        if(allSabotages.get(map) != null) {
+            for(AbstractSabotage sabotage : allSabotages.get(map)) {
+                if(sabotage instanceof LightsSabotage) {
+                    return (LightsSabotage) sabotage;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public void addLightsSabotage(Map map, Location location) throws SQLException {
+        LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, location, null);
+        if(allSabotages.get(map) != null) {
+            allSabotages.get(map).add(lSabotage);
+        } else {
+            ArrayList<AbstractSabotage> sabotages = new ArrayList<>();
+            sabotages.add(lSabotage);
+            allSabotages.put(map, sabotages);
+        }
+        addSabotageToDB(map, lSabotage);
+    }
+
+    public AbstractSabotage getSabotageByLocation(Location location) {
+        for(java.util.Map.Entry<Map, List<AbstractSabotage>> entry : allSabotages.entrySet()) {
+            for(AbstractSabotage sabotage : getAllSabotages(entry.getKey())) {
+                if(sabotage.getLocation().equals(location)) {
+                    return sabotage;
+                }
+            }
+        }
+        return null;
+    }
+
+    public AbstractSabotage getTaskByOptionalLocation(Location optionalLocation) {
+        for(java.util.Map.Entry<Map, List<AbstractSabotage>> entry : allSabotages.entrySet()) {
+            for(AbstractSabotage sabotage : getAllSabotages(entry.getKey())) {
+                if(sabotage.getOptionalLocation().equals(optionalLocation)) {
+                    return sabotage;
+                }
+            }
+        }
+        return null;
+    }
+
+    public AbstractSabotage getSabotageByMap(Map map, String name) {
+        if(allSabotages.get(map) != null) {
+            for(AbstractSabotage sabotage : allSabotages.get(map)) {
+                if(sabotage.getName().equalsIgnoreCase(name)) {
+                    return sabotage;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setOptionalLocation(Map map, String name, Location optionalLocation) throws SQLException {
+        if(getSabotageByMap(map, name) != null) {
+            getSabotageByMap(map, name).setOptionalLocation(optionalLocation);
+            updateSabotageInDB(map, getSabotageByMap(map, name));
+        }
+    }
+
+    public void removeSabotage(Map map, String name, Location location) throws SQLException {
+        if(doesSabotageExistInMap(map, name, location)) {
+            allSabotages.get(map).removeIf(s -> s.getLocation().equals(location));
+            deleteSabotageFromDB(map, name, location);
+        }
+    }
+
+    public boolean doesSabotageExistInMap(Map map, String name, Location location) {
+        if(allSabotages.get(map) != null) {
+            for(AbstractSabotage sabotage : allSabotages.get(map)) {
+                if(sabotage.getName().equalsIgnoreCase(name) && sabotage.getLocation().equals(location)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int countSabotageInMap(Map map, String name) {
+        int i = 0;
+        if(allSabotages.get(map) != null) {
+            for(AbstractSabotage sabotage : allSabotages.get(map)) {
+                if(sabotage.getName().equalsIgnoreCase(name)) {
+                    i++;
+                }
+            }
+        }
+        return i;
+    }
+
+    private void addSabotageToDB(Map map, AbstractSabotage sabotage) throws SQLException {
+        utility.addSabotage(map, sabotage);
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: \"" + sabotage.getName() + "\" for Map: \"" + map.getName() + "\" added to DB");
+    }
+
+    private void deleteSabotageFromDB(Map map, String name, Location location) throws SQLException {
+        utility.removeSabotage(map, name, location);
+        String loc = location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + "," + location.getWorld().getName();
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: \"" + name + "\" At: \"" + loc + "\" for Map: \"" + map.getName() + "\" deleted from the DB");
+    }
+
+    private void updateSabotageInDB(Map map, AbstractSabotage sabotage) throws SQLException {
+        utility.updateSabotage(map, sabotage);
+        Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: \"" + sabotage.getName() + "\" for Map: \"" + map.getName() + "\" updated in the DB");
+    }
 }

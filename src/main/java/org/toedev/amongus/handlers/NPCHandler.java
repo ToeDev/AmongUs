@@ -62,7 +62,7 @@ public class NPCHandler {
     }
 
     public void despawnAllNPCs() {
-        if(spawnedNPCs == null || spawnedNPCs.size() <= 0) return;
+        if(spawnedNPCs.size() <= 0) return;
         Iterator<Integer> iter = spawnedNPCs.iterator();
         while(iter.hasNext()) {
             Integer id = iter.next();

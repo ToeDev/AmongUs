@@ -284,14 +284,27 @@ public class Utility extends Database {
         double sabotageOptionalX = sabotage.getOptionalLocation().getX();
         double sabotageOptionalY = sabotage.getOptionalLocation().getY();
         double sabotageOptionalZ = sabotage.getOptionalLocation().getZ();
-        update("INSERT INTO `sabotages` (mapName, taskName, " +
-                "taskWorld, taskX, taskY, taskZ, " +
-                "taskAreaMinWorld, taskAreaMinX, taskAreaMinY, taskAreaMinZ, " +
-                "taskAreaMaxWorld, taskAreaMaxX, taskAreaMaxY, taskAreaMaxZ, " +
-                "taskTeleportWorld, taskTeleportX, taskTeleportY, taskTeleportZ) " +
+        update("INSERT INTO `sabotages` (mapName, sabotageName, " +
+                "sabotageWorld, sabotageX, sabotageY, sabotageZ, " +
+                "sabotageOptionalWorld, sabotageOptionalX, sabotageOptionalY, sabotageOptionalZ) " +
                 "VALUES(\"" + map.getName() + "\", \"" + sabotage.getName() + "\", " +
                 "\"" + Objects.requireNonNull(sabotageWorld).getName() + "\", \"" + sabotageX + "\", \"" + sabotageY + "\", \"" + sabotageZ + "\", " +
                 "\"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\", \"" + sabotageOptionalX + "\", \"" + sabotageOptionalY + "\", \"" + sabotageOptionalZ + "\");"
+        );
+    }
+
+    public void removeSabotage(Map map, String name, Location location) {
+        World sabotageWorld = location.getWorld();
+        double sabotageX = location.getX();
+        double sabotageY = location.getY();
+        double sabotageZ = location.getZ();
+        update("DELETE FROM `sabotages`" +
+                " WHERE mapName = \"" + map.getName() + "\"" +
+                " AND sabotageName = \"" + name + "\"" +
+                " AND sabotageWorld = \"" + Objects.requireNonNull(sabotageWorld).getName() + "\"" +
+                " AND sabotageX = \"" + sabotageX + "\"" +
+                " AND sabotageY = \"" + sabotageY + "\"" +
+                " AND sabotageZ = \"" + sabotageZ + "\";"
         );
     }
 

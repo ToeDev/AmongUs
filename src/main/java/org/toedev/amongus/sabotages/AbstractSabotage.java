@@ -10,7 +10,7 @@ public abstract class AbstractSabotage {
     private final String name;
     private final Map map;
     private final Location location;
-    private final Location optionalLocation;
+    private Location optionalLocation;
 
     public AbstractSabotage(String name, Map map, Location location, Location optionalLocation) {
         this.name = name;
@@ -33,5 +33,9 @@ public abstract class AbstractSabotage {
 
     public Location getOptionalLocation() {
         return optionalLocation;
+    }
+
+    public void setOptionalLocation(Location optionalLocation) {
+        this.optionalLocation = optionalLocation;
     }
 }
