@@ -48,10 +48,12 @@ public class SabotageManager {
             while(sabotageSet.next()) {
                 Location sabotageLocation = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageWorld")), sabotageSet.getDouble("sabotageX"), sabotageSet.getDouble("sabotageY"), sabotageSet.getDouble("sabotageZ"));
                 Location sabotageOptionalLocation = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageOptionalWorld")), sabotageSet.getDouble("sabotageOptionalX"), sabotageSet.getDouble("sabotageOptionalY"), sabotageSet.getDouble("sabotageOptionalZ"));
+                Location sabotageOptionalLocation2 = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageOptionalWorld2")), sabotageSet.getDouble("sabotageOptionalX2"), sabotageSet.getDouble("sabotageOptionalY2"), sabotageSet.getDouble("sabotageOptionalZ2"));
+                Location sabotageOptionalLocation3 = new Location(Bukkit.getWorld(sabotageSet.getString("sabotageOptionalWorld3")), sabotageSet.getDouble("sabotageOptionalX3"), sabotageSet.getDouble("sabotageOptionalY3"), sabotageSet.getDouble("sabotageOptionalZ3"));
                 String sabotageName = sabotageSet.getString("sabotageName");
                 Map map = mapManager.getMap(sabotageSet.getString("mapName"));
                 if(sabotageName.equalsIgnoreCase("lights")) {
-                    LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, sabotageLocation, sabotageOptionalLocation);
+                    LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, sabotageLocation, sabotageOptionalLocation, sabotageOptionalLocation2, sabotageOptionalLocation3);
                     if(allSabotages.get(map) != null) {
                         allSabotages.get(map).add(lSabotage);
                     } else {
@@ -99,7 +101,7 @@ public class SabotageManager {
     }
 
     public void addLightsSabotage(Map map, Location location) throws SQLException {
-        LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, location, null);
+        LightsSabotage lSabotage = new LightsSabotage(Sabotages.sabotageNames.get(LightsSabotage.class), map, location, null, null, null);
         if(allSabotages.get(map) != null) {
             allSabotages.get(map).add(lSabotage);
         } else {
@@ -111,7 +113,7 @@ public class SabotageManager {
     }
 
     public void addDoorSabotage(Map map, Location location) throws SQLException {
-        DoorSabotage dSabotage = new DoorSabotage(Sabotages.sabotageNames.get(DoorSabotage.class), map, location, null);
+        DoorSabotage dSabotage = new DoorSabotage(Sabotages.sabotageNames.get(DoorSabotage.class), map, location, null, null, null);
         if(allSabotages.get(map) != null) {
             allSabotages.get(map).add(dSabotage);
         } else {
@@ -153,6 +155,20 @@ public class SabotageManager {
             }
         }
         return null;
+    }
+
+    public void setOptionalLocation2(Map map, String name, Location optionalLocation2) throws SQLException {
+        if(getSabotageByMap(map, name) != null) {
+            getSabotageByMap(map, name).setOptionalLocation2(optionalLocation2);
+            updateSabotageInDB(map, getSabotageByMap(map, name));
+        }
+    }
+
+    public void setOptionalLocation3(Map map, String name, Location optionalLocation3) throws SQLException {
+        if(getSabotageByMap(map, name) != null) {
+            getSabotageByMap(map, name).setOptionalLocation3(optionalLocation3);
+            updateSabotageInDB(map, getSabotageByMap(map, name));
+        }
     }
 
     public void setOptionalLocation(Map map, String name, Location optionalLocation) throws SQLException {

@@ -60,6 +60,18 @@ public class SetSabotageCommand {
             sender.sendMessage(Prefix.prefix + purple + "Sabotage optional location set at " + gold + sabotageOptionalLoc.getBlockX() + ", " + sabotageOptionalLoc.getBlockY() + ", " + sabotageOptionalLoc.getBlockZ());
             return;
         }
+        if(args[3].equalsIgnoreCase("setoptionallocation2")) {
+            Location sabotageOptionalLoc2 = regionPoints.get(0);
+            sabotageManager.setOptionalLocation2(mapManager.getMap(args[2]), args[1], sabotageOptionalLoc2);
+            sender.sendMessage(Prefix.prefix + purple + "Sabotage optional location 2 set at " + gold + sabotageOptionalLoc2.getBlockX() + ", " + sabotageOptionalLoc2.getBlockY() + ", " + sabotageOptionalLoc2.getBlockZ());
+            return;
+        }
+        if(args[3].equalsIgnoreCase("setoptionallocation3")) {
+            Location sabotageOptionalLoc3 = regionPoints.get(0);
+            sabotageManager.setOptionalLocation3(mapManager.getMap(args[2]), args[1], sabotageOptionalLoc3);
+            sender.sendMessage(Prefix.prefix + purple + "Sabotage optional location 3 set at " + gold + sabotageOptionalLoc3.getBlockX() + ", " + sabotageOptionalLoc3.getBlockY() + ", " + sabotageOptionalLoc3.getBlockZ());
+            return;
+        }
         sender.sendMessage(Prefix.prefix + red + "AHHH");
     }
 

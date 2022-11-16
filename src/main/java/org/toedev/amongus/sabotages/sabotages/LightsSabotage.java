@@ -8,10 +8,10 @@ import org.toedev.amongus.sabotages.AbstractSabotage;
 
 import java.util.List;
 
-public class LightsSabotage extends AbstractSabotage {
+public class LightsSabotage extends AbstractSabotage { //todo event handler cancel on head click
 
-    public LightsSabotage(String name, Map map, Location location, Location optionalLocation) {
-        super(name, map, location, optionalLocation);
+    public LightsSabotage(String name, Map map, Location location, Location optionalLocation, Location optionalLocation2, Location optionalLocation3) {
+        super(name, map, location, optionalLocation, optionalLocation2, optionalLocation3);
     }
 
     public void execute(List<Player> crewmates) {

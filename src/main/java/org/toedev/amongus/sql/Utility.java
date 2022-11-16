@@ -87,7 +87,15 @@ public class Utility extends Database {
             "`sabotageOptionalWorld` varchar(64) NOT NULL," +
             "`sabotageOptionalX` BIGINT NOT NULL," +
             "`sabotageOptionalY` BIGINT NOT NULL," +
-            "`sabotageOptionalZ` BIGINT NOT NULL" +
+            "`sabotageOptionalZ` BIGINT NOT NULL," +
+            "`sabotageOptionalWorld2` varchar(64) NOT NULL," +
+            "`sabotageOptionalX2` BIGINT NOT NULL," +
+            "`sabotageOptionalY2` BIGINT NOT NULL," +
+            "`sabotageOptionalZ2` BIGINT NOT NULL," +
+            "`sabotageOptionalWorld3` varchar(64) NOT NULL," +
+            "`sabotageOptionalX3` BIGINT NOT NULL," +
+            "`sabotageOptionalY3` BIGINT NOT NULL," +
+            "`sabotageOptionalZ3` BIGINT NOT NULL" +
             ");";
 
     public void load() {
@@ -284,12 +292,24 @@ public class Utility extends Database {
         double sabotageOptionalX = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getX();
         double sabotageOptionalY = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getY();
         double sabotageOptionalZ = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getZ();
+        World sabotageOptionalWorld2 = sabotage.getOptionalLocation2() == null ? null : sabotage.getOptionalLocation2().getWorld();
+        double sabotageOptionalX2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getX();
+        double sabotageOptionalY2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getY();
+        double sabotageOptionalZ2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getZ();
+        World sabotageOptionalWorld3 = sabotage.getOptionalLocation3() == null ? null : sabotage.getOptionalLocation3().getWorld();
+        double sabotageOptionalX3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getX();
+        double sabotageOptionalY3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getY();
+        double sabotageOptionalZ3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getZ();
         update("INSERT INTO `sabotages` (mapName, sabotageName, " +
                 "sabotageWorld, sabotageX, sabotageY, sabotageZ, " +
-                "sabotageOptionalWorld, sabotageOptionalX, sabotageOptionalY, sabotageOptionalZ) " +
+                "sabotageOptionalWorld, sabotageOptionalX, sabotageOptionalY, sabotageOptionalZ, " +
+                "sabotageOptionalWorld2, sabotageOptionalX2, sabotageOptionalY2, sabotageOptionalZ2, " +
+                "sabotageOptionalWorld3, sabotageOptionalX3, sabotageOptionalY3, sabotageOptionalZ3) " +
                 "VALUES(\"" + map.getName() + "\", \"" + sabotage.getName() + "\", " +
                 "\"" + Objects.requireNonNull(sabotageWorld).getName() + "\", \"" + sabotageX + "\", \"" + sabotageY + "\", \"" + sabotageZ + "\", " +
-                "\"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\", \"" + sabotageOptionalX + "\", \"" + sabotageOptionalY + "\", \"" + sabotageOptionalZ + "\");"
+                "\"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\", \"" + sabotageOptionalX + "\", \"" + sabotageOptionalY + "\", \"" + sabotageOptionalZ + "\", " +
+                "\"" + (sabotageOptionalWorld2 == null ? null : sabotageOptionalWorld2.getName()) + "\", \"" + sabotageOptionalX2 + "\", \"" + sabotageOptionalY2 + "\", \"" + sabotageOptionalZ2 + "\", " +
+                "\"" + (sabotageOptionalWorld3 == null ? null : sabotageOptionalWorld3.getName()) + "\", \"" + sabotageOptionalX3 + "\", \"" + sabotageOptionalY3 + "\", \"" + sabotageOptionalZ3 + "\");"
         );
     }
 
@@ -317,6 +337,14 @@ public class Utility extends Database {
         double sabotageOptionalX = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getX();
         double sabotageOptionalY = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getY();
         double sabotageOptionalZ = sabotage.getOptionalLocation() == null ? 0 : sabotage.getOptionalLocation().getZ();
+        World sabotageOptionalWorld2 = sabotage.getOptionalLocation2() == null ? null : sabotage.getOptionalLocation2().getWorld();
+        double sabotageOptionalX2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getX();
+        double sabotageOptionalY2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getY();
+        double sabotageOptionalZ2 = sabotage.getOptionalLocation2() == null ? 0 : sabotage.getOptionalLocation2().getZ();
+        World sabotageOptionalWorld3 = sabotage.getOptionalLocation3() == null ? null : sabotage.getOptionalLocation3().getWorld();
+        double sabotageOptionalX3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getX();
+        double sabotageOptionalY3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getY();
+        double sabotageOptionalZ3 = sabotage.getOptionalLocation3() == null ? 0 : sabotage.getOptionalLocation3().getZ();
         update("UPDATE `sabotages`" +
                 " SET" +
                 " sabotageWorld = \"" + Objects.requireNonNull(sabotageWorld).getName() + "\"," +
@@ -326,7 +354,15 @@ public class Utility extends Database {
                 " sabotageOptionalWorld = \"" + (sabotageOptionalWorld == null ? null : sabotageOptionalWorld.getName()) + "\"," +
                 " sabotageOptionalX = \"" + sabotageOptionalX + "\"," +
                 " sabotageOptionalY = \"" + sabotageOptionalY + "\"," +
-                " sabotageOptionalZ = \"" + sabotageOptionalZ + "\"" +
+                " sabotageOptionalZ = \"" + sabotageOptionalZ + "\"," +
+                " sabotageOptionalWorld2 = \"" + (sabotageOptionalWorld2 == null ? null : sabotageOptionalWorld2.getName()) + "\"," +
+                " sabotageOptionalX2 = \"" + sabotageOptionalX2 + "\"," +
+                " sabotageOptionalY2 = \"" + sabotageOptionalY2 + "\"," +
+                " sabotageOptionalZ2 = \"" + sabotageOptionalZ2 + "\"," +
+                " sabotageOptionalWorld3 = \"" + (sabotageOptionalWorld3 == null ? null : sabotageOptionalWorld3.getName()) + "\"," +
+                " sabotageOptionalX3 = \"" + sabotageOptionalX3 + "\"," +
+                " sabotageOptionalY3 = \"" + sabotageOptionalY3 + "\"," +
+                " sabotageOptionalZ3 = \"" + sabotageOptionalZ3 + "\"" +
                 " WHERE mapName = \"" + map.getName() + "\"" +
                 " AND sabotageName = \"" + sabotage.getName() + "\";"
         );
