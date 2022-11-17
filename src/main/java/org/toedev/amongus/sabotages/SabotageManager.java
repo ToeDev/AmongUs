@@ -62,6 +62,16 @@ public class SabotageManager {
                         allSabotages.put(map, sabotages);
                     }
                     Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: " + gold + sabotageName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
+                } else if(sabotageName.equalsIgnoreCase("door")) {
+                    DoorSabotage dSabotage = new DoorSabotage(Sabotages.sabotageNames.get(DoorSabotage.class), map, sabotageLocation, sabotageOptionalLocation, sabotageOptionalLocation2, sabotageOptionalLocation3);
+                    if(allSabotages.get(map) != null) {
+                        allSabotages.get(map).add(dSabotage);
+                    } else {
+                        ArrayList<AbstractSabotage> sabotages = new ArrayList<>();
+                        sabotages.add(dSabotage);
+                        allSabotages.put(map, sabotages);
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Prefix.prefix + purple + "Sabotage: " + gold + sabotageName + purple + " for Map: " + gold + map.getName() + purple + " imported from the DB");
                 }
             }
         } catch (SQLException e) {

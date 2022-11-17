@@ -49,7 +49,7 @@ public class TestCommand {
             //gameHandler.givePlayerRandomTasks(mapManager.getMap("skeld"), Bukkit.getPlayer(sender.getName()), 12);
             List<Player> p = new ArrayList<>();
             p.add((Player) sender);
-            sabotageManager.getLightsSabotage(mapManager.getMap("skeld")).execute(p);
+            sabotageManager.getDoorSabotage(mapManager.getMap("skeld")).execute((Player) sender);
         }
     }
 }

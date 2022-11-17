@@ -34,10 +34,8 @@ public class DoorSabotage extends AbstractSabotage {
             ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, templateSelection, clipboard, templateSelection.getMinimumPoint());
             forwardExtentCopy.setCopyingEntities(true);
             forwardExtentCopy.setCopyingBiomes(false);
-            //clipboard.setOrigin(localSession.getPlacementPosition(bPlayer));
             Operations.complete(forwardExtentCopy);
             localSession.setClipboard(new ClipboardHolder(clipboard));
-
             BlockVector3 min = BlockVector3.at(Math.min(getLocation().getX(), getOptionalLocation().getX()),
                     Math.min(getLocation().getY(), getOptionalLocation().getY()),
                     Math.min(getLocation().getZ(), getOptionalLocation().getZ()));
@@ -48,7 +46,7 @@ public class DoorSabotage extends AbstractSabotage {
         }
     }
 
-    public void cancel() {
+    public void cancel(Player player) {
 
     }
 }

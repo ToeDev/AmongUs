@@ -48,6 +48,7 @@ public class CommandHandler implements TabExecutor {
     private final SetTaskCommand setTaskCommand;
     private final CreateSabotageCommand createSabotageCommand;
     private final RemoveSabotageCommand removeSabotageCommand;
+    private final SetSabotageCommand setSabotageCommand;
 
     public CommandHandler(AmongUs amongUs, MapManager mapManager, NPCHandler npcHandler, GameHandler gameHandler, TaskManager taskManager, SabotageManager sabotageManager) {
         this.mapManager = mapManager;
@@ -79,6 +80,7 @@ public class CommandHandler implements TabExecutor {
         this.setTaskCommand = new SetTaskCommand(mapManager, taskManager);
         this.createSabotageCommand = new CreateSabotageCommand(mapManager, sabotageManager);
         this.removeSabotageCommand = new RemoveSabotageCommand(mapManager, sabotageManager);
+        this.setSabotageCommand = new SetSabotageCommand(mapManager, sabotageManager);
 
         this.baseCommands.add("test");
         this.baseCommands.add("start");
@@ -95,6 +97,7 @@ public class CommandHandler implements TabExecutor {
         this.baseCommands.add("settask");
         this.baseCommands.add("createsabotage");
         this.baseCommands.add("removesabotage");
+        this.baseCommands.add("setsabotage");
 
         this.setLocCommands.add("map");
         this.setLocCommands.add("meeting");
@@ -211,6 +214,14 @@ public class CommandHandler implements TabExecutor {
             }
             return true;
         }
+        if(args[0].equalsIgnoreCase("setsabotage")) {
+            try {
+                setSabotageCommand.execute(sender, args);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
         sender.sendMessage("here are argument options");
         return true;
     }
@@ -280,6 +291,7 @@ public class CommandHandler implements TabExecutor {
                         return taskListCompletions;
                     case "createsabotage":
                     case "removesabotage":
+                    case "setsabotage":
                         sabotageListCompletions.removeIf(completion -> !completion.startsWith(arg1.toLowerCase()));
                         return sabotageListCompletions;
                     case "playerinfo":
